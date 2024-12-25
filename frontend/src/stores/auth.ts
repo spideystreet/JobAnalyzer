@@ -1,16 +1,17 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { 
   signInWithPopup,
   GoogleAuthProvider,
   signOut as firebaseSignOut,
+  onAuthStateChanged,
   type User
 } from 'firebase/auth'
 import { auth } from '@/config/firebase'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
-  const loading = ref(false)
+  const loading = ref(true)
   const error = ref('')
 
   // Login with Google
@@ -34,6 +35,17 @@ export const useAuthStore = defineStore('auth', () => {
     await firebaseSignOut(auth)
     user.value = null
   }
+
+  // Listen to auth state changes
+  onMounted(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      user.value = currentUser
+      loading.value = false
+    })
+
+    // Cleanup listener on unmount
+    return () => unsubscribe()
+  })
 
   return {
     user,

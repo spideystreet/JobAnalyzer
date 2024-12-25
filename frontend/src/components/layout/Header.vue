@@ -25,6 +25,12 @@ const handleLogout = async () => {
       <!-- Navigation -->
       <nav class="flex items-center gap-4">
         <template v-if="auth.user">
+          <Button 
+            variant="ghost" 
+            @click="router.push('/dashboard')"
+          >
+            Dashboard
+          </Button>
           <span class="text-sm text-gray-500">{{ auth.user.email }}</span>
           <Button variant="ghost" @click="handleLogout">
             Déconnexion

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Card from '@/components/ui/Card.vue'
+import OfferAnalysisForm from '@/components/offers/OfferAnalysisForm.vue'
 </script>
 
 <template>
@@ -22,11 +23,10 @@ import Card from '@/components/ui/Card.vue'
         </Card>
       </div>
 
-      <!-- Liste des offres récentes -->
-      <h2 class="mt-10 text-xl font-semibold">Offres récentes</h2>
-      <div class="mt-4">
+      <!-- Analyse Form -->
+      <div class="mt-8">
         <Card>
-          <p class="text-gray-500">Aucune offre analysée</p>
+          <OfferAnalysisForm />
         </Card>
       </div>
     </div>
