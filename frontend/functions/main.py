@@ -48,10 +48,14 @@ def analyze_job(req: https_fn.CallableRequest) -> dict:
         
         return {
             "status": "success",
+            "data": job_data,
             "url": url,
-            "user_id": req.auth.uid,
-            "job_data": job_data
+            "user_id": req.auth.uid
         }
     except Exception as e:
         logger.error(f"💥 Erreur : {str(e)}", exc_info=True)
-        raise
+        return {
+            "status": "error",
+            "error": str(e),
+            "url": url
+        }

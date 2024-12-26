@@ -9,7 +9,7 @@ TEST_EMAIL="test@test.com"
 TEST_PASSWORD="password123"
 
 # URL à tester
-TEST_URL="https://www.free-work.com/fr/tech-it/data-engineer/job-mission/senior-data-engineer-azure-power-bi"
+TEST_URL="https://www.free-work.com/fr/tech-it/data-engineer/job-mission/data-engineer-h-f-468"
 
 echo "🔄 Démarrage du test..."
 echo "📍 URL à tester : $TEST_URL"
