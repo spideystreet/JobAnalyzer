@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
+import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore'
 import { getFunctions, connectFunctionsEmulator } from 'firebase/functions'
 
 const firebaseConfig = {
@@ -18,6 +18,7 @@ export const db = getFirestore(app)
 export const functions = getFunctions(app, 'europe-west9')
 
 // Connecter aux émulateurs en développement
-//if (import.meta.env.DEV) {
-//  connectFunctionsEmulator(functions, 'localhost', 5001)
-//} 
+if (import.meta.env.DEV) {
+  // Connect to emulators
+  connectFirestoreEmulator(db, 'localhost', 8080)
+} 

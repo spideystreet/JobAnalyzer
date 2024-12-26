@@ -64,13 +64,14 @@ class JobExtractor:
                 "EXPERIENCE_MAX": "",
                 "DAILY_MIN": "",
                 "DAILY_MAX": "",
-                "TVTRAVAIL": "",
+                "REMOTE": "",
                 "TECHNOS": [],
-                "DURATION_DAYS": ""
+                "DURATION_DAYS": "",
+                "URL": ""
             }
 
             Instructions pour remplir chaque champ :
-            - TITLE: le titre de l'offre d'emploi.
+            - TITLE: le titre de l'offre d'emploi / le poste recherché.
             - COUNTRY: le pays de l'offre d'emploi.
                 Par exemple, "France"
                 Par exemple, "Belgique"
@@ -103,7 +104,7 @@ class JobExtractor:
                 Par exemple, "Lille"
                 Par exemple, "Strasbourg"
             - COMPANY: le nom de l'entreprise.
-            - COMPANY_TYPE: choisis UNE option parmi ["ESN", "Startup", "Grand Compte", "Cabinet de Conseil", "Scale-up", "Cabinet de recrutement / placement"]
+            - COMPANY_TYPE: choisis UNE option parmi ["ESN", "Startup", "Grand Compte", "Cabinet de Conseil", "Cabinet de recrutement / placement", "DSI"]
             - CONTRACT_TYPE: choisis UNE option parmi ["CDI", "CDD", "Freelance"]
             - EXPERIENCE_MIN: le nombre minimum d'années d'expérience requise.
                 Par exemple, si l'offre demande "1 à 3 ans d'expérience", EXPERIENCE_MIN = 1.
@@ -137,7 +138,12 @@ class JobExtractor:
                 Par exemple, 800-850 €⁄j DAILY_MAX = 850.
                 Par exemple, 850-900 €⁄j DAILY_MAX = 900.
                 Par exemple, 950-1000 €⁄j DAILY_MAX = 1000.
-            - TVTRAVAIL: choisis UNE option parmi ["Hybride", "Full-Remote", "On-Site"]
+            - REMOTE: IMPORTANT - Tu DOIS choisir EXACTEMENT une de ces trois valeurs : "Hybride", "Full-Remote", ou "On-Site"
+                Si tu vois :
+                - "Télétravail partiel" => utilise "Hybride"
+                - "Télétravail 100%" => utilise "Full-Remote"
+                - "Sur site" ou si tu ne vois rien rien => utilise "On-Site"
+                 Ne jamais utiliser d'autres valeurs que ces trois options exactes.
             - TECHNOS: liste des technologies primaires requises.
                 Par exemple, ["Python", "JavaScript", "React", "Node.js", "Docker", "Kubernetes", "AWS"]
                 Par exemple, ["Power BI", "SQL", "Excel"]
@@ -146,19 +152,22 @@ class JobExtractor:
                 * X ans ou X année(s) = X * 365 jours
                 * X mois = X * 30 jours
                 * Le nombre apparaît toujours après le type de contrat et avant le salaire
-                Par exemple, 1 an = 365 jours
-                Par exemple, 6 mois = 180 jours
-                Par exemple, 12 mois = 365 jours
-                Par exemple, 1 an et 6 mois = 485 jours
-                Par exemple, 2 ans = 730 jours
-                Par exemple, 3 ans = 1095 jours
-                Par exemple, 4 ans = 1460 jours
-                Par exemple, 5 ans = 1825 jours
-                Par exemple, 6 ans = 2190 jours
-                Par exemple, 7 ans = 2555 jours
-                Par exemple, 8 ans = 2920 jours
-                Par exemple, 9 ans = 3285 jours
-                Par exemple, 10 ans = 3650 jours
+                Par exemple 2 mois = 60 jours.
+                Par exemple, 6 mois = 180 jours.
+                Par exemple, 8 mois = 240 jours.
+                Par exemple, 12 mois = 365 jours.
+                Par exemple, 1 an = 365 jours.
+                Par exemple, 1 an et 6 mois = 485 jours.
+                Par exemple, 2 ans = 730 jours.
+                Par exemple, 3 ans = 1095 jours.
+                Par exemple, 4 ans = 1460 jours.
+                Par exemple, 5 ans = 1825 jours.
+                Par exemple, 6 ans = 2190 jours.
+                Par exemple, 7 ans = 2555 jours.
+                Par exemple, 8 ans = 2920 jours.
+                Par exemple, 9 ans = 3285 jours.
+                Par exemple, 10 ans = 3650 jours.
+            - URL: l'URL de l'offre d'emploi.
 
             Voici l'offre à analyser :
             {page_text}
@@ -178,7 +187,7 @@ class JobExtractor:
             
             # Parser la réponse
             analysis = json.loads(response.choices[0].message.content)
-            analysis["url"] = url
+            analysis["URL"] = url
             
             logger.debug(f"✅ Analyse terminée : {json.dumps(analysis, indent=2)}")
             return analysis
