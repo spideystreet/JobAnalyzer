@@ -4,6 +4,18 @@
 
 from firebase_functions import https_fn, options
 from firebase_admin import initialize_app
+from ETL01_EXTRACT import JobExtractor
+import logging
+import sys
+
+# Configuration des logs
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    stream=sys.stdout  # Force l'affichage sur stdout
+)
+
+logger = logging.getLogger(__name__)
 
 # Définir la région
 options.set_global_options(region="europe-west9")
@@ -13,24 +25,33 @@ initialize_app()
 @https_fn.on_call()
 def analyze_job(req: https_fn.CallableRequest) -> dict:
     try:
-        print("Fonction analyze_job appelée !")
+        logger.debug("🎯 Fonction analyze_job appelée")
         
         if not req.auth:
-            print("Erreur : utilisateur non authentifié")
+            logger.error("❌ Utilisateur non authentifié")
             raise https_fn.HttpsError('unauthenticated', 'Must be authenticated')
 
         url = req.data.get('url')
         if not url:
-            print("Erreur : URL manquante")
+            logger.error("❌ URL manquante")
             raise https_fn.HttpsError('invalid-argument', 'URL is required')
 
-        print(f"Analyse de l'URL : {url}")
+        logger.debug(f"🌐 URL reçue : {url}")
+        
+        logger.debug("🔧 Initialisation de JobExtractor...")
+        extractor = JobExtractor()
+        logger.debug("✅ JobExtractor initialisé")
+        
+        logger.debug("🚀 Démarrage de l'extraction...")
+        job_data = extractor.extract(url)
+        logger.debug(f"📊 Données extraites : {job_data}")
         
         return {
             "status": "success",
             "url": url,
-            "user_id": req.auth.uid
+            "user_id": req.auth.uid,
+            "job_data": job_data
         }
     except Exception as e:
-        print(f"Erreur inattendue : {str(e)}")
+        logger.error(f"💥 Erreur : {str(e)}", exc_info=True)
         raise
