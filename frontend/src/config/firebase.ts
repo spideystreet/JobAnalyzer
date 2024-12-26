@@ -22,3 +22,8 @@ if (import.meta.env.DEV) {
   // Connect to emulators
   connectFirestoreEmulator(db, 'localhost', 8080)
 } 
+
+// En développement, connexion à l'émulateur
+if (process.env.NODE_ENV === 'development') {
+  connectFunctionsEmulator(functions, 'localhost', 5001)
+} 

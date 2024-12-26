@@ -4,17 +4,20 @@
 API_URL="http://127.0.0.1:5001/jobanalyzer-191fa/europe-west9/analyze_job"
 AUTH_URL="http://127.0.0.1:9099/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=fake-api-key"
 
-# Utilisateur de test (correspond à firebase.json)
+# Utilisateur de test
 TEST_EMAIL="test@test.com"
 TEST_PASSWORD="password123"
 
-# URL à tester
-TEST_URL="https://www.free-work.com/fr/tech-it/data-engineer/job-mission/data-engineer-h-f-468"
+# URLs à tester
+declare -a TEST_URLS=(
+    "https://www.free-work.com/fr/tech-it/data-engineer/job-mission/senior-data-engineer-azure-power-bi"
+    "https://www.free-work.com/fr/tech-it/consultant-decisionnel-bi-powerbi-sas-tableau/job-mission/ingenieur-data-bi-experimente-5"
+    "https://www.free-work.com/fr/tech-it/directeur-de-la-data-cdo/job-mission/data-ingenieur-73"
+)
 
-echo "🔄 Démarrage du test..."
-echo "📍 URL à tester : $TEST_URL"
-echo "👤 Utilisateur : $TEST_EMAIL"
+echo "🔄 Démarrage des tests..."
 
+# Authentification
 echo -e "\n🔑 Connexion de l'utilisateur de test..."
 TOKEN=$(curl -s -X POST "$AUTH_URL" \
 -H "Content-Type: application/json" \
@@ -29,21 +32,45 @@ if [ "$TOKEN" == "null" ]; then
     exit 1
 fi
 
-echo "✅ Authentification réussie"
+echo "����� Authentification réussie"
 
-echo -e "\n🚀 Test de la fonction..."
-echo "⏳ Envoi de la requête..."
+# Tester chaque URL
+for url in "${TEST_URLS[@]}"
+do
+    echo -e "\n\n🎯 Test de l'URL : $url"
+    echo "⏳ Envoi de la requête..."
 
-RESPONSE=$(curl -s -X POST "$API_URL" \
--H "Content-Type: application/json" \
--H "Authorization: Bearer $TOKEN" \
--d "{
-    \"data\": {
-        \"url\": \"$TEST_URL\"
-    }
-}")
+    RESPONSE=$(curl -s -X POST "$API_URL" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $TOKEN" \
+    -d "{
+        \"data\": {
+            \"url\": \"$url\"
+        }
+    }")
 
-echo -e "\n📝 Réponse reçue :"
-echo "$RESPONSE" | jq .
+    echo -e "\n📝 Réponse brute reçue :"
+    echo "$RESPONSE"
 
-echo -e "\n✅ Test terminé" 
+    if echo "$RESPONSE" | jq . >/dev/null 2>&1; then
+        echo -e "\n📊 Réponse JSON valide :"
+        echo "$RESPONSE" | jq .
+        
+        echo -e "\n🔍 Données transformées :"
+        echo "$RESPONSE" | jq .result.data
+        
+        DOC_ID=$(echo "$RESPONSE" | jq -r .result.doc_id)
+        if [ "$DOC_ID" != "null" ]; then
+            echo -e "\n💾 Document Firestore créé/mis à jour : $DOC_ID"
+        else
+            echo -e "\n❌ Erreur : Document non sauvegardé"
+        fi
+    else
+        echo -e "\n❌ Erreur : Réponse non JSON"
+        echo "$RESPONSE"
+    fi
+
+    echo -e "\n--------------------------------"
+done
+
+echo -e "\n✅ Tous les tests sont terminés" 

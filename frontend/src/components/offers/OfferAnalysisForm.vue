@@ -3,6 +3,8 @@ import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { createOffer } from '@/services/offers'
 import Button from '@/components/ui/Button.vue'
+import { httpsCallable } from 'firebase/functions'
+import { functions } from '@/config/firebase'
 
 const auth = useAuthStore()
 const url = ref('')
@@ -31,6 +33,14 @@ const isValidJobUrl = (url: string): boolean => {
   } catch {
     return false
   }
+}
+
+const analyzeOffer = async (url: string) => {
+  const analyze = httpsCallable<{ url: string }, any>(
+    functions,
+    'analyze_job'
+  )
+  // ...
 }
 
 const handleSubmit = async () => {
