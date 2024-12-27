@@ -136,8 +136,9 @@ const handleAnalyzeAll = async () => {
       <Button 
         type="submit"
         variant="secondary"
+        class="px-6 py-2.5 font-medium"
       >
-        Ajouter
+        + Ajouter
       </Button>
     </form>
 
@@ -145,22 +146,36 @@ const handleAnalyzeAll = async () => {
     <div v-if="urls.length > 0" class="space-y-2">
       <div v-for="(url, index) in urls" :key="index"
         class="flex items-center justify-between p-2 bg-background-lighter rounded">
-        <span class="text-sm truncate">{{ url }}</span>
-        <button @click="handleRemoveUrl(index)" class="text-red-500">
-          ❌
-        </button>
+        <span class="text-sm truncate flex-1">{{ url }}</span>
+        <Button 
+          @click="handleRemoveUrl(index)" 
+          variant="danger"
+          class="px-2 py-1 ml-2"
+        >
+          Supprimer
+        </Button>
       </div>
       
-      <!-- Bouton d'analyse -->
-      <Button 
-        variant="primary"
-        :disabled="loading"
-        class="w-full mt-4"
-        @click="handleAnalyzeAll"
-      >
-        <Spinner v-if="loading" size="sm" variant="white" class="mr-2" />
-        {{ loading ? 'Analyse en cours...' : `Analyser ${urls.length} offre${urls.length > 1 ? 's' : ''}` }}
-      </Button>
+      <!-- Actions -->
+      <div class="flex gap-3 mt-4">
+        <Button 
+          variant="primary"
+          :disabled="loading"
+          class="flex-1 py-2.5 font-medium"
+          @click="handleAnalyzeAll"
+        >
+          <Spinner v-if="loading" size="sm" variant="white" class="mr-2" />
+          {{ loading ? 'Analyse en cours...' : `Analyser ${urls.length} offre${urls.length > 1 ? 's' : ''}` }}
+        </Button>
+        
+        <Button 
+          variant="secondary"
+          class="px-6 py-2.5"
+          @click="urls = []"
+        >
+          Réinitialiser
+        </Button>
+      </div>
     </div>
   </div>
 </template> 
