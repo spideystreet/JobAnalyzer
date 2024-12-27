@@ -4,6 +4,11 @@
 
 @layer base {
   body {
-    @apply bg-white text-gray-900;
+    @apply bg-background text-text-primary;
   }
+}
+
+/* Optionnel : styles globaux pour les cards */
+.card {
+  @apply bg-background-lighter border-gray-800;
 }

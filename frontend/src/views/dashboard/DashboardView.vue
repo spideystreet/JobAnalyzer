@@ -12,9 +12,9 @@ const handleOfferAdded = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50 p-8">
+  <div class="min-h-screen bg-background p-8">
     <div class="mx-auto max-w-7xl">
-      <h1 class="text-2xl font-semibold text-gray-900">Dashboard</h1>
+      <h1 class="text-2xl font-semibold text-text-primary">Dashboard</h1>
       
       <!-- Stats -->
       <div class="mt-6">

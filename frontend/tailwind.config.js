@@ -7,14 +7,23 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Fond sombre
+        background: {
+          DEFAULT: "#1a1b1e",    // Noir/gris foncé élégant
+          lighter: "#2c2e33",    // Pour les éléments superposés
+        },
+        // Turquoise style #40E0D0
         primary: {
-          DEFAULT: "hsl(221.2 83.2% 53.3%)",
-          foreground: "hsl(210 40% 98%)",
+          DEFAULT: "#40E0D0",    // Turquoise demandé
+          hover: "#5FEAE0",      // Version plus claire pour hover
+          foreground: "#ffffff"  // Texte sur fond primary
         },
-        secondary: {
-          DEFAULT: "hsl(210 40% 96.1%)",
-          foreground: "hsl(222.2 47.4% 11.2%)",
-        },
+        // Textes
+        text: {
+          primary: "#ffffff",    // Texte principal
+          secondary: "#cbd5e1",  // Texte secondaire (plus clair pour meilleure lisibilité)
+          muted: "#94a3b8",     // Texte tertiaire
+        }
       },
     },
   },
