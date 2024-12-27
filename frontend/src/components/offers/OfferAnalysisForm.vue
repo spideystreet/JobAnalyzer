@@ -8,7 +8,8 @@ import { httpsCallable } from 'firebase/functions'
 import { functions } from '@/config/firebase'
 
 const auth = useAuthStore()
-const url = ref('')
+const urls = ref<string[]>([])  // Array d'URLs au lieu d'une seule
+const currentUrl = ref('')      // URL en cours de saisie
 const loading = ref(false)
 const error = ref('')
 const success = ref(false)
@@ -46,26 +47,41 @@ const clearFeedback = () => {
   success.value = false
 }
 
-const handleSubmit = async () => {
-  clearFeedback()  // Reset au début
-  
-  if (!isValidJobUrl(url.value)) {
+const handleAddUrl = () => {
+  if (!isValidJobUrl(currentUrl.value)) {
     error.value = 'URL non valide. Utilisez LinkedIn, WTTJ, Indeed ou Free-work'
     setTimeout(clearFeedback, FEEDBACK_DURATION)
     return
   }
+  
+  urls.value.push(currentUrl.value)
+  currentUrl.value = ''  // Reset input
+  success.value = true
+  setTimeout(clearFeedback, FEEDBACK_DURATION)
+}
 
+const handleRemoveUrl = (index: number) => {
+  urls.value.splice(index, 1)
+}
+
+const handleAnalyzeAll = async () => {
   loading.value = true
+  
   try {
-    await createOffer(url.value, auth.user?.uid || '')
-    success.value = true
-    url.value = ''
+    for (const url of urls.value) {
+      const response = await createOffer(url, auth.user?.uid || '')
+      
+      if (!response.success) {
+        error.value = response.error
+        setTimeout(clearFeedback, FEEDBACK_DURATION)
+        continue
+      }
+    }
+    urls.value = []  // Clear après succès
     emit('offer-added')
-    setTimeout(clearFeedback, FEEDBACK_DURATION)  // Clear après succès
   } catch (e) {
-    error.value = 'Erreur lors de l\'enregistrement de l\'offre'
-    console.error('Error saving offer:', e)
-    setTimeout(clearFeedback, FEEDBACK_DURATION)  // Clear après erreur
+    error.value = 'Erreur lors de l\'analyse des offres'
+    console.error('Error analyzing offers:', e)
   } finally {
     loading.value = false
   }
@@ -73,48 +89,46 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div class="w-full">
-    <form @submit.prevent="handleSubmit" class="flex gap-3">
+  <div class="w-full space-y-4">
+    <!-- Formulaire d'ajout -->
+    <form @submit.prevent="handleAddUrl" class="flex gap-3">
       <div class="flex-1 relative">
         <input
-          v-model="url"
+          v-model="currentUrl"
           type="url"
           class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 pr-10"
-          :class="{
-            'border-red-500': error,
-            'border-green-500': success
-          }"
           placeholder="Collez l'URL de l'offre ici..."
           required
         />
-        <span 
-          v-if="error"
-          class="absolute right-3 top-1/2 -translate-y-1/2"
-        >
-          ❌
-        </span>
-        <span 
-          v-if="success"
-          class="absolute right-3 top-1/2 -translate-y-1/2"
-        >
-          ✅
-        </span>
-        <p v-if="error" class="mt-1 text-sm text-red-500">{{ error }}</p>
       </div>
       <Button 
         type="submit"
-        variant="primary"
-        :disabled="loading"
-        class="px-2 py-2"
+        variant="secondary"
       >
-        <Spinner 
-          v-if="loading" 
-          size="sm" 
-          variant="white" 
-          class="mr-2"
-        />
-        {{ loading ? 'Analyse...' : 'Analyser' }}
+        Ajouter
       </Button>
     </form>
+
+    <!-- Liste des URLs -->
+    <div v-if="urls.length > 0" class="space-y-2">
+      <div v-for="(url, index) in urls" :key="index"
+        class="flex items-center justify-between p-2 bg-background-lighter rounded">
+        <span class="text-sm truncate">{{ url }}</span>
+        <button @click="handleRemoveUrl(index)" class="text-red-500">
+          ❌
+        </button>
+      </div>
+      
+      <!-- Bouton d'analyse -->
+      <Button 
+        variant="primary"
+        :disabled="loading"
+        class="w-full mt-4"
+        @click="handleAnalyzeAll"
+      >
+        <Spinner v-if="loading" size="sm" variant="white" class="mr-2" />
+        {{ loading ? 'Analyse en cours...' : `Analyser ${urls.length} offre${urls.length > 1 ? 's' : ''}` }}
+      </Button>
+    </div>
   </div>
 </template> 

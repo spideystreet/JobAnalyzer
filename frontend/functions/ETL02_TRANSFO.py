@@ -257,39 +257,128 @@ class JobTransformer:
         'DURATION_DAYS'
     }
 
-    def transform(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """Transforme les données extraites en format standardisé."""
+    REGION_PATTERNS = {
+        'ILE-DE-FRANCE': [
+            'ILE_DE_FRANCE', 'ILDEFRANCE', 'ÎLE-DE-FRANCE',
+            'ÎLE DE FRANCE', 'IDF', 'PARIS REGION',
+            'REGION PARISIENNE', 'PARIS IDF'
+        ],
+        'AUVERGNE-RHONE-ALPES': [
+            'AUVERGNE_RHONE_ALPES', 'AUVERGNERHONEALPES',
+            'AUVERGNE RHONE ALPES', 'RHONE-ALPES',
+            'RHONE ALPES', 'ARA', 'AURA', 'AUVERGNE'
+        ],
+        'PROVENCE-ALPES-COTE-D\'AZUR': [
+            'PACA', 'PROVENCE_ALPES_COTE_D_AZUR',
+            'PROVENCE ALPES', 'SUD FRANCE', 'REGION SUD',
+            'PROVENCE', 'COTE D\'AZUR'
+        ],
+        'NOUVELLE-AQUITAINE': [
+            'AQUITAINE', 'NOUVELLE AQUITAINE', 'NEO AQUITAINE',
+            'NA', 'POITOU CHARENTES', 'LIMOUSIN'
+        ],
+        'OCCITANIE': [
+            'OCCITANIE_PYRENEES', 'LANGUEDOC ROUSSILLON',
+            'MIDI PYRENEES', 'TOULOUSE REGION',
+            'LANGUEDOC', 'ROUSSILLON', 'OCCITAN'
+        ],
+        'HAUTS-DE-FRANCE': [
+            'HAUTS_DE_FRANCE', 'HDF', 'NORD PAS DE CALAIS',
+            'PICARDIE', 'NORD-PAS-DE-CALAIS',
+            'NORD FRANCE', 'NPDC'
+        ],
+        'GRAND-EST': [
+            'GRAND_EST', 'GE', 'ALSACE', 'LORRAINE',
+            'CHAMPAGNE ARDENNE', 'ALSACE LORRAINE',
+            'CHAMPAGNE', 'ARDENNE'
+        ],
+        'PAYS-DE-LA-LOIRE': [
+            'PAYS_DE_LA_LOIRE', 'PDL', 'LOIRE REGION',
+            'PAYS LOIRE', 'PAYS DE LOIRE', 'LOIRE'
+        ],
+        'BRETAGNE': [
+            'BREIZH', 'BZH', 'BRITTANY', 'BRETAGNE REGION',
+            'FINISTERE REGION', 'BRETONNE'
+        ],
+        'NORMANDIE': [
+            'NORMANDY', 'HAUTE NORMANDIE', 'BASSE NORMANDIE',
+            'NORMANDIE REGION', 'NORMAN'
+        ],
+        'BOURGOGNE-FRANCHE-COMTE': [
+            'BOURGOGNE_FRANCHE_COMTE', 'BFC', 'BOURGOGNE',
+            'FRANCHE COMTE', 'BOURGOGNE REGION'
+        ],
+        'CENTRE-VAL-DE-LOIRE': [
+            'CENTRE_VAL_DE_LOIRE', 'CVDL', 'CENTRE REGION',
+            'VAL DE LOIRE', 'CENTRE', 'BERRY'
+        ],
+        'CORSE': [
+            'CORSICA', 'ILE DE BEAUTE', 'CORSE REGION',
+            'HAUTE CORSE', 'CORSE DU SUD'
+        ]
+    }
+
+    def transform(self, data: dict) -> dict:
+        """Transforme les données extraites au format standardisé."""
         try:
-            logger.debug("🔄 Début de la transformation")
-            
-            transformed = {}
-            for key, value in data.items():
-                if key == 'URL':  # Ne pas transformer les URLs
-                    transformed[key] = value
-                elif key == 'TECHNOS':
-                    transformed[key] = self._normalize_technos(value)
-                elif key in self.NUMERIC_FIELDS:
-                    transformed[key] = self._convert_to_int(value)
-                else:
-                    transformed[key] = self._normalize_text(value)
-            
-            logger.debug(f"✨ Données transformées : {json.dumps(transformed, indent=2, ensure_ascii=False)}")
-            return transformed
-            
+            return {
+                'URL': data.get('URL', ''),
+                'TITLE': data.get('TITLE', '').upper(),
+                'COMPANY': data.get('COMPANY', '').upper(),
+                'COMPANY_TYPE': data.get('COMPANY_TYPE', '').upper(),
+                'CONTRACT_TYPE': [ct.upper() for ct in data.get('CONTRACT_TYPE', [])],
+                'COUNTRY': data.get('COUNTRY', '').upper(),
+                'REGION': data.get('REGION', '').upper(),
+                'CITY': data.get('CITY', '').upper(),
+                'REMOTE': data.get('REMOTE', '').upper(),
+                'EXPERIENCE_MIN': self._convert_to_int(data.get('EXPERIENCE_MIN')),
+                'EXPERIENCE_MAX': self._convert_to_int(data.get('EXPERIENCE_MAX')),
+                'DAILY_MIN': self._convert_to_int(data.get('DAILY_MIN')),
+                'DAILY_MAX': self._convert_to_int(data.get('DAILY_MAX')),
+                'DURATION_DAYS': self._convert_to_int(data.get('DURATION_DAYS')),
+                'TECHNOS': [
+                    self._normalize_tech(tech)
+                    for tech in data.get('TECHNOS', [])
+                ]
+            }
         except Exception as e:
-            logger.error(f"❌ Erreur lors de la transformation: {str(e)}")
-            raise
+            logging.error(f"Error in transform: {str(e)}")
+            raise e
 
     def _normalize_text(self, value: Any) -> Any:
-        """Normalise le texte (majuscules, sans accents)."""
+        # Option 1 : Fidèle à l'orthographe officielle
+        REGION_MAPPING = {
+            # Variations d'Île-de-France
+            'ILE-DE-FRANCE': 'ILE-DE-FRANCE',
+            'ILE_DE_FRANCE': 'ILE-DE-FRANCE',
+            'ILDEFRANCE': 'ILE-DE-FRANCE',
+            'ÎLE-DE-FRANCE': 'ILE-DE-FRANCE',
+            'ÎLE DE FRANCE': 'ILE-DE-FRANCE',
+            'IDF': 'ILE-DE-FRANCE',
+            
+            # Variations d'Auvergne-Rhône-Alpes
+            'AUVERGNE-RHONE-ALPES': 'AUVERGNE-RHONE-ALPES',
+            'AUVERGNE_RHONE_ALPES': 'AUVERGNE-RHONE-ALPES',
+            'AUVERGNERHONEALPES': 'AUVERGNE-RHONE-ALPES',
+            'AUVERGNE RHONE ALPES': 'AUVERGNE-RHONE-ALPES',
+            'ARA': 'AUVERGNE-RHONE-ALPES',
+            
+            # ... autres régions avec leurs variations ...
+        }
+
         if isinstance(value, str):
-            # Convertir en majuscules et supprimer les accents
             normalized = unicodedata.normalize('NFKD', value.upper())
             normalized = ''.join(c for c in normalized if not unicodedata.combining(c))
+            
+            # Si c'est une région, utiliser le mapping
+            if normalized in REGION_MAPPING:
+                return REGION_MAPPING[normalized]
             return normalized
-        elif isinstance(value, list):
-            return [self._normalize_text(item) for item in value]
-        return value
+
+        # Option 2 : Tout simplifier (actuel)
+        if isinstance(value, str):
+            normalized = unicodedata.normalize('NFKD', value.upper())
+            return ''.join(c for c in normalized if not unicodedata.combining(c))
 
     def _normalize_technos(self, technos: List[str]) -> List[str]:
         """Normalise la liste des technologies."""
@@ -321,17 +410,21 @@ class JobTransformer:
             return 0 
 
     def _normalize_tech(self, tech: str) -> str:
-        # 1. D'abord essayer le mapping exact
-        if tech in self.TECH_MAPPING:
-            return self.TECH_MAPPING[tech]
+        # 1. Première standardisation
+        tech = tech.upper()                    # "apache Spark" -> "APACHE SPARK"
+        tech = tech.replace(' ', '_')          # "APACHE SPARK" -> "APACHE_SPARK"
+        tech = tech.replace('-', '_')          # Gère aussi les cas avec tirets
         
-        # 2. Ensuite essayer les patterns
+        # 2. Vérifier le mapping
+        if tech in self.TECH_MAPPING:
+            return self.TECH_MAPPING[tech].upper()  # "APACHE_SPARK" -> "SPARK"
+        
+        # 3. Vérifier les patterns
         for normalized, patterns in self.TECH_PATTERNS.items():
             if any(pattern in tech for pattern in patterns):
-                return normalized
+                return normalized.upper()
         
-        # 3. Si rien ne correspond, retourner la techno telle quelle
-        return tech 
+        return tech  # Garde la version avec underscores si pas de match
 
     TECH_PATTERNS.update({
         # Enrichir Cloud Providers existants
@@ -414,3 +507,15 @@ class JobTransformer:
         'DBT_METRICS': 'DBT',
         'DBT_TESTS': 'DBT'
     }) 
+
+    def _normalize_region(self, region: str) -> str:
+        region = region.upper()
+        region = region.replace(' ', '_')
+        region = region.replace('-', '_')
+        
+        # Chercher dans les patterns
+        for normalized, patterns in self.REGION_PATTERNS.items():
+            if any(pattern in region for pattern in patterns):
+                return normalized
+        
+        return region 
