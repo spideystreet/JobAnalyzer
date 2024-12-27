@@ -28,3 +28,11 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+# env files
+.env
+.env.local
+.env.*.local
+
+# mais pas les examples
+!.env.example
