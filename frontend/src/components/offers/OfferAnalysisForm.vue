@@ -40,7 +40,7 @@ const analyzeOffer = async (url: string) => {
     functions,
     'analyze_job'
   )
-  // ...
+  // ... à compléter
 }
 
 const handleSubmit = async () => {

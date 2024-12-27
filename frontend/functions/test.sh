@@ -10,9 +10,8 @@ TEST_PASSWORD="password123"
 
 # URLs à tester
 declare -a TEST_URLS=(
-    "https://www.free-work.com/fr/tech-it/data-engineer/job-mission/senior-data-engineer-azure-power-bi"
-    "https://www.free-work.com/fr/tech-it/consultant-decisionnel-bi-powerbi-sas-tableau/job-mission/ingenieur-data-bi-experimente-5"
-    "https://www.free-work.com/fr/tech-it/directeur-de-la-data-cdo/job-mission/data-ingenieur-73"
+    "https://www.free-work.com/fr/tech-it/data-analyst/job-mission/data-analyst-h-f-power-bi"
+    "https://www.free-work.com/fr/tech-it/lead-developer/job-mission/tech-lead-data-55"
 )
 
 echo "🔄 Démarrage des tests..."
