@@ -79,7 +79,7 @@ const handleSubmit = async () => {
         <input
           v-model="url"
           type="url"
-          class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 pr-10"
+          class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 pr-10"
           :class="{
             'border-red-500': error,
             'border-green-500': success
