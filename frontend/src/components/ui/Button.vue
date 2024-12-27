@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-  variant?: 'primary' | 'secondary' | 'outline'
+  variant?: 'primary' | 'secondary' | 'outline' | 'destructive'
   size?: 'sm' | 'md' | 'lg'
 }>()
 </script>
@@ -12,7 +12,8 @@ defineProps<{
       variant === 'primary' && 'bg-primary text-primary-foreground hover:bg-primary/90',
       variant === 'secondary' && 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
       variant === 'outline' && 'border border-gray-200 bg-white hover:bg-gray-100',
-      size === 'sm' && 'h-9 px-3 text-sm',
+      variant === 'destructive' && 'bg-red-500 text-white hover:bg-red-600',
+      size === 'sm' && 'h-8 px-3 text-xs',
       size === 'md' && 'h-10 px-4 text-sm',
       size === 'lg' && 'h-11 px-8 text-base',
     ]"

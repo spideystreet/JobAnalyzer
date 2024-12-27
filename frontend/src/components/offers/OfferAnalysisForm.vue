@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { createOffer } from '@/services/offers'
 import Button from '@/components/ui/Button.vue'
+import Spinner from '@/components/ui/Spinner.vue'
 import { httpsCallable } from 'firebase/functions'
 import { functions } from '@/config/firebase'
 
@@ -12,12 +13,7 @@ const loading = ref(false)
 const error = ref('')
 const success = ref(false)
 
-const statusIcon = computed(() => {
-  if (loading.value) return '⭕'
-  if (error.value) return '❌'
-  if (success.value) return '✅'
-  return ''
-})
+const FEEDBACK_DURATION = 3000 // 3 secondes
 
 const isValidJobUrl = (url: string): boolean => {
   const allowedDomains = [
@@ -43,12 +39,19 @@ const analyzeOffer = async (url: string) => {
   // ... à compléter
 }
 
-const handleSubmit = async () => {
+const emit = defineEmits(['offer-added'])
+
+const clearFeedback = () => {
   error.value = ''
   success.value = false
+}
+
+const handleSubmit = async () => {
+  clearFeedback()  // Reset au début
   
   if (!isValidJobUrl(url.value)) {
     error.value = 'URL non valide. Utilisez LinkedIn, WTTJ, Indeed ou Free-work'
+    setTimeout(clearFeedback, FEEDBACK_DURATION)
     return
   }
 
@@ -56,10 +59,13 @@ const handleSubmit = async () => {
   try {
     await createOffer(url.value, auth.user?.uid || '')
     success.value = true
-    url.value = '' // Reset form
+    url.value = ''
+    emit('offer-added')
+    setTimeout(clearFeedback, FEEDBACK_DURATION)  // Clear après succès
   } catch (e) {
     error.value = 'Erreur lors de l\'enregistrement de l\'offre'
     console.error('Error saving offer:', e)
+    setTimeout(clearFeedback, FEEDBACK_DURATION)  // Clear après erreur
   } finally {
     loading.value = false
   }
@@ -82,13 +88,16 @@ const handleSubmit = async () => {
           required
         />
         <span 
-          v-if="statusIcon"
+          v-if="error"
           class="absolute right-3 top-1/2 -translate-y-1/2"
-          :class="{
-            'animate-spin': loading
-          }"
         >
-          {{ statusIcon }}
+          ❌
+        </span>
+        <span 
+          v-if="success"
+          class="absolute right-3 top-1/2 -translate-y-1/2"
+        >
+          ✅
         </span>
         <p v-if="error" class="mt-1 text-sm text-red-500">{{ error }}</p>
       </div>
@@ -98,6 +107,12 @@ const handleSubmit = async () => {
         :disabled="loading"
         class="px-2 py-2"
       >
+        <Spinner 
+          v-if="loading" 
+          size="sm" 
+          variant="white" 
+          class="mr-2"
+        />
         {{ loading ? 'Analyse...' : 'Analyser' }}
       </Button>
     </form>
