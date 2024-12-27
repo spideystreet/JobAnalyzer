@@ -31,11 +31,10 @@ def analyze_job(req: https_fn.CallableRequest) -> dict:
         existing_offers = db.collection('offers').where('URL', '==', url).limit(1).get()
         
         if existing_offers:
-            return {
-                'success': False,
-                'error': 'Cette offre a déjà été analysée',
-                'offer_id': existing_offers[0].id
-            }
+            raise https_fn.HttpsError(
+                'already-exists',
+                'Cette offre a déjà été analysée'
+            )
 
         # Si l'URL n'existe pas, continuer le flow normal
         extractor = JobExtractor()
@@ -56,6 +55,9 @@ def analyze_job(req: https_fn.CallableRequest) -> dict:
             'offer_id': offer_id
         }
 
+    except https_fn.HttpsError:
+        # Propager les erreurs HTTP
+        raise
     except Exception as e:
         logger.error(f"Error in analyze_job: {str(e)}")
         raise https_fn.HttpsError('internal', str(e))

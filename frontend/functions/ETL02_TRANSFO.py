@@ -328,7 +328,7 @@ class JobTransformer:
                 'COMPANY_TYPE': data.get('COMPANY_TYPE', '').upper(),
                 'CONTRACT_TYPE': [ct.upper() for ct in data.get('CONTRACT_TYPE', [])],
                 'COUNTRY': data.get('COUNTRY', '').upper(),
-                'REGION': data.get('REGION', '').upper(),
+                'REGION': self._normalize_region(data.get('REGION', '')),
                 'CITY': data.get('CITY', '').upper(),
                 'REMOTE': data.get('REMOTE', '').upper(),
                 'EXPERIENCE_MIN': self._convert_to_int(data.get('EXPERIENCE_MIN')),
@@ -509,11 +509,18 @@ class JobTransformer:
     }) 
 
     def _normalize_region(self, region: str) -> str:
+        # 1. Normalisation de base
         region = region.upper()
+        
+        # 2. Supprimer les accents
+        region = unicodedata.normalize('NFKD', region)
+        region = ''.join(c for c in region if not unicodedata.combining(c))
+        
+        # 3. Standardiser les séparateurs
         region = region.replace(' ', '_')
         region = region.replace('-', '_')
         
-        # Chercher dans les patterns
+        # 4. Chercher dans les patterns
         for normalized, patterns in self.REGION_PATTERNS.items():
             if any(pattern in region for pattern in patterns):
                 return normalized

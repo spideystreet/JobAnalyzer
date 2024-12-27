@@ -1,17 +1,20 @@
 import { httpsCallable } from 'firebase/functions'
 import { functions } from '@/config/firebase'
+import { FirebaseError } from 'firebase/app'
 
-const analyzeJobFunction = httpsCallable(functions, 'analyze_job')
-
-export async function createOffer(url: string, userId: string): Promise<string> {
+export const createOffer = async (url: string, userId: string) => {
+  const analyze = httpsCallable(functions, 'analyze_job')
+  
   try {
-    // Appeler uniquement la Cloud Function
-    const result = await analyzeJobFunction({ url })
-    
-    // La fonction retourne déjà le doc_id
-    return result.data.doc_id
+    const result = await analyze({ url })
+    return result.data
   } catch (error) {
-    console.error('Error analyzing offer:', error)
+    // Convertir l'erreur Firebase en erreur standard
+    if (error instanceof FirebaseError) {
+      const e = new Error(error.message)
+      e.code = error.code
+      throw e
+    }
     throw error
   }
 } 
