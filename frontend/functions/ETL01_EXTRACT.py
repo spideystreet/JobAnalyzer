@@ -138,24 +138,24 @@ class JobExtractor:
                     Par exemple, ["Power BI", "SQL", "Excel"]
                     Par exemple, ["Spark", "Hadoop", "Airflow"]
                 - DURATION_DAYS: calcule selon ces règles :
-                    * X ans ou X année(s) = X * 365 jours
+                    * X ans ou X année(s) = X * 360 jours
                     * X mois = X * 30 jours
                     * Le nombre apparaît toujours après le type de contrat et avant le salaire
                     Par exemple 2 mois = 60 jours.
                     Par exemple, 6 mois = 180 jours.
                     Par exemple, 8 mois = 240 jours.
-                    Par exemple, 12 mois = 365 jours.
-                    Par exemple, 1 an = 365 jours.
-                    Par exemple, 1 an et 6 mois = 485 jours.
-                    Par exemple, 2 ans = 730 jours.
-                    Par exemple, 3 ans = 1095 jours.
-                    Par exemple, 4 ans = 1460 jours.
-                    Par exemple, 5 ans = 1825 jours.
-                    Par exemple, 6 ans = 2190 jours.
-                    Par exemple, 7 ans = 2555 jours.
-                    Par exemple, 8 ans = 2920 jours.
-                    Par exemple, 9 ans = 3285 jours.
-                    Par exemple, 10 ans = 3650 jours.
+                    Par exemple, 12 mois = 360 jours.
+                    Par exemple, 1 an = 360 jours.
+                    Par exemple, 1 an et 6 mois = 540 jours.
+                    Par exemple, 2 ans = 720 jours.
+                    Par exemple, 3 ans = 1080 jours.
+                    Par exemple, 4 ans = 1440 jours.
+                    Par exemple, 5 ans = 1800 jours.
+                    Par exemple, 6 ans = 2160 jours.
+                    Par exemple, 7 ans = 2520 jours.
+                    Par exemple, 8 ans = 2880 jours.
+                    Par exemple, 9 ans = 3240 jours.
+                    Par exemple, 10 ans = 3600 jours.
                 - URL: l'URL de l'offre d'emploi.
 
                 Voici l'offre à analyser :
