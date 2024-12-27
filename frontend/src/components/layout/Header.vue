@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import Button from '@/components/ui/Button.vue'
+import { computed } from 'vue'
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -10,6 +11,10 @@ const handleLogout = async () => {
   await auth.signOut()
   router.push('/login')
 }
+
+const buttonText = computed(() => {
+  return auth.user ? "Ajouter des offres d'emploi" : 'Commencer gratuitement'
+})
 </script>
 
 <template>
@@ -29,7 +34,7 @@ const handleLogout = async () => {
             variant="ghost" 
             @click="router.push('/dashboard')"
           >
-            Dashboard
+            {{ buttonText }}
           </Button>
           <span class="text-sm text-gray-500">{{ auth.user.email }}</span>
           <Button variant="ghost" @click="handleLogout">
@@ -48,9 +53,9 @@ const handleLogout = async () => {
             variant="primary"
             @click="router.push('/login')"
             v-if="router.currentRoute.value.path === '/'"
-            class="px-2 py-2"
+            class="px-4 py-2 transform transition-all duration-300 hover:scale-105"
           >
-            Commencer
+            {{ buttonText }}
           </Button>
         </template>
       </nav>
