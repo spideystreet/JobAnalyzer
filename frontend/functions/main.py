@@ -8,6 +8,7 @@ from ETL01_EXTRACT import JobExtractor
 from ETL02_TRANSFO import JobTransformer
 from ETL03_LOAD import JobLoader
 import logging
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -26,8 +27,10 @@ def analyze_job(req: https_fn.CallableRequest) -> dict:
         if not url:
             raise https_fn.HttpsError('invalid-argument', 'URL is required')
 
-        # Vérifier si l'URL existe déjà
+        # Initialiser la connexion à la base de données
         db = firestore.client()
+
+        # Vérifier si l'URL existe déjà
         existing_offers = db.collection('offers').where('URL', '==', url).limit(1).get()
         
         if existing_offers:
@@ -41,23 +44,20 @@ def analyze_job(req: https_fn.CallableRequest) -> dict:
         transformer = JobTransformer()
         loader = JobLoader()
 
-        # Extract (synchrone maintenant)
-        data = extractor.extract(url)  # Plus de await
-        
-        # Transform
+        # Extraction et transformation des données
+        data = extractor.extract(url)
         transformed_data = transformer.transform(data)
         
-        # Load
+        # Sauvegarde
         offer_id = loader.load(transformed_data, req.auth.uid)
         
         return {
             'success': True,
-            'offer_id': offer_id
+            'offer_id': offer_id,
+            'status': 'completed'
         }
 
     except https_fn.HttpsError:
-        # Propager les erreurs HTTP
         raise
     except Exception as e:
-        logger.error(f"Error in analyze_job: {str(e)}")
         raise https_fn.HttpsError('internal', str(e))
