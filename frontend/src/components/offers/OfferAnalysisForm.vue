@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-import { createOffer, listenToProgress } from '@/services/offers'
+import { createOffer } from '@/services/offers'
 import Button from '@/components/ui/Button.vue'
 import Spinner from '@/components/ui/Spinner.vue'
 import { httpsCallable } from 'firebase/functions'
@@ -328,14 +328,9 @@ const handleBack = () => {
               </div>
               <div 
                 v-else
-                class="w-6 h-6 flex items-center justify-center rounded-full"
-                :class="{
-                  'bg-gray-100/10': item.status === 'pending',
-                  'bg-green-100/10': item.status === 'success',
-                  'bg-red-100/10': item.status === 'error'
-                }"
+                class="flex items-center justify-center"
               >
-                <span class="text-sm">{{ statusMessages[item.status].icon }}</span>
+                <span class="text-lg">{{ statusMessages[item.status].icon }}</span>
               </div>
             </div>
 
