@@ -107,61 +107,110 @@ onMounted(() => {
           Analysez vos offres freelance avec l'intelligence artificielle
         </p>
 
-        <!-- Animations côte à côte -->
-        <div class="w-full max-w-4xl mx-auto mb-12">
-          <div class="grid grid-cols-3 gap-6">
-            <!-- Animation URL -->
-            <div class="flex items-center justify-center h-[200px] relative bg-black/20 backdrop-blur-sm border border-white/10 rounded-lg">
-              <div class="url-demo-container">
-                <span class="url-text">https://www.linkedin.com/jobs/view/...</span>
-              </div>
+        <!-- Animations Section -->
+        <div class="grid gap-8 md:grid-cols-3 mb-12 max-w-5xl mx-auto">
+          <!-- Animation 1: URL -->
+          <div class="relative">
+            <!-- Badge numéroté -->
+            <div class="absolute left-1/2 top-0 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-white border border-white/10 flex items-center justify-center z-10 shadow-lg">
+              <span class="text-xs font-medium text-black">1</span>
             </div>
-
-            <!-- Animation Scan -->
-            <div class="flex items-center justify-center h-[200px] relative bg-black/20 backdrop-blur-sm border border-white/10 rounded-lg">
-              <div class="scan-container">
-                <div class="scan-content">
-                  <div class="scan-line"></div>
-                  <div class="scan-text">
-                    <div>Salaire: <span class="text-[#00D1FF]">Analysé ✓</span></div>
-                    <div>Stack: <span class="text-[#00D1FF]">Analysé ✓</span></div>
-                    <div>Remote: <span class="text-[#00D1FF]">Analysé ���</span></div>
+            
+            <div class="flex flex-col h-[240px] bg-[#111111] border border-white/5 rounded-lg overflow-hidden">
+              <!-- Contenu principal -->
+              <div class="flex-1 flex items-center justify-center p-8">
+                <div class="url-demo-container bg-black/30 backdrop-blur-sm border border-white/5 rounded-md px-4 py-2 w-[280px]">
+                  <div class="flex items-center justify-center text-[#00D1FF] space-x-2 overflow-hidden">
+                    <span class="text-sm opacity-50">http://</span>
+                    <span class="typing-text">job.com</span>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Animation Insights -->
-            <div class="flex items-center justify-center h-[200px] relative bg-black/20 backdrop-blur-sm border border-white/10 rounded-lg">
-              <div class="insights-container">
-                <!-- Graphique en camembert pour les technos -->
-                <div class="pie-chart">
-                  <div class="pie-segment" style="--rotation: 0deg; --size: 120deg"></div>
-                  <div class="pie-segment" style="--rotation: 120deg; --size: 90deg"></div>
-                  <div class="pie-segment" style="--rotation: 210deg; --size: 150deg"></div>
-                  <div class="pie-label">Technos</div>
+              <!-- Séparateur et titre -->
+              <div class="px-6 py-4 border-t border-white/5">
+                <div class="text-sm font-medium text-white/80">
+                  Collez
                 </div>
+              </div>
+            </div>
+          </div>
 
-                <!-- Graphique en barres pour les TJM -->
-                <div class="bar-chart">
-                  <div class="bar" style="--height: 80%">
-                    <div class="bar-label">TJM</div>
+          <!-- Animation 2: Scan -->
+          <div class="relative">
+            <!-- Badge numéroté -->
+            <div class="absolute left-1/2 top-0 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-white border border-white/10 flex items-center justify-center z-10 shadow-lg">
+              <span class="text-xs font-medium text-black">2</span>
+            </div>
+            
+            <div class="flex flex-col h-[240px] bg-[#111111] border border-white/5 rounded-lg overflow-hidden">
+              <!-- Contenu principal -->
+              <div class="flex-1 flex items-center justify-center p-8">
+                <div class="scan-container">
+                  <div class="scan-content">
+                    <div class="scan-line"></div>
+                    <div class="scan-text">
+                      <div>Salaire: <span class="text-[#00D1FF]">Analysé ✓</span></div>
+                      <div>Stack: <span class="text-[#00D1FF]">Analysé ✓</span></div>
+                      <div>Remote: <span class="text-[#00D1FF]">Analysé 🌍</span></div>
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                <!-- Graphique en ligne pour la fréquence -->
-                <div class="line-chart">
-                  <svg width="80" height="60" viewBox="0 0 80 60">
-                    <path class="line-path" d="M0,30 Q20,10 40,40 T80,20" fill="none" stroke="#00D1FF" stroke-width="2"/>
-                  </svg>
-                  <div class="line-label">Fréquence</div>
+              <!-- Séparateur et titre -->
+              <div class="px-6 py-4 border-t border-white/5">
+                <div class="text-sm font-medium text-white/80">
+                  Analysez
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Animation 3: Insights -->
+          <div class="relative">
+            <!-- Badge numéroté -->
+            <div class="absolute left-1/2 top-0 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-white border border-white/10 flex items-center justify-center z-10 shadow-lg">
+              <span class="text-xs font-medium text-black">3</span>
+            </div>
+            
+            <div class="flex flex-col h-[240px] bg-[#111111] border border-white/5 rounded-lg overflow-hidden">
+              <!-- Contenu principal -->
+              <div class="flex-1 flex items-center justify-center p-8">
+                <div class="insights-container">
+                  <!-- Graphique en camembert pour les technos -->
+                  <div class="pie-chart">
+                    <div class="pie-segment" style="--rotation: 0deg; --size: 120deg"></div>
+                    <div class="pie-segment" style="--rotation: 120deg; --size: 90deg"></div>
+                    <div class="pie-segment" style="--rotation: 210deg; --size: 150deg"></div>
+                  </div>
+
+                  <!-- Graphique en barres pour les TJM -->
+                  <div class="bar-chart">
+                    <div class="bar" style="--height: 80%"></div>
+                  </div>
+
+                  <!-- Graphique en ligne pour la fréquence -->
+                  <div class="line-chart">
+                    <svg width="80" height="60" viewBox="0 0 80 60">
+                      <path class="line-path" d="M0,30 Q20,10 40,40 T80,20" fill="none" stroke="#00D1FF" stroke-width="2"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Séparateur et titre -->
+              <div class="px-6 py-4 border-t border-white/5">
+                <div class="text-sm font-medium text-white/80">
+                  Postulez
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <!-- Bouton unique -->
+        <div class="flex items-center justify-center mt-8">
           <Button 
             size="lg" 
             variant="primary" 
@@ -169,13 +218,6 @@ onMounted(() => {
             class="min-w-[200px] h-11"
           >
             Ajouter des offres
-          </Button>
-          <Button 
-            size="lg" 
-            variant="outline" 
-            class="min-w-[200px] h-11"
-          >
-            En savoir plus
           </Button>
         </div>
 
@@ -599,5 +641,33 @@ button:hover {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Nouvelle animation de frappe pour l'URL */
+.typing-text {
+  overflow: hidden;
+  border-right: 2px solid #00D1FF;
+  white-space: nowrap;
+  font-family: monospace;
+  font-size: 14px;
+  animation: typing 3s steps(20) infinite;
+}
+
+@keyframes typing {
+  0%, 100% {
+    width: 0;
+  }
+  50%, 70% {
+    width: 7ch;
+  }
+}
+
+/* Ajout d'un effet de hover subtil */
+.bg-\[\#111111\] {
+  transition: border-color 0.2s ease;
+}
+
+.bg-\[\#111111\]:hover {
+  border-color: rgba(255, 255, 255, 0.1);
 }
 </style>
