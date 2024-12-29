@@ -215,9 +215,10 @@ onMounted(() => {
             size="lg" 
             variant="primary" 
             @click="handleStartClick" 
-            class="min-w-[200px] h-11"
+            class="min-w-[200px] h-11 bg-gradient-to-r from-[#00D1FF] to-[#0047FF] hover:opacity-90 transition-all duration-150 relative group"
           >
-            Ajouter des offres
+            <div class="absolute inset-0 bg-gradient-to-r from-[#00D1FF] to-[#0047FF] blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-150"></div>
+            <span class="relative z-10">Ajouter des offres</span>
           </Button>
         </div>
 
@@ -669,5 +670,15 @@ button:hover {
 
 .bg-\[\#111111\]:hover {
   border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Style pour le bouton avec glow */
+.group:hover {
+  box-shadow: 0 0 30px rgba(0, 209, 255, 0.3);
+  transition: all 150ms ease;
+}
+
+.group {
+  transition: all 150ms ease;
 }
 </style>
