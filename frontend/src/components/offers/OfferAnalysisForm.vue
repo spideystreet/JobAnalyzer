@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-import { createOffer } from '@/services/offers'
+import { createOffer, checkOfferExists } from '@/services/offers'
 import Button from '@/components/ui/Button.vue'
 import Spinner from '@/components/ui/Spinner.vue'
 import { httpsCallable } from 'firebase/functions'
@@ -94,21 +94,34 @@ const steps = [
   }
 ]
 
-const handleAddUrl = () => {
+const handleAddUrl = async () => {
   if (!isValidJobUrl(currentUrl.value)) {
     error.value = 'URL non valide. Utilisez LinkedIn, WTTJ, Indeed ou Free-work'
     setTimeout(clearFeedback, FEEDBACK_DURATION)
     return
   }
-  
-  urlsList.value.push({
-    url: currentUrl.value,
-    status: 'pending'
-  })
-  currentUrl.value = ''
-  success.value = true
-  hasAddedFirstUrl.value = true
-  setTimeout(clearFeedback, FEEDBACK_DURATION)
+
+  try {
+    // Vérifier si l'offre existe déjà
+    const exists = await checkOfferExists(currentUrl.value)
+    if (exists) {
+      error.value = 'Cette offre a déjà été analysée'
+      setTimeout(clearFeedback, FEEDBACK_DURATION)
+      return
+    }
+    
+    urlsList.value.push({
+      url: currentUrl.value,
+      status: 'pending'
+    })
+    currentUrl.value = ''
+    success.value = true
+    hasAddedFirstUrl.value = true
+    setTimeout(clearFeedback, FEEDBACK_DURATION)
+  } catch (err) {
+    error.value = 'Erreur lors de la vérification de l\'URL'
+    setTimeout(clearFeedback, FEEDBACK_DURATION)
+  }
 }
 
 // Ajout des refs pour le loading state
