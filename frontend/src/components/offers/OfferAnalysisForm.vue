@@ -944,7 +944,7 @@ const buttonContent = computed(() => {
 /* Transition globale */
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .fade-enter-from,
@@ -956,7 +956,7 @@ const buttonContent = computed(() => {
 /* Transition interne */
 .inner-fade-enter-active,
 .inner-fade-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .inner-fade-enter-from,
@@ -1008,5 +1008,10 @@ const buttonContent = computed(() => {
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   border: transparent;
+}
+
+/* Animation de redimensionnement du conteneur */
+.relative.bg-\[\#111111\]\/80 {
+  transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 </style> 
