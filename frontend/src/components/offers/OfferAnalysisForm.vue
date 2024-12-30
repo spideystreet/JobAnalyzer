@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, defineComponent, h } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { createOffer, checkOfferExists } from '@/services/offers'
 import Button from '@/components/ui/Button.vue'
@@ -61,15 +61,321 @@ interface UrlStatus {
 
 const urlsList = ref<UrlStatus[]>([])
 
+const StatusIcons = {
+  pending: {
+    text: 'En attente...',
+    component: defineComponent({
+      name: 'PendingIcon',
+      setup() {
+        return () => h('svg', {
+          class: 'w-5 h-5',
+          viewBox: '0 0 24 24',
+          fill: 'none'
+        }, [
+          h('path', {
+            d: 'M12 6v6l4 2',
+            stroke: 'url(#pendingGradient)',
+            'stroke-width': 2,
+            'stroke-linecap': 'round',
+            'stroke-linejoin': 'round'
+          }),
+          h('circle', {
+            cx: 12,
+            cy: 12,
+            r: 9,
+            stroke: 'url(#pendingGradient)',
+            'stroke-width': 2
+          }),
+          h('defs', {}, [
+            h('linearGradient', {
+              id: 'pendingGradient',
+              x1: 3,
+              y1: 12,
+              x2: 21,
+              y2: 12,
+              gradientUnits: 'userSpaceOnUse'
+            }, [
+              h('stop', { 'stop-color': '#00D1FF' }),
+              h('stop', { offset: 1, 'stop-color': '#0047FF' })
+            ])
+          ])
+        ])
+      }
+    })
+  },
+  connecting: {
+    text: 'Connexion au site de l\'offre...',
+    component: defineComponent({
+      name: 'ConnectingIcon',
+      setup() {
+        return () => h('svg', {
+          class: 'w-5 h-5',
+          viewBox: '0 0 24 24',
+          fill: 'none'
+        }, [
+          h('path', {
+            d: 'M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71',
+            stroke: 'url(#connectingGradient)',
+            'stroke-width': 2,
+            'stroke-linecap': 'round',
+            'stroke-linejoin': 'round'
+          }),
+          h('path', {
+            d: 'M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71',
+            stroke: 'url(#connectingGradient)',
+            'stroke-width': 2,
+            'stroke-linecap': 'round',
+            'stroke-linejoin': 'round'
+          }),
+          h('defs', {}, [
+            h('linearGradient', {
+              id: 'connectingGradient',
+              x1: 3,
+              y1: 12,
+              x2: 21,
+              y2: 12,
+              gradientUnits: 'userSpaceOnUse'
+            }, [
+              h('stop', { 'stop-color': '#00D1FF' }),
+              h('stop', { offset: 1, 'stop-color': '#0047FF' })
+            ])
+          ])
+        ])
+      }
+    })
+  },
+  extracting: {
+    text: 'Extraction du contenu de l\'offre...',
+    component: defineComponent({
+      name: 'ExtractingIcon',
+      setup() {
+        return () => h('svg', {
+          class: 'w-5 h-5',
+          viewBox: '0 0 24 24',
+          fill: 'none'
+        }, [
+          h('path', {
+            d: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3',
+            stroke: 'url(#extractingGradient)',
+            'stroke-width': 2,
+            'stroke-linecap': 'round',
+            'stroke-linejoin': 'round'
+          }),
+          h('defs', {}, [
+            h('linearGradient', {
+              id: 'extractingGradient',
+              x1: 3,
+              y1: 12,
+              x2: 21,
+              y2: 12,
+              gradientUnits: 'userSpaceOnUse'
+            }, [
+              h('stop', { 'stop-color': '#00D1FF' }),
+              h('stop', { offset: 1, 'stop-color': '#0047FF' })
+            ])
+          ])
+        ])
+      }
+    })
+  },
+  parsing: {
+    text: 'Analyse du contexte et des prérequis...',
+    component: defineComponent({
+      name: 'ParsingIcon',
+      setup() {
+        return () => h('svg', {
+          class: 'w-5 h-5',
+          viewBox: '0 0 24 24',
+          fill: 'none'
+        }, [
+          h('path', {
+            d: 'M22 12h-4l-3 9L9 3l-3 9H2',
+            stroke: 'url(#parsingGradient)',
+            'stroke-width': 2,
+            'stroke-linecap': 'round',
+            'stroke-linejoin': 'round'
+          }),
+          h('defs', {}, [
+            h('linearGradient', {
+              id: 'parsingGradient',
+              x1: 2,
+              y1: 12,
+              x2: 22,
+              y2: 12,
+              gradientUnits: 'userSpaceOnUse'
+            }, [
+              h('stop', { 'stop-color': '#00D1FF' }),
+              h('stop', { offset: 1, 'stop-color': '#0047FF' })
+            ])
+          ])
+        ])
+      }
+    })
+  },
+  analyzing: {
+    text: 'Analyse approfondie par IA des compétences...',
+    component: defineComponent({
+      name: 'AnalyzingIcon',
+      setup() {
+        return () => h('svg', {
+          class: 'w-5 h-5',
+          viewBox: '0 0 24 24',
+          fill: 'none'
+        }, [
+          h('path', {
+            d: 'M12 2a10 10 0 0 1 10 10c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2Z',
+            stroke: 'url(#analyzingGradient)',
+            'stroke-width': 2
+          }),
+          h('path', {
+            d: 'M12 6v6l4 2',
+            stroke: 'url(#analyzingGradient)',
+            'stroke-width': 2,
+            'stroke-linecap': 'round'
+          }),
+          h('circle', {
+            cx: 12,
+            cy: 12,
+            r: 1,
+            fill: 'url(#analyzingGradient)'
+          }),
+          h('defs', {}, [
+            h('linearGradient', {
+              id: 'analyzingGradient',
+              x1: 2,
+              y1: 12,
+              x2: 22,
+              y2: 12,
+              gradientUnits: 'userSpaceOnUse'
+            }, [
+              h('stop', { 'stop-color': '#00D1FF' }),
+              h('stop', { offset: 1, 'stop-color': '#0047FF' })
+            ])
+          ])
+        ])
+      }
+    })
+  },
+  saving: {
+    text: 'Sauvegarde et indexation...',
+    component: defineComponent({
+      name: 'SavingIcon',
+      setup() {
+        return () => h('svg', {
+          class: 'w-5 h-5',
+          viewBox: '0 0 24 24',
+          fill: 'none'
+        }, [
+          h('path', {
+            d: 'M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z',
+            stroke: 'url(#savingGradient)',
+            'stroke-width': 2,
+            'stroke-linecap': 'round',
+            'stroke-linejoin': 'round'
+          }),
+          h('path', {
+            d: 'M17 21v-8H7v8M7 3v5h8',
+            stroke: 'url(#savingGradient)',
+            'stroke-width': 2,
+            'stroke-linecap': 'round',
+            'stroke-linejoin': 'round'
+          }),
+          h('defs', {}, [
+            h('linearGradient', {
+              id: 'savingGradient',
+              x1: 3,
+              y1: 12,
+              x2: 21,
+              y2: 12,
+              gradientUnits: 'userSpaceOnUse'
+            }, [
+              h('stop', { 'stop-color': '#00D1FF' }),
+              h('stop', { offset: 1, 'stop-color': '#0047FF' })
+            ])
+          ])
+        ])
+      }
+    })
+  },
+  success: {
+    text: 'Analyse terminée !',
+    component: defineComponent({
+      name: 'SuccessIcon',
+      setup() {
+        return () => h('svg', {
+          class: 'w-5 h-5',
+          viewBox: '0 0 24 24',
+          fill: 'none'
+        }, [
+          h('path', {
+            d: 'M20 6L9 17L4 12',
+            stroke: 'url(#successGradient)',
+            'stroke-width': 2,
+            'stroke-linecap': 'round',
+            'stroke-linejoin': 'round'
+          }),
+          h('defs', {}, [
+            h('linearGradient', {
+              id: 'successGradient',
+              x1: 4,
+              y1: 12,
+              x2: 20,
+              y2: 12,
+              gradientUnits: 'userSpaceOnUse'
+            }, [
+              h('stop', { 'stop-color': '#00D1FF' }),
+              h('stop', { offset: 1, 'stop-color': '#0047FF' })
+            ])
+          ])
+        ])
+      }
+    })
+  },
+  error: {
+    text: 'Erreur',
+    component: defineComponent({
+      name: 'ErrorIcon',
+      setup() {
+        return () => h('svg', {
+          class: 'w-5 h-5',
+          viewBox: '0 0 24 24',
+          fill: 'none'
+        }, [
+          h('path', {
+            d: 'M18 6L6 18M6 6l12 12',
+            stroke: 'url(#errorGradient)',
+            'stroke-width': 2,
+            'stroke-linecap': 'round',
+            'stroke-linejoin': 'round'
+          }),
+          h('defs', {}, [
+            h('linearGradient', {
+              id: 'errorGradient',
+              x1: 6,
+              y1: 12,
+              x2: 18,
+              y2: 12,
+              gradientUnits: 'userSpaceOnUse'
+            }, [
+              h('stop', { 'stop-color': '#FF4D4D' }),
+              h('stop', { offset: 1, 'stop-color': '#FF0000' })
+            ])
+          ])
+        ])
+      }
+    })
+  }
+}
+
 const statusMessages = {
-  pending: { text: 'En attente...', icon: '⏳' },
-  connecting: { text: 'Connexion au site de l\'offre...', icon: '🔗' },
-  extracting: { text: 'Extraction du contenu de l\'offre...', icon: '📥' },
-  parsing: { text: 'Analyse du contexte et des prérequis...', icon: '🔍' },
-  analyzing: { text: 'Analyse approfondie par IA des compétences...', icon: '🤖' },
-  saving: { text: 'Sauvegarde et indexation...', icon: '💾' },
-  success: { text: 'Analyse terminée !', icon: '✅' },
-  error: { text: 'Erreur', icon: '❌' }
+  pending: { text: StatusIcons.pending.text },
+  connecting: { text: StatusIcons.connecting.text },
+  extracting: { text: StatusIcons.extracting.text },
+  parsing: { text: StatusIcons.parsing.text },
+  analyzing: { text: StatusIcons.analyzing.text },
+  saving: { text: StatusIcons.saving.text },
+  success: { text: StatusIcons.success.text },
+  error: { text: StatusIcons.error.text }
 }
 
 // État pour l'onboarding
@@ -102,22 +408,20 @@ const handleAddUrl = async () => {
   }
 
   try {
-    // Vérifier si l'offre existe déjà
-    const exists = await checkOfferExists(currentUrl.value)
+    // Vérifier si l'offre existe déjà pour cet utilisateur
+    const exists = await checkOfferExists(currentUrl.value, auth.user?.uid || '')
     if (exists) {
       error.value = 'Cette offre a déjà été analysée'
       setTimeout(clearFeedback, FEEDBACK_DURATION)
       return
     }
     
-    urlsList.value.push({
+    urlsList.value.unshift({
       url: currentUrl.value,
       status: 'pending'
     })
     currentUrl.value = ''
-    success.value = true
     hasAddedFirstUrl.value = true
-    setTimeout(clearFeedback, FEEDBACK_DURATION)
   } catch (err) {
     error.value = 'Erreur lors de la vérification de l\'URL'
     setTimeout(clearFeedback, FEEDBACK_DURATION)
@@ -145,72 +449,100 @@ const animateProgress = async (start: number, end: number, duration: number) => 
 const currentOfferIndex = ref(0)
 const totalOffers = ref(0)
 
-// Modifier handleAnalyzeAll pour initialiser le compteur
+// Modifier handleAnalyzeAll pour une meilleure gestion des états
 const handleAnalyzeAll = async () => {
-  loading.value = true
-  currentOfferIndex.value = 1
-  totalOffers.value = urlsList.value.length
-  
-  for (const urlItem of urlsList.value) {
-    try {
-      loadingProgress.value = 0
-      urlItem.status = 'connecting'
-      
-      // Simuler la progression de manière réaliste
-      const progressSteps = [
-        { status: 'connecting' as const, start: 0, end: 20, duration: 1000 },
-        { status: 'extracting' as const, start: 20, end: 40, duration: 2000 },
-        { status: 'parsing' as const, start: 40, end: 60, duration: 3000 },
-        { status: 'analyzing' as const, start: 60, end: 80, duration: 4000 },
-        { status: 'saving' as const, start: 80, end: 95, duration: 1000 }
-      ]
-      
-      // Lancer l'analyse en parallèle
-      const analysisPromise = createOffer(urlItem.url, auth.user?.uid || '')
-      
-      // Simuler la progression
-      for (const step of progressSteps) {
-        urlItem.status = step.status
-        await animateProgress(step.start, step.end, step.duration)
+  try {
+    // Vérifier toutes les URLs avant de commencer
+    for (const urlItem of urlsList.value) {
+      const exists = await checkOfferExists(urlItem.url, auth.user?.uid || '')
+      if (exists) {
+        urlItem.status = 'error'
+        urlItem.message = 'Cette offre a déjà été analysée'
+        error.value = `L'offre ${urlItem.url} a déjà été analysée`
+        setTimeout(clearFeedback, FEEDBACK_DURATION)
+        return // Arrêter immédiatement le processus
       }
-      
-      // Attendre la fin de l'analyse réelle
-      const result = await analysisPromise
-      
-      // Finaliser la progression
-      if (result.status === 'completed') {
-        loadingProgress.value = 100
-        urlItem.status = 'success'
-      }
-      
-      if (currentOfferIndex.value < totalOffers.value) {
-        currentOfferIndex.value++
-      }
-      
-    } catch (err: any) {
-      console.error('Error in analysis:', err)
-      urlItem.status = 'error'
-      urlItem.message = err.code === 'functions/already-exists' 
-        ? 'Offre déjà analysée'
-        : 'Erreur lors de l\'analyse'
-      error.value = `Erreur pour l'URL ${urlItem.url}: ${err.message}`
-      setTimeout(clearFeedback, FEEDBACK_DURATION)
-      
-      if (currentOfferIndex.value < totalOffers.value) {
-        currentOfferIndex.value++
-      }
-      continue
     }
+
+    // Si on arrive ici, aucune URL n'existe déjà, on peut lancer l'analyse
+    loading.value = true
+    currentOfferIndex.value = 1
+    totalOffers.value = urlsList.value.length
+    
+    for (const urlItem of urlsList.value) {
+      try {
+        loadingProgress.value = 0
+        urlItem.status = 'connecting'
+        
+        const startTime = Date.now()
+        const analysisPromise = createOffer(urlItem.url, auth.user?.uid || '')
+        
+        const progressSteps = [
+          { status: 'connecting' as const, start: 0, end: 20, duration: 750 },
+          { status: 'extracting' as const, start: 20, end: 40, duration: 1500 },
+          { status: 'parsing' as const, start: 40, end: 60, duration: 2250 },
+          { status: 'analyzing' as const, start: 60, end: 80, duration: 2250 },
+          { status: 'saving' as const, start: 80, end: 95, duration: 750 }
+        ]
+        
+        for (const step of progressSteps) {
+          urlItem.status = step.status
+          await animateProgress(step.start, step.end, step.duration)
+        }
+        
+        const result = await analysisPromise
+        
+        if (result.status === 'completed') {
+          const remainingTime = Math.max(0, 7500 - (Date.now() - startTime))
+          await animateProgress(loadingProgress.value, 100, remainingTime)
+          urlItem.status = 'success'
+        }
+        
+        if (currentOfferIndex.value < totalOffers.value) {
+          currentOfferIndex.value++
+        }
+        
+      } catch (err: any) {
+        console.error('Error in analysis:', err)
+        urlItem.status = 'error'
+        urlItem.message = 'Erreur lors de l\'analyse'
+        error.value = `Erreur pour l'URL ${urlItem.url}: ${err.message}`
+        setTimeout(clearFeedback, FEEDBACK_DURATION)
+        
+        if (currentOfferIndex.value < totalOffers.value) {
+          currentOfferIndex.value++
+        }
+      }
+    }
+    
+    loading.value = false
+    emit('offer-added')
+  } catch (err) {
+    loading.value = false
+    error.value = 'Erreur lors de la vérification des URLs'
+    setTimeout(clearFeedback, FEEDBACK_DURATION)
   }
-  
-  loading.value = false
-  emit('offer-added')
 }
 
 const handleBack = () => {
   hasAddedFirstUrl.value = false  // Revenir à l'état d'onboarding
   urlsList.value = []  // Optionnel : vider la liste des URLs
 }
+
+const buttonContent = computed(() => {
+  if (!hasAddedFirstUrl.value) {
+    return {
+      icon: 'w-3.5 h-3.5',
+      showText: true,
+      buttonClass: 'min-w-[100px] h-10'
+    }
+  }
+  return {
+    icon: 'w-4 h-4',
+    showText: false,
+    buttonClass: 'w-10 h-10 rounded-full'
+  }
+})
 </script>
 
 <template>
@@ -219,27 +551,34 @@ const handleBack = () => {
     <Transition name="slide" mode="out-in">
       <!-- Onboarding View -->
       <div v-if="!hasAddedFirstUrl" key="onboarding" class="w-full">
-        <!-- Contenu existant de l'onboarding -->
-        <div class="bg-white/5 backdrop-blur-lg rounded-xl p-8 border border-gray-800 mb-8">
-          <h3 class="text-xl font-medium text-white mb-6 text-center">
+        <!-- Modification du conteneur principal avec des effets de gradient -->
+        <div class="relative bg-[#111111]/80 backdrop-blur-xl rounded-xl p-8 border border-white/10 mb-8 overflow-hidden">
+          <!-- Ajout d'un effet de gradient en arrière-plan -->
+          <div class="absolute -inset-[50%] opacity-20">
+            <div class="absolute top-0 -left-[25%] w-[150%] h-[100%] bg-gradient-to-r from-[#0B1EDC] via-[#00D1FF] to-[#0047FF] blur-[80px] animate-slow-spin" />
+          </div>
+          
+          <h3 class="text-xl font-medium text-white mb-6 text-center relative z-10">
             Commencez en quelques étapes simples
           </h3>
           
-          <div class="grid gap-6 md:grid-cols-3">
+          <div class="grid gap-6 md:grid-cols-3 relative z-10">
             <div 
               v-for="(step, index) in steps" 
               :key="index"
-              class="relative flex flex-col items-center justify-center p-6 rounded-lg bg-gray-800-alpha min-h-[200px]"
+              class="relative flex flex-col items-center justify-center p-6 rounded-lg bg-black/40 backdrop-blur-sm border border-white/5 min-h-[200px] transition-all duration-300 hover:border-white/20"
             >
-              <!-- Numéro de l'étape -->
-              <div class="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-black font-medium">
+              <!-- Badge numéroté avec gradient -->
+              <div class="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-gradient-to-r from-[#00D1FF] to-[#0047FF] flex items-center justify-center text-white font-medium shadow-lg">
                 {{ index + 1 }}
               </div>
               
               <!-- Contenu centré -->
               <div class="flex flex-col items-center justify-center space-y-3 text-center">
-                <!-- Icône -->
-                <div class="text-3xl">{{ step.icon }}</div>
+                <!-- Icône avec effet de gradient -->
+                <div class="text-3xl bg-gradient-to-r from-[#00D1FF] to-[#0047FF] bg-clip-text text-transparent">
+                  {{ step.icon }}
+                </div>
                 
                 <!-- Titre -->
                 <h4 class="text-lg font-medium text-white">
@@ -256,31 +595,35 @@ const handleBack = () => {
         </div>
 
         <!-- URL Input -->
-        <div class="bg-white/5 backdrop-blur-lg rounded-lg p-4 border border-gray-800">
-          <form @submit.prevent="handleAddUrl" class="flex gap-2">
-            <!-- Input -->
-            <div class="flex-1">
-              <Input
-                v-model="currentUrl"
-                type="url"
-                placeholder="Collez l'URL de l'offre ici..."
-                :success="success"
-                required
-              />
-            </div>
+        <div class="relative backdrop-blur-sm overflow-hidden group transition-all duration-300">
+          <!-- Effet de gradient en arrière-plan -->
+          <div class="absolute -inset-[50%] opacity-10 group-hover:opacity-20 transition-opacity duration-300">
+            <div class="absolute top-0 -left-[25%] w-[150%] h-[100%] bg-gradient-to-r from-[#0B1EDC] via-[#00D1FF] to-[#0047FF] blur-[80px] animate-slow-spin" />
+          </div>
+          
+          <form @submit.prevent="handleAddUrl" class="flex bg-black/20 backdrop-blur-sm rounded-lg overflow-hidden">
+            <input
+              v-model="currentUrl"
+              type="url"
+              placeholder="Collez l'URL de l'offre ici..."
+              required
+              class="flex-1 h-10 bg-transparent border-0 text-white placeholder-white/40 focus:ring-0 focus:outline-none px-4"
+            />
 
-            <!-- Bouton Ajouter -->
             <Button 
               type="submit"
               variant="primary"
               size="md"
-              class="w-[120px]"
+              :class="[
+                'bg-gradient-to-r from-[#00D1FF] to-[#0047FF] hover:bg-gradient-to-r hover:from-[#33DAFF] hover:to-[#3369FF] transition-all duration-300 flex items-center justify-center',
+                buttonContent.buttonClass
+              ]"
             >
-              <span class="flex items-center justify-center gap-1">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <span class="flex items-center justify-center" :class="{ 'gap-1.5': buttonContent.showText }">
+                <svg :class="buttonContent.icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
-                Ajouter
+                <span v-if="buttonContent.showText">Ajouter</span>
               </span>
             </Button>
           </form>
@@ -288,129 +631,150 @@ const handleBack = () => {
       </div>
 
       <!-- Main Interface -->
-      <div v-else key="main" class="w-full space-y-6">
-        <!-- URL Input -->
-        <div class="bg-white/5 backdrop-blur-lg rounded-lg p-4 border border-gray-800">
-          <form @submit.prevent="handleAddUrl" class="flex gap-2">
-            <!-- Input -->
-            <div class="flex-1">
-              <Input
-                v-model="currentUrl"
-                type="url"
-                placeholder="Collez l'URL de l'offre ici..."
-                :success="success"
-                required
-              />
-            </div>
+      <div v-else key="main" class="w-full">
+        <!-- Container unique pour l'input et la liste -->
+        <div class="relative bg-[#111111]/80 backdrop-blur-xl rounded-xl border border-white/10 flex flex-col">
+          <!-- Effet de gradient en arrière-plan -->
+          <div class="absolute -inset-[50%] opacity-10">
+            <div class="absolute top-0 -left-[25%] w-[150%] h-[100%] bg-gradient-to-r from-[#0B1EDC] via-[#00D1FF] to-[#0047FF] blur-[80px] animate-slow-spin" />
+          </div>
 
-            <!-- Bouton Ajouter -->
-            <Button 
-              type="submit"
-              variant="primary"
-              size="md"
-              class="w-[120px]"
-            >
-              <span class="flex items-center justify-center gap-1">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                </svg>
-                Ajouter
-              </span>
-            </Button>
-          </form>
-        </div>
-
-        <!-- URLs List avec loading state intégré -->
-        <TransitionGroup name="list" tag="div" class="space-y-2 mt-6">
-          <div 
-            v-for="(item, index) in urlsList" 
-            :key="item.url"
-            class="group flex items-center gap-3 p-3 rounded-lg bg-black/40 backdrop-blur-sm border border-white/5"
-            :class="{
-              'border-[#00D1FF]/20': loading && currentOfferIndex === index + 1
-            }"
-          >
-            <!-- Status Icon ou Loading State -->
-            <div class="flex-shrink-0">
-              <div 
-                v-if="loading && currentOfferIndex === index + 1"
-                class="flex items-center gap-2 bg-[#00D1FF]/5 px-3 py-1.5 rounded-lg"
-              >
-                <span class="text-lg text-[#00D1FF]">{{ statusMessages[item.status].icon }}</span>
-                <span class="text-xs font-medium text-[#00D1FF] tabular-nums">{{ Math.round(loadingProgress) }}%</span>
-              </div>
-              <div 
-                v-else
-                class="flex items-center justify-center"
-              >
-                <span class="text-lg">{{ statusMessages[item.status].icon }}</span>
-              </div>
-            </div>
-
-            <!-- URL -->
-            <div class="flex-1 min-w-0">
-              <p class="text-sm text-white/90 truncate">{{ item.url }}</p>
-              <p class="text-xs text-white/50">
-                {{ statusMessages[item.status].text }}
-              </p>
-              <!-- Progress bar -->
-              <div 
-                v-if="loading && currentOfferIndex === index + 1"
-                class="mt-2 h-0.5 w-full bg-gray-700 rounded-full overflow-hidden"
-              >
-                <div 
-                  class="h-full bg-gradient-to-r from-[#00D1FF] to-blue-500 transition-all duration-300 ease-out"
-                  :style="{ width: `${loadingProgress}%` }"
+          <div class="relative z-10 flex flex-col">
+            <!-- URL Input intégré -->
+            <div class="p-6 pb-0">
+              <form @submit.prevent="handleAddUrl" class="flex bg-black/20 backdrop-blur-sm rounded-lg overflow-hidden">
+                <input
+                  v-model="currentUrl"
+                  type="url"
+                  placeholder="Collez l'URL de l'offre ici..."
+                  required
+                  class="flex-1 h-10 bg-transparent border-0 text-white placeholder-white/40 focus:ring-0 focus:outline-none px-4"
                 />
-              </div>
+
+                <Button 
+                  type="submit"
+                  variant="primary"
+                  size="md"
+                  class="w-10 h-10 bg-gradient-to-r from-[#00D1FF] to-[#0047FF] hover:bg-gradient-to-r hover:from-[#33DAFF] hover:to-[#3369FF] transition-all duration-300 flex items-center justify-center rounded-lg"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                  </svg>
+                </Button>
+              </form>
             </div>
 
-            <!-- Delete Button -->
-            <button 
-              v-if="!loading || currentOfferIndex !== index + 1"
-              @click="urlsList.splice(index, 1)"
-              class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1.5 hover:bg-white/5 rounded-full"
-            >
-              <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-              </svg>
-            </button>
-          </div>
+            <!-- URLs List avec animations améliorées -->
+            <div class="p-6 flex flex-col h-[400px]">
+              <!-- Zone de défilement pour les URLs -->
+              <div class="flex-1 overflow-y-auto custom-scrollbar pr-2">
+                <TransitionGroup 
+                  name="list" 
+                  tag="div" 
+                  class="space-y-3"
+                >
+                  <div 
+                    v-for="(item, index) in urlsList" 
+                    :key="item.url"
+                    class="group flex items-center gap-4 p-4 rounded-xl bg-black/40 backdrop-blur-sm border border-white/10 transition-all duration-300 hover:border-white/20"
+                    :class="{
+                      'border-[#00D1FF]/30 shadow-[0_0_15px_rgba(0,209,255,0.1)]': loading && currentOfferIndex === index + 1
+                    }"
+                  >
+                    <!-- Status Icon avec animation -->
+                    <div class="flex-shrink-0">
+                      <div 
+                        v-if="loading && currentOfferIndex === index + 1"
+                        class="flex items-center gap-2 bg-gradient-to-r from-[#00D1FF]/10 to-[#0047FF]/10 px-4 py-2 rounded-lg"
+                      >
+                        <component :is="StatusIcons[item.status].component" />
+                        <span class="text-sm font-medium text-[#00D1FF] tabular-nums">
+                          {{ Math.round(loadingProgress) }}%
+                        </span>
+                      </div>
+                      <div 
+                        v-else
+                        class="flex items-center justify-center w-10 h-10 rounded-lg bg-white/5"
+                      >
+                        <component :is="StatusIcons[item.status].component" />
+                      </div>
+                    </div>
 
-          <!-- Global Progress -->
-          <div 
-            v-if="loading" 
-            key="loading-global"
-            class="flex items-center justify-center gap-2 text-xs text-[#00D1FF]/80 py-2"
-          >
-            <span>{{ currentOfferIndex }}/{{ totalOffers }} offres analysées</span>
-          </div>
-        </TransitionGroup>
+                    <!-- URL avec design amélioré -->
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm text-white/90 truncate font-medium">{{ item.url }}</p>
+                      <p class="text-xs text-white/50 mt-1">
+                        {{ statusMessages[item.status].text }}
+                      </p>
+                      <!-- Progress bar avec animation fluide -->
+                      <div 
+                        v-if="loading && currentOfferIndex === index + 1"
+                        class="mt-3 h-1 w-full bg-white/5 rounded-full overflow-hidden"
+                      >
+                        <div 
+                          class="h-full bg-gradient-to-r from-[#00D1FF] to-[#0047FF] transition-all duration-300 ease-out"
+                          :style="{ width: `${loadingProgress}%` }"
+                        />
+                      </div>
+                    </div>
 
-        <!-- Actions -->
-        <div v-if="urlsList.length > 0" class="flex gap-3 pt-4">
-          <Button 
-            variant="primary"
-            size="lg"
-            :loading="loading"
-            :disabled="loading"
-            class="flex-1 action-button text-white"
-            @click="handleAnalyzeAll"
-          >
-            <span class="flex items-center justify-center gap-2 text-white font-medium">
-              <span v-if="!loading">✨</span>
-              {{ loading ? 'Analyse en cours...' : `Analyser avec IA` }}
-            </span>
-          </Button>
-          
-          <Button 
-            variant="outline"
-            size="md"
-            class="px-4"
-            @click="urlsList = []"
-          >
-            Réinitialiser
-          </Button>
+                    <!-- Delete Button avec nouvelle animation -->
+                    <button 
+                      v-if="!loading || currentOfferIndex !== index + 1"
+                      @click="urlsList.splice(index, 1)"
+                      class="opacity-0 group-hover:opacity-100 transition-all duration-300 p-2 hover:bg-white/10 rounded-lg"
+                    >
+                      <svg class="w-4 h-4 text-white/70 hover:text-red-400 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                      </svg>
+                    </button>
+                  </div>
+                </TransitionGroup>
+
+                <!-- Message si la liste est vide -->
+                <div v-if="urlsList.length === 0" class="h-full flex flex-col items-center justify-center text-white/40">
+                  <svg class="w-12 h-12 mb-4 stroke-current opacity-50" fill="none" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                  </svg>
+                  <p class="text-sm">Ajoutez des URLs pour commencer l'analyse</p>
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div v-if="urlsList.length > 0" class="flex gap-3 pt-6 mt-6 border-t border-white/5">
+                <Button 
+                  variant="primary"
+                  size="lg"
+                  :loading="loading"
+                  :disabled="loading"
+                  class="flex-1 bg-gradient-to-r from-[#00D1FF] via-[#0047FF] to-[#0B1EDC] hover:bg-gradient-to-r hover:from-[#33DAFF] hover:via-[#3369FF] hover:to-[#3B4EE3] transition-all duration-300"
+                  @click="handleAnalyzeAll"
+                >
+                  <span class="flex items-center justify-center gap-2 text-white font-medium">
+                    <svg v-if="!loading" class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z" fill="url(#paint0_linear)" />
+                      <defs>
+                        <linearGradient id="paint0_linear" x1="2" y1="12" x2="22" y2="12" gradientUnits="userSpaceOnUse">
+                          <stop stop-color="white" />
+                          <stop offset="1" stop-color="white" stop-opacity="0.8" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                    {{ loading ? 'Analyse en cours...' : 'Analyser avec IA' }}
+                  </span>
+                </Button>
+                
+                <Button 
+                  variant="outline"
+                  size="md"
+                  class="px-4"
+                  @click="urlsList = []"
+                >
+                  Réinitialiser
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </Transition>
@@ -429,34 +793,40 @@ const handleBack = () => {
         :show="!!error"
         @close="clearFeedback"
       />
-
-      <Toast
-        v-if="success"
-        key="success"
-        type="success"
-        message="URL ajoutée avec succès"
-        :show="success"
-        @close="clearFeedback"
-      />
     </TransitionGroup>
   </div>
 </template>
 
 <style scoped>
-/* Animation de slide horizontal */
+/* Animation de transition entre les vues */
 .slide-enter-active,
 .slide-leave-active {
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: absolute;
+  width: 100%;
 }
 
 .slide-enter-from {
   opacity: 0;
-  transform: translateX(100%);
+  transform: translateY(30px);
+  filter: blur(8px);
 }
 
 .slide-leave-to {
   opacity: 0;
-  transform: translateX(-100%);
+  transform: translateY(-30px);
+  filter: blur(8px);
+}
+
+/* Pour éviter les sauts pendant la transition */
+.w-full.relative {
+  min-height: 400px;
+  position: relative;
+}
+
+/* Animation plus fluide pour les éléments */
+.slide-move {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Animation globale de la page */
@@ -507,20 +877,25 @@ const handleBack = () => {
 
 /* Animations pour la liste d'URLs */
 .list-enter-active {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  transition-delay: 0.1s;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .list-leave-active {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: absolute;
+  width: 100%;
 }
 .list-enter-from {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(10px);
+  filter: blur(5px);
 }
 .list-leave-to {
   opacity: 0;
-  transform: translateX(-20px);
+  transform: translateY(-10px);
+  filter: blur(5px);
+}
+.list-move {
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* Animation pour le hover des boutons */
@@ -643,5 +1018,50 @@ const handleBack = () => {
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Style personnalisé pour la scrollbar */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  border: transparent;
+}
+
+/* Animations pour la liste d'URLs */
+.list-enter-active {
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.list-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: absolute;
+  width: calc(100% - 6px); /* Compensation pour la scrollbar */
+}
+
+.list-enter-from {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.list-move {
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 </style> 

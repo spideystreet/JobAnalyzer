@@ -14,9 +14,12 @@ interface AnalysisResult {
   status: 'completed' | 'error'
 }
 
-export const checkOfferExists = async (url: string): Promise<boolean> => {
+export const checkOfferExists = async (url: string, userId: string): Promise<boolean> => {
   const offersRef = collection(db, 'offers')
-  const q = query(offersRef, where('URL', '==', url))
+  const q = query(offersRef, 
+    where('URL', '==', url),
+    where('USER_ID', '==', userId)
+  )
   const querySnapshot = await getDocs(q)
   return !querySnapshot.empty
 }

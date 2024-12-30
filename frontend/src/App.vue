@@ -62,16 +62,30 @@ import '@/config/firebase'
 /* Transitions de page */
 .page-enter-active,
 .page-leave-active {
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .page-enter-from {
   opacity: 0;
-  transform: translateY(20px);
+  transform: scale(0.98) translateY(10px);
 }
 
 .page-leave-to {
   opacity: 0;
-  transform: translateY(-20px);
+  transform: scale(1.02) translateY(-10px);
+}
+
+/* Effet de flou pendant la transition */
+.page-enter-from,
+.page-leave-to {
+  filter: blur(2px);
+}
+
+/* Réinitialisation des transformations */
+.page-enter-to,
+.page-leave-from {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  filter: blur(0);
 }
 </style>
