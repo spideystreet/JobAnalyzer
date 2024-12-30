@@ -480,9 +480,9 @@ const handleAnalyzeAll = async () => {
         const progressSteps = [
           { status: 'connecting' as const, start: 0, end: 20, duration: 750 },
           { status: 'extracting' as const, start: 20, end: 40, duration: 1500 },
-          { status: 'parsing' as const, start: 40, end: 60, duration: 2250 },
-          { status: 'analyzing' as const, start: 60, end: 80, duration: 2250 },
-          { status: 'saving' as const, start: 80, end: 95, duration: 750 }
+          { status: 'parsing' as const, start: 40, end: 60, duration: 2000 },
+          { status: 'analyzing' as const, start: 60, end: 80, duration: 2000 },
+          { status: 'saving' as const, start: 80, end: 98, duration: 1000 }
         ]
         
         for (const step of progressSteps) {
@@ -493,8 +493,8 @@ const handleAnalyzeAll = async () => {
         const result = await analysisPromise
         
         if (result.status === 'completed') {
-          const remainingTime = Math.max(0, 7500 - (Date.now() - startTime))
-          await animateProgress(loadingProgress.value, 100, remainingTime)
+          // Finir l'animation immédiatement
+          await animateProgress(loadingProgress.value, 100, 250)
           urlItem.status = 'success'
         }
         
