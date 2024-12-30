@@ -575,7 +575,7 @@ const buttonContent = computed(() => {
                 <div 
                   v-for="(step, index) in steps" 
                   :key="index"
-                  class="relative flex flex-col items-center justify-center p-6 rounded-xl bg-black/40 backdrop-blur-sm border border-white/5 min-h-[200px] transition-all duration-300 hover:border-white/20 group"
+                  class="relative flex flex-col leading-8 justify-center p-6 rounded-xl bg-black/40 backdrop-blur-sm border border-white/5 min-h-[200px] transition-all duration-300 hover:border-white/20 group"
                 >
                   <!-- Badge numéroté -->
                   <div class="absolute -top-3 -left-3 w-8 h-8 rounded-lg bg-gradient-to-r from-[#00D1FF] to-[#0047FF] flex items-center justify-center text-white font-medium shadow-lg transform group-hover:scale-110 transition-transform duration-300">
@@ -601,7 +601,7 @@ const buttonContent = computed(() => {
             <!-- Section avantages -->
             <div class="relative z-10 px-8 py-6">
               <div class="grid grid-cols-2 gap-4">
-                <div class="flex items-start gap-3 p-4 rounded-xl bg-black/20 backdrop-blur-sm border border-white/5">
+                <div class="flex items-center items-start gap-3 p-4 rounded-xl bg-black/20 backdrop-blur-sm border border-white/5">
                   <div class="text-[#00D1FF]">✨</div>
                   <div>
                     <h5 class="text-sm font-medium text-white mb-1">Analyse intelligente</h5>
@@ -620,22 +620,22 @@ const buttonContent = computed(() => {
 
             <!-- URL Input de l'onboarding -->
             <div class="relative z-10 px-8 pb-8">
-              <form @submit.prevent="handleAddUrl" class="flex bg-black/40 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10">
+              <form @submit.prevent="handleAddUrl" class="flex items-center bg-black/40 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10">
                 <input
                   v-model="currentUrl"
                   type="url"
                   placeholder="Collez l'URL de l'offre ici..."
                   required
-                  class="flex-1 h-12 bg-transparent border-0 text-white placeholder-white/40 focus:ring-0 focus:outline-none px-4"
+                  class="flex-1 h-8 items-center bg-transparent border-0 text-white placeholder-white/40 focus:ring-0 focus:outline-none px-4"
                 />
                 <Button 
                   type="submit"
                   variant="primary"
-                  size="md"
-                  class="m-1 bg-gradient-to-r from-[#00D1FF] to-[#0047FF] hover:bg-gradient-to-r hover:from-[#33DAFF] hover:to-[#3369FF] transition-all duration-300"
+                  size="sm"
+                  class="m-1 bg-black/40 hover:bg-black/60 transition-all duration-300"
                 >
-                  <span class="flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <span class="flex items-center gap-2 bg-gradient-to-r from-[#00D1FF] to-[#0047FF] bg-clip-text text-transparent">
+                    <svg class="w-4 h-4 text-[#00D1FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>
                     Commencer
@@ -690,25 +690,27 @@ const buttonContent = computed(() => {
 
                 <!-- URL Input intégré -->
                 <div class="px-8">
-                  <form @submit.prevent="handleAddUrl" class="flex bg-black/40 backdrop-blur-sm rounded-lg overflow-hidden border border-white/10">
+                  <form @submit.prevent="handleAddUrl" class="flex items-center bg-black/40 backdrop-blur-sm rounded-lg overflow-hidden border border-white/10">
                     <input
                       v-model="currentUrl"
                       type="url"
                       placeholder="Collez l'URL de l'offre ici..."
                       required
-                      class="flex-1 h-12 bg-transparent border-0 text-white placeholder-white/40 focus:ring-0 focus:outline-none px-4"
+                      class="flex-1 h-8 items-center bg-transparent border-0 text-white placeholder-white/40 focus:ring-0 focus:outline-none px-4"
                     />
                     <Button 
                       type="submit"
                       variant="primary"
-                      size="md"
-                      class="m-1 bg-gradient-to-r from-[#00D1FF] to-[#0047FF] hover:bg-gradient-to-r hover:from-[#33DAFF] hover:to-[#3369FF] transition-all duration-300"
+                      size="sm"
+                      class="m-1 bg-black/40 hover:bg-black/60 transition-all duration-300"
                     >
                       <span class="flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 text-[#00D1FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
+                        <span class="bg-gradient-to-r from-[#00D1FF] to-[#0047FF] bg-clip-text text-transparent">
                         Ajouter
+                        </span>
                       </span>
                     </Button>
                   </form>
@@ -717,7 +719,7 @@ const buttonContent = computed(() => {
                 <!-- Container principal avec défilement -->
                 <div class="flex-1 flex flex-col px-6 pt-4 overflow-hidden">
                   <!-- En-tête de la liste -->
-                  <div class="mb-4 flex items-center justify-between">
+                  <div class="mb-4 flex items-center justify-between px-2">
                     <div>
                       <h4 class="text-lg font-medium text-white">
                         Liste des offres
@@ -812,28 +814,30 @@ const buttonContent = computed(() => {
                   </div>
 
                   <!-- Actions fixes en bas -->
-                  <div v-if="urlsList.length > 0" class="pt-6 mt-6 border-t border-white/5">
+                  <div v-if="urlsList.length > 0" class="pt-6 pb-6 mt-6 border-t border-white/5">
                     <div class="flex">
                       <Button 
                         variant="primary"
-                        size="lg"
+                        size="sm"
                         :loading="loading"
                         :disabled="loading"
-                        class="w-full bg-gradient-to-r from-[#00D1FF] via-[#0047FF] to-[#0B1EDC] hover:bg-gradient-to-r hover:from-[#33DAFF] hover:via-[#3369FF] hover:to-[#3B4EE3] transition-all duration-300"
+                        class="w-full bg-white hover:bg-white/90 transition-all duration-300"
                         @click="handleAnalyzeAll"
                       >
-                        <span class="flex items-center justify-center gap-2 text-white font-medium">
-                          <svg v-if="!loading" class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z" fill="url(#paint0_linear)" />
-                            <defs>
-                              <linearGradient id="paint0_linear" x1="2" y1="12" x2="22" y2="12" gradientUnits="userSpaceOnUse">
-                                <stop stop-color="white" />
-                                <stop offset="1" stop-color="white" stop-opacity="0.8" />
-                              </linearGradient>
-                            </defs>
-                          </svg>
+                        <span class="flex items-center justify-center gap-2">
+                        <svg v-if="!loading" class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z" fill="url(#paint0_linear)" />
+                          <defs>
+                            <linearGradient id="paint0_linear" x1="2" y1="12" x2="22" y2="12" gradientUnits="userSpaceOnUse">
+                              <stop stop-color="#00D1FF" />
+                              <stop offset="1" stop-color="#0047FF" />
+                            </linearGradient>
+                          </defs>
+                        </svg>
+                        <span class="bg-gradient-to-r from-[#00D1FF] to-[#0047FF] bg-clip-text text-transparent font-medium">
                           {{ loading ? 'Analyse en cours...' : 'Analyser avec IA' }}
                         </span>
+                      </span>
                       </Button>
                     </div>
                   </div>

@@ -33,7 +33,7 @@ defineProps<{
       {
         'h-9 px-4 text-[13px] leading-[13px]': size === 'sm',
         'h-11 px-5 text-[14px] leading-[14px]': size === 'md',
-        'h-12 px-7 text-[15px] leading-[15px]': size === 'lg',
+        'h-8 px-7 text-[15px] leading-[15px]': size === 'lg',
       },
       // Disabled state
       'disabled:opacity-50 disabled:cursor-not-allowed',
