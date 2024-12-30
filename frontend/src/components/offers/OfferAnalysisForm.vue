@@ -813,13 +813,13 @@ const buttonContent = computed(() => {
 
                   <!-- Actions fixes en bas -->
                   <div v-if="urlsList.length > 0" class="pt-6 mt-6 border-t border-white/5">
-                    <div class="flex gap-3">
+                    <div class="flex">
                       <Button 
                         variant="primary"
                         size="lg"
                         :loading="loading"
                         :disabled="loading"
-                        class="flex-1 bg-gradient-to-r from-[#00D1FF] via-[#0047FF] to-[#0B1EDC] hover:bg-gradient-to-r hover:from-[#33DAFF] hover:via-[#3369FF] hover:to-[#3B4EE3] transition-all duration-300"
+                        class="w-full bg-gradient-to-r from-[#00D1FF] via-[#0047FF] to-[#0B1EDC] hover:bg-gradient-to-r hover:from-[#33DAFF] hover:via-[#3369FF] hover:to-[#3B4EE3] transition-all duration-300"
                         @click="handleAnalyzeAll"
                       >
                         <span class="flex items-center justify-center gap-2 text-white font-medium">
@@ -834,15 +834,6 @@ const buttonContent = computed(() => {
                           </svg>
                           {{ loading ? 'Analyse en cours...' : 'Analyser avec IA' }}
                         </span>
-                      </Button>
-                      
-                      <Button 
-                        variant="outline"
-                        size="md"
-                        class="px-4"
-                        @click="urlsList = []"
-                      >
-                        Réinitialiser
                       </Button>
                     </div>
                   </div>
