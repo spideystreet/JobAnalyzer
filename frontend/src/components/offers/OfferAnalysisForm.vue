@@ -546,402 +546,337 @@ const buttonContent = computed(() => {
 </script>
 
 <template>
-  <div class="w-full relative overflow-hidden">
-    <!-- Container avec transition -->
-    <Transition name="slide" mode="out-in">
-      <!-- Onboarding View -->
-      <div v-if="!hasAddedFirstUrl" key="onboarding" class="w-full">
-        <!-- Modification du conteneur principal avec des effets de gradient -->
-        <div class="relative bg-[#111111]/80 backdrop-blur-xl rounded-xl p-8 border border-white/10 mb-8 overflow-hidden">
-          <!-- Ajout d'un effet de gradient en arrière-plan -->
-          <div class="absolute -inset-[50%] opacity-20">
-            <div class="absolute top-0 -left-[25%] w-[150%] h-[100%] bg-gradient-to-r from-[#0B1EDC] via-[#00D1FF] to-[#0047FF] blur-[80px] animate-slow-spin" />
-          </div>
-          
-          <h3 class="text-xl font-medium text-white mb-6 text-center relative z-10">
-            Commencez en quelques étapes simples
-          </h3>
-          
-          <div class="grid gap-6 md:grid-cols-3 relative z-10">
-            <div 
-              v-for="(step, index) in steps" 
-              :key="index"
-              class="relative flex flex-col items-center justify-center p-6 rounded-lg bg-black/40 backdrop-blur-sm border border-white/5 min-h-[200px] transition-all duration-300 hover:border-white/20"
-            >
-              <!-- Badge numéroté avec gradient -->
-              <div class="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-gradient-to-r from-[#00D1FF] to-[#0047FF] flex items-center justify-center text-white font-medium shadow-lg">
-                {{ index + 1 }}
-              </div>
-              
-              <!-- Contenu centré -->
-              <div class="flex flex-col items-center justify-center space-y-3 text-center">
-                <!-- Icône avec effet de gradient -->
-                <div class="text-3xl bg-gradient-to-r from-[#00D1FF] to-[#0047FF] bg-clip-text text-transparent">
-                  {{ step.icon }}
+  <div class="w-full relative">
+    <!-- Container principal fixe -->
+    <div class="relative min-h-[600px]">
+      <!-- Transition globale entre onboarding et interface principale -->
+      <Transition name="fade" mode="out-in">
+        <!-- Vue 1 (onboarding) -->
+        <div v-if="!hasAddedFirstUrl" key="onboarding" class="w-full">
+          <!-- Contenu de l'onboarding -->
+          <div class="relative bg-[#111111]/80 backdrop-blur-xl rounded-xl p-8 border border-white/10 mb-8 overflow-hidden">
+            <!-- Effet de gradient -->
+            <div class="absolute -inset-[50%] opacity-20">
+              <div class="absolute top-0 -left-[25%] w-[150%] h-[100%] bg-gradient-to-r from-[#0B1EDC] via-[#00D1FF] to-[#0047FF] blur-[80px] animate-slow-spin" />
+            </div>
+            
+            <h3 class="text-xl font-medium text-white mb-6 text-center relative z-10">
+              Commencez en quelques étapes simples
+            </h3>
+            
+            <div class="grid gap-6 md:grid-cols-3 relative z-10">
+              <div 
+                v-for="(step, index) in steps" 
+                :key="index"
+                class="relative flex flex-col items-center justify-center p-6 rounded-lg bg-black/40 backdrop-blur-sm border border-white/5 min-h-[200px] transition-all duration-300 hover:border-white/20"
+              >
+                <!-- Badge numéroté -->
+                <div class="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-gradient-to-r from-[#00D1FF] to-[#0047FF] flex items-center justify-center text-white font-medium shadow-lg">
+                  {{ index + 1 }}
                 </div>
                 
-                <!-- Titre -->
-                <h4 class="text-lg font-medium text-white">
-                  {{ step.title }}
-                </h4>
-                
-                <!-- Description -->
-                <p class="text-sm text-gray-400">
-                  {{ step.description }}
-                </p>
+                <!-- Contenu -->
+                <div class="flex flex-col items-center justify-center space-y-3 text-center">
+                  <div class="text-3xl bg-gradient-to-r from-[#00D1FF] to-[#0047FF] bg-clip-text text-transparent">
+                    {{ step.icon }}
+                  </div>
+                  <h4 class="text-lg font-medium text-white">
+                    {{ step.title }}
+                  </h4>
+                  <p class="text-sm text-gray-400">
+                    {{ step.description }}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- URL Input -->
-        <div class="relative backdrop-blur-sm overflow-hidden group transition-all duration-300">
-          <!-- Effet de gradient en arrière-plan -->
-          <div class="absolute -inset-[50%] opacity-10 group-hover:opacity-20 transition-opacity duration-300">
-            <div class="absolute top-0 -left-[25%] w-[150%] h-[100%] bg-gradient-to-r from-[#0B1EDC] via-[#00D1FF] to-[#0047FF] blur-[80px] animate-slow-spin" />
-          </div>
-          
-          <form @submit.prevent="handleAddUrl" class="flex bg-black/20 backdrop-blur-sm rounded-lg overflow-hidden">
-            <input
-              v-model="currentUrl"
-              type="url"
-              placeholder="Collez l'URL de l'offre ici..."
-              required
-              class="flex-1 h-10 bg-transparent border-0 text-white placeholder-white/40 focus:ring-0 focus:outline-none px-4"
-            />
+          <!-- URL Input de l'onboarding -->
+          <div class="relative backdrop-blur-sm overflow-hidden group transition-all duration-300">
+            <div class="absolute -inset-[50%] opacity-10 group-hover:opacity-20 transition-opacity duration-300">
+              <div class="absolute top-0 -left-[25%] w-[150%] h-[100%] bg-gradient-to-r from-[#0B1EDC] via-[#00D1FF] to-[#0047FF] blur-[80px] animate-slow-spin" />
+            </div>
+            
+            <form @submit.prevent="handleAddUrl" class="flex bg-black/20 backdrop-blur-sm rounded-lg overflow-hidden">
+              <input
+                v-model="currentUrl"
+                type="url"
+                placeholder="Collez l'URL de l'offre ici..."
+                required
+                class="flex-1 h-10 bg-transparent border-0 text-white placeholder-white/40 focus:ring-0 focus:outline-none px-4"
+              />
 
-            <Button 
-              type="submit"
-              variant="primary"
-              size="md"
-              :class="[
-                'bg-gradient-to-r from-[#00D1FF] to-[#0047FF] hover:bg-gradient-to-r hover:from-[#33DAFF] hover:to-[#3369FF] transition-all duration-300 flex items-center justify-center',
-                buttonContent.buttonClass
-              ]"
-            >
-              <span class="flex items-center justify-center" :class="{ 'gap-1.5': buttonContent.showText }">
-                <svg :class="buttonContent.icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                </svg>
-                <span v-if="buttonContent.showText">Ajouter</span>
-              </span>
-            </Button>
-          </form>
-        </div>
-      </div>
-
-      <!-- Main Interface -->
-      <div v-else key="main" class="w-full">
-        <!-- Container unique pour l'input et la liste -->
-        <div class="relative bg-[#111111]/80 backdrop-blur-xl rounded-xl border border-white/10 flex flex-col">
-          <!-- Effet de gradient en arrière-plan -->
-          <div class="absolute -inset-[50%] opacity-10">
-            <div class="absolute top-0 -left-[25%] w-[150%] h-[100%] bg-gradient-to-r from-[#0B1EDC] via-[#00D1FF] to-[#0047FF] blur-[80px] animate-slow-spin" />
-          </div>
-
-          <div class="relative z-10 flex flex-col">
-            <!-- URL Input intégré -->
-            <div class="p-6 pb-0">
-              <form @submit.prevent="handleAddUrl" class="flex bg-black/20 backdrop-blur-sm rounded-lg overflow-hidden">
-                <input
-                  v-model="currentUrl"
-                  type="url"
-                  placeholder="Collez l'URL de l'offre ici..."
-                  required
-                  class="flex-1 h-10 bg-transparent border-0 text-white placeholder-white/40 focus:ring-0 focus:outline-none px-4"
-                />
-
-                <Button 
-                  type="submit"
-                  variant="primary"
-                  size="md"
-                  class="w-10 h-10 bg-gradient-to-r from-[#00D1FF] to-[#0047FF] hover:bg-gradient-to-r hover:from-[#33DAFF] hover:to-[#3369FF] transition-all duration-300 flex items-center justify-center rounded-lg"
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <Button 
+                type="submit"
+                variant="primary"
+                size="md"
+                :class="[
+                  'bg-gradient-to-r from-[#00D1FF] to-[#0047FF] hover:bg-gradient-to-r hover:from-[#33DAFF] hover:to-[#3369FF] transition-all duration-300 flex items-center justify-center',
+                  buttonContent.buttonClass
+                ]"
+              >
+                <span class="flex items-center justify-center" :class="{ 'gap-1.5': buttonContent.showText }">
+                  <svg :class="buttonContent.icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                   </svg>
-                </Button>
-              </form>
+                  <span v-if="buttonContent.showText">Ajouter</span>
+                </span>
+              </Button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Container noir fixe (Vue 2 et 3) -->
+        <div v-else key="main" class="w-full">
+          <div class="relative bg-[#111111]/80 backdrop-blur-xl rounded-xl border border-white/10 h-[600px] flex flex-col">
+            <!-- Effet de gradient -->
+            <div class="absolute -inset-[50%] opacity-10">
+              <div class="absolute top-0 -left-[25%] w-[150%] h-[100%] bg-gradient-to-r from-[#0B1EDC] via-[#00D1FF] to-[#0047FF] blur-[80px] animate-slow-spin" />
             </div>
 
-            <!-- URLs List avec animations améliorées -->
-            <div class="p-6 flex flex-col h-[400px]">
-              <!-- Zone de défilement pour les URLs -->
-              <div class="flex-1 overflow-y-auto custom-scrollbar pr-2">
-                <TransitionGroup 
-                  name="list" 
-                  tag="div" 
-                  class="space-y-3"
-                >
-                  <div 
-                    v-for="(item, index) in urlsList" 
-                    :key="item.url"
-                    class="group flex items-center gap-4 p-4 rounded-xl bg-black/40 backdrop-blur-sm border border-white/10 transition-all duration-300 hover:border-white/20"
-                    :class="{
-                      'border-[#00D1FF]/30 shadow-[0_0_15px_rgba(0,209,255,0.1)]': loading && currentOfferIndex === index + 1
-                    }"
-                  >
-                    <!-- Status Icon avec animation -->
-                    <div class="flex-shrink-0">
-                      <div 
-                        v-if="loading && currentOfferIndex === index + 1"
-                        class="flex items-center gap-2 bg-gradient-to-r from-[#00D1FF]/10 to-[#0047FF]/10 px-4 py-2 rounded-lg"
+            <!-- Transition interne entre vue 2 et 3 -->
+            <Transition name="inner-fade" mode="out-in">
+              <!-- Vue 2 - Liste des URLs -->
+              <div v-if="!loading" key="urls-list" class="relative z-10 flex flex-col h-full">
+                <!-- URL Input en haut avec padding fixe -->
+                <div class="p-6 pb-0">
+                  <form @submit.prevent="handleAddUrl" class="flex bg-black/20 backdrop-blur-sm rounded-lg overflow-hidden">
+                    <input
+                      v-model="currentUrl"
+                      type="url"
+                      placeholder="Collez l'URL de l'offre ici..."
+                      required
+                      class="flex-1 h-10 bg-transparent border-0 text-white placeholder-white/40 focus:ring-0 focus:outline-none px-4"
+                    />
+
+                    <Button 
+                      type="submit"
+                      variant="primary"
+                      size="md"
+                      class="w-10 h-10 bg-gradient-to-r from-[#00D1FF] to-[#0047FF] hover:bg-gradient-to-r hover:from-[#33DAFF] hover:to-[#3369FF] transition-all duration-300 flex items-center justify-center rounded-lg"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                      </svg>
+                    </Button>
+                  </form>
+                </div>
+
+                <!-- Container principal avec défilement -->
+                <div class="flex-1 flex flex-col p-6 pt-4 overflow-hidden">
+                  <!-- En-tête fixe -->
+                  <div class="mb-4">
+                    <h3 class="text-xl font-medium text-white">
+                      Liste des offres à analyser
+                    </h3>
+                    <p class="text-sm text-white/60 mt-1">
+                      Ajoutez autant d'offres que vous le souhaitez pour une analyse groupée
+                    </p>
+                  </div>
+
+                  <!-- Zone défilante pour la liste -->
+                  <div class="flex-1 overflow-y-auto custom-scrollbar min-h-0">
+                    <div class="space-y-3 pr-2">
+                      <TransitionGroup name="list" tag="div">
+                        <div 
+                          v-for="(item, index) in urlsList" 
+                          :key="item.url"
+                          class="group flex items-center gap-4 p-4 rounded-xl bg-black/40 backdrop-blur-sm border border-white/10 transition-all duration-300 hover:border-white/20"
+                          :class="{
+                            'border-[#00D1FF]/30 shadow-[0_0_15px_rgba(0,209,255,0.1)]': loading && currentOfferIndex === index + 1
+                          }"
+                        >
+                          <!-- Status Icon -->
+                          <div class="flex-shrink-0">
+                            <div 
+                              v-if="loading && currentOfferIndex === index + 1"
+                              class="flex items-center gap-2 bg-gradient-to-r from-[#00D1FF]/10 to-[#0047FF]/10 px-4 py-2 rounded-lg"
+                            >
+                              <component :is="StatusIcons[item.status].component" />
+                              <span class="text-sm font-medium text-[#00D1FF] tabular-nums">
+                                {{ Math.round(loadingProgress) }}%
+                              </span>
+                            </div>
+                            <div 
+                              v-else
+                              class="flex items-center justify-center w-10 h-10 rounded-lg bg-white/5"
+                            >
+                              <component :is="StatusIcons[item.status].component" />
+                            </div>
+                          </div>
+
+                          <!-- URL -->
+                          <div class="flex-1 min-w-0">
+                            <p class="text-sm text-white/90 truncate font-medium">{{ item.url }}</p>
+                            <p class="text-xs text-white/50 mt-1">
+                              {{ statusMessages[item.status].text }}
+                            </p>
+                            <!-- Progress bar -->
+                            <div 
+                              v-if="loading && currentOfferIndex === index + 1"
+                              class="mt-3 h-1 w-full bg-white/5 rounded-full overflow-hidden"
+                            >
+                              <div 
+                                class="h-full bg-gradient-to-r from-[#00D1FF] to-[#0047FF] transition-all duration-300 ease-out"
+                                :style="{ width: `${loadingProgress}%` }"
+                              />
+                            </div>
+                          </div>
+
+                          <!-- Delete Button -->
+                          <button 
+                            v-if="!loading || currentOfferIndex !== index + 1"
+                            @click="urlsList.splice(index, 1)"
+                            class="opacity-0 group-hover:opacity-100 transition-all duration-300 p-2 hover:bg-white/10 rounded-lg"
+                          >
+                            <svg class="w-4 h-4 text-white/70 hover:text-red-400 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                          </button>
+                        </div>
+                      </TransitionGroup>
+
+                      <!-- Message liste vide -->
+                      <div v-if="urlsList.length === 0" class="h-full flex flex-col items-center justify-center text-white/40">
+                        <svg class="w-12 h-12 mb-4 stroke-current opacity-50" fill="none" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                        <p class="text-sm">Ajoutez des URLs pour commencer l'analyse</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Actions fixes en bas -->
+                  <div v-if="urlsList.length > 0" class="pt-6 mt-6 border-t border-white/5">
+                    <div class="flex gap-3">
+                      <Button 
+                        variant="primary"
+                        size="lg"
+                        :loading="loading"
+                        :disabled="loading"
+                        class="flex-1 bg-gradient-to-r from-[#00D1FF] via-[#0047FF] to-[#0B1EDC] hover:bg-gradient-to-r hover:from-[#33DAFF] hover:via-[#3369FF] hover:to-[#3B4EE3] transition-all duration-300"
+                        @click="handleAnalyzeAll"
                       >
-                        <component :is="StatusIcons[item.status].component" />
+                        <span class="flex items-center justify-center gap-2 text-white font-medium">
+                          <svg v-if="!loading" class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z" fill="url(#paint0_linear)" />
+                            <defs>
+                              <linearGradient id="paint0_linear" x1="2" y1="12" x2="22" y2="12" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="white" />
+                                <stop offset="1" stop-color="white" stop-opacity="0.8" />
+                              </linearGradient>
+                            </defs>
+                          </svg>
+                          {{ loading ? 'Analyse en cours...' : 'Analyser avec IA' }}
+                        </span>
+                      </Button>
+                      
+                      <Button 
+                        variant="outline"
+                        size="md"
+                        class="px-4"
+                        @click="urlsList = []"
+                      >
+                        Réinitialiser
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Vue 3 - État d'analyse -->
+              <div v-else key="analysis" class="relative z-10 flex flex-col h-full">
+                <!-- En-tête fixe -->
+                <div class="p-6 pb-4">
+                  <div class="text-center">
+                    <h3 class="text-xl font-medium text-white mb-2">
+                      Analyse en cours...
+                    </h3>
+                    <p class="text-sm text-white/60">
+                      Veuillez patienter pendant que nous analysons vos offres
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Zone défilante pour la liste -->
+                <div class="flex-1 overflow-y-auto custom-scrollbar px-6">
+                  <div class="space-y-4">
+                    <div 
+                      v-for="(item, index) in urlsList" 
+                      :key="item.url"
+                      class="flex items-center gap-4 p-4 rounded-xl bg-black/40 backdrop-blur-sm border border-white/10"
+                      :class="{
+                        'border-[#00D1FF]/30 shadow-[0_0_15px_rgba(0,209,255,0.1)]': currentOfferIndex === index + 1
+                      }"
+                    >
+                      <!-- Status Icon -->
+                      <div class="flex-shrink-0">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-lg" :class="currentOfferIndex === index + 1 ? 'bg-[#00D1FF]/10' : 'bg-white/5'">
+                          <component :is="StatusIcons[item.status].component" />
+                        </div>
+                      </div>
+
+                      <!-- URL -->
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm text-white/90 truncate font-medium">{{ item.url }}</p>
+                        <p class="text-xs text-white/50 mt-1">
+                          {{ statusMessages[item.status].text }}
+                        </p>
+                      </div>
+
+                      <!-- Progress -->
+                      <div v-if="currentOfferIndex === index + 1" class="flex-shrink-0">
                         <span class="text-sm font-medium text-[#00D1FF] tabular-nums">
                           {{ Math.round(loadingProgress) }}%
                         </span>
                       </div>
-                      <div 
-                        v-else
-                        class="flex items-center justify-center w-10 h-10 rounded-lg bg-white/5"
-                      >
-                        <component :is="StatusIcons[item.status].component" />
-                      </div>
                     </div>
-
-                    <!-- URL avec design amélioré -->
-                    <div class="flex-1 min-w-0">
-                      <p class="text-sm text-white/90 truncate font-medium">{{ item.url }}</p>
-                      <p class="text-xs text-white/50 mt-1">
-                        {{ statusMessages[item.status].text }}
-                      </p>
-                      <!-- Progress bar avec animation fluide -->
-                      <div 
-                        v-if="loading && currentOfferIndex === index + 1"
-                        class="mt-3 h-1 w-full bg-white/5 rounded-full overflow-hidden"
-                      >
-                        <div 
-                          class="h-full bg-gradient-to-r from-[#00D1FF] to-[#0047FF] transition-all duration-300 ease-out"
-                          :style="{ width: `${loadingProgress}%` }"
-                        />
-                      </div>
-                    </div>
-
-                    <!-- Delete Button avec nouvelle animation -->
-                    <button 
-                      v-if="!loading || currentOfferIndex !== index + 1"
-                      @click="urlsList.splice(index, 1)"
-                      class="opacity-0 group-hover:opacity-100 transition-all duration-300 p-2 hover:bg-white/10 rounded-lg"
-                    >
-                      <svg class="w-4 h-4 text-white/70 hover:text-red-400 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                      </svg>
-                    </button>
                   </div>
-                </TransitionGroup>
+                </div>
 
-                <!-- Message si la liste est vide -->
-                <div v-if="urlsList.length === 0" class="h-full flex flex-col items-center justify-center text-white/40">
-                  <svg class="w-12 h-12 mb-4 stroke-current opacity-50" fill="none" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                  </svg>
-                  <p class="text-sm">Ajoutez des URLs pour commencer l'analyse</p>
+                <!-- Footer fixe -->
+                <div class="p-6 pt-4 border-t border-white/5">
+                  <!-- Progress global -->
+                  <div class="w-full max-w-md mx-auto mb-6">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-sm text-white/60">
+                        Offre {{ currentOfferIndex }} sur {{ totalOffers }}
+                      </span>
+                      <span class="text-sm font-medium text-[#00D1FF]">
+                        {{ Math.round(loadingProgress) }}%
+                      </span>
+                    </div>
+                    <div class="h-2 bg-white/5 rounded-full overflow-hidden">
+                      <div 
+                        class="h-full bg-gradient-to-r from-[#00D1FF] to-[#0047FF] transition-all duration-300 ease-out"
+                        :style="{ width: `${loadingProgress}%` }"
+                      />
+                    </div>
+                  </div>
+
+                  <!-- Back Button -->
+                  <div class="flex justify-center">
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      class="min-w-[200px]"
+                      @click="handleBack"
+                    >
+                      Retour
+                    </Button>
+                  </div>
                 </div>
               </div>
-
-              <!-- Actions -->
-              <div v-if="urlsList.length > 0" class="flex gap-3 pt-6 mt-6 border-t border-white/5">
-                <Button 
-                  variant="primary"
-                  size="lg"
-                  :loading="loading"
-                  :disabled="loading"
-                  class="flex-1 bg-gradient-to-r from-[#00D1FF] via-[#0047FF] to-[#0B1EDC] hover:bg-gradient-to-r hover:from-[#33DAFF] hover:via-[#3369FF] hover:to-[#3B4EE3] transition-all duration-300"
-                  @click="handleAnalyzeAll"
-                >
-                  <span class="flex items-center justify-center gap-2 text-white font-medium">
-                    <svg v-if="!loading" class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z" fill="url(#paint0_linear)" />
-                      <defs>
-                        <linearGradient id="paint0_linear" x1="2" y1="12" x2="22" y2="12" gradientUnits="userSpaceOnUse">
-                          <stop stop-color="white" />
-                          <stop offset="1" stop-color="white" stop-opacity="0.8" />
-                        </linearGradient>
-                      </defs>
-                    </svg>
-                    {{ loading ? 'Analyse en cours...' : 'Analyser avec IA' }}
-                  </span>
-                </Button>
-                
-                <Button 
-                  variant="outline"
-                  size="md"
-                  class="px-4"
-                  @click="urlsList = []"
-                >
-                  Réinitialiser
-                </Button>
-              </div>
-            </div>
+            </Transition>
           </div>
         </div>
-      </div>
-    </Transition>
-
-    <!-- Notifications -->
-    <TransitionGroup 
-      name="notifications" 
-      tag="div" 
-      class="fixed bottom-4 right-4 space-y-2 z-50"
-    >
-      <Toast
-        v-if="error"
-        key="error"
-        type="error"
-        :message="error"
-        :show="!!error"
-        @close="clearFeedback"
-      />
-    </TransitionGroup>
+      </Transition>
+    </div>
   </div>
 </template>
 
 <style scoped>
-/* Animation de transition entre les vues */
-.slide-enter-active,
-.slide-leave-active {
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  position: absolute;
-  width: 100%;
-}
-
-.slide-enter-from {
-  opacity: 0;
-  transform: translateY(30px);
-  filter: blur(8px);
-}
-
-.slide-leave-to {
-  opacity: 0;
-  transform: translateY(-30px);
-  filter: blur(8px);
-}
-
-/* Pour éviter les sauts pendant la transition */
-.w-full.relative {
-  min-height: 400px;
-  position: relative;
-}
-
-/* Animation plus fluide pour les éléments */
-.slide-move {
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Animation globale de la page */
-.page-transition-enter-active,
-.page-transition-leave-active {
-  transition: all 0.6s cubic-bezier(0.65, 0, 0.35, 1);
-}
-
-.page-transition-enter-from {
-  opacity: 0;
-  transform: translateY(30px);
-}
-
-.page-transition-leave-to {
-  opacity: 0;
-  transform: translateY(-30px);
-}
-
-/* Pour que les éléments se chevauchent proprement pendant la transition */
-.page-transition-move {
-  transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
-}
-
-/* Ajustement pour une transition plus fluide */
-.page-container.relative {
-  min-height: 400px; /* Hauteur minimale pour éviter les sauts */
-}
-
-/* Style spécifique pour le bouton */
-.action-button {
-  position: relative;
-  height: 2.5rem; /* équivalent à h-10 */
-}
-
-/* Animations pour les notifications */
-.notifications-enter-active,
-.notifications-leave-active {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.notifications-enter-from {
-  opacity: 0;
-  transform: translateX(20px);
-}
-.notifications-leave-to {
-  opacity: 0;
-  transform: translateX(20px);
-}
-
-/* Animations pour la liste d'URLs */
-.list-enter-active {
-  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.list-leave-active {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: absolute;
-  width: 100%;
-}
-.list-enter-from {
-  opacity: 0;
-  transform: translateY(10px);
-  filter: blur(5px);
-}
-.list-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
-  filter: blur(5px);
-}
-.list-move {
-  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* Animation pour le hover des boutons */
-.group:hover .group-hover\:opacity-100 {
-  transition: opacity 0.2s ease;
-}
-
-.bg-gray-800-alpha {
-  background-color: rgba(31, 41, 55, 0.5);
-}
-
-/* Animation plus smooth pour l'onboarding */
-.bg-white\/5 {
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Animation de sortie de l'onboarding */
-.v-leave-active {
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.v-leave-to {
-  opacity: 0;
-  transform: translateY(-30px);
-}
-
-/* Ajustement de la hauteur minimale pour les cartes */
-.min-h-\[200px\] {
-  min-height: 200px;
-}
-
-/* Animation plus douce pour l'onboarding */
-.onboarding-enter-active,
-.onboarding-leave-active {
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.onboarding-enter-from {
-  opacity: 0;
-  transform: translateY(-20px);
-}
-
-.onboarding-leave-to {
-  opacity: 0;
-  transform: translateY(20px) scale(0.95);
-}
-
+/* Transition globale */
 .fade-enter-active,
 .fade-leave-active {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -953,71 +888,41 @@ const buttonContent = computed(() => {
   transform: scale(0.98);
 }
 
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+/* Transition interne */
+.inner-fade-enter-active,
+.inner-fade-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.animate-shimmer {
-  animation: shimmer 2s infinite;
-}
-
-.animate-pulse-slow {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-.animate-shimmer-delayed {
-  animation: shimmer 2s infinite;
-  animation-delay: 1s;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: .8;
-    transform: scale(0.95);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-/* Amélioration des transitions */
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.fade-enter-from,
-.fade-leave-to {
+.inner-fade-enter-from,
+.inner-fade-leave-to {
   opacity: 0;
-  transform: scale(0.98) translateY(10px);
+  transform: scale(0.99);
 }
 
-.animate-spin-slow {
-  animation: spin 2s linear infinite;
+/* Animations pour la liste d'URLs */
+.list-enter-active {
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.list-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: absolute;
+  width: calc(100% - 6px);
+}
+
+.list-enter-from {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.list-move {
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* Style personnalisé pour la scrollbar */
@@ -1038,30 +943,5 @@ const buttonContent = computed(() => {
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   border: transparent;
-}
-
-/* Animations pour la liste d'URLs */
-.list-enter-active {
-  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.list-leave-active {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: absolute;
-  width: calc(100% - 6px); /* Compensation pour la scrollbar */
-}
-
-.list-enter-from {
-  opacity: 0;
-  transform: translateY(-20px);
-}
-
-.list-leave-to {
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.list-move {
-  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 </style> 

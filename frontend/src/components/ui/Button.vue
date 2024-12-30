@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-  variant?: 'primary' | 'secondary' | 'outline' | 'destructive'
+  variant?: 'primary' | 'secondary' | 'outline' | 'destructive' | 'ghost'
   size?: 'sm' | 'md' | 'lg'
   loading?: boolean
   className?: string
@@ -22,6 +22,9 @@ defineProps<{
         
         // Outline avec bordure subtile
         'bg-transparent backdrop-blur-sm border border-white/20 text-white hover:bg-white/5 hover:border-white/30 font-normal': variant === 'outline',
+        
+        // Ghost transparent
+        'bg-transparent text-white hover:bg-white/5 font-normal': variant === 'ghost',
         
         // Destructive avec effet noir
         'bg-black/60 backdrop-blur-sm border border-red-500/50 text-red-400 hover:bg-black/70 hover:border-red-500/60 font-medium': variant === 'destructive',

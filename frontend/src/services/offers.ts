@@ -3,6 +3,7 @@ import { functions } from '@/config/firebase'
 import { FirebaseError } from 'firebase/app'
 import { db } from '@/config/firebase'
 import { collection, query, where, getDocs } from 'firebase/firestore'
+import type { Offer } from '@/types/offer'
 
 interface ExtendedError extends Error {
   code?: string
@@ -37,6 +38,22 @@ export const createOffer = async (url: string, userId: string): Promise<Analysis
       e.code = error.code
       throw e
     }
+    throw error
+  }
+}
+
+export async function getUserOffers(userId: string): Promise<Offer[]> {
+  const offersRef = collection(db, 'offers')
+  const q = query(offersRef, where('userId', '==', userId))
+  
+  try {
+    const querySnapshot = await getDocs(q)
+    return querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    })) as Offer[]
+  } catch (error) {
+    console.error('Error fetching user offers:', error)
     throw error
   }
 } 

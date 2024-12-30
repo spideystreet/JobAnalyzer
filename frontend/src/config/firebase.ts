@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore'
 import { getFunctions, connectFunctionsEmulator } from 'firebase/functions'
+import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -12,18 +12,16 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 }
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig)
+
+// Initialize Firebase Authentication and get a reference to the service
 export const auth = getAuth(app)
-export const db = getFirestore(app)
 export const functions = getFunctions(app, 'europe-west9')
+export const db = getFirestore(app)
 
-// Connecter aux émulateurs en développement
+// Use emulators in development
 if (import.meta.env.DEV) {
-  // Connect to emulators
-  connectFirestoreEmulator(db, 'localhost', 8080)
-} 
-
-// En développement, connexion à l'émulateur
-if (process.env.NODE_ENV === 'development') {
   connectFunctionsEmulator(functions, 'localhost', 5001)
+  connectFirestoreEmulator(db, 'localhost', 8080)
 } 
