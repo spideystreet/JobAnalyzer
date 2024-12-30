@@ -553,76 +553,96 @@ const buttonContent = computed(() => {
       <Transition name="fade" mode="out-in">
         <!-- Vue 1 (onboarding) -->
         <div v-if="!hasAddedFirstUrl" key="onboarding" class="w-full">
-          <!-- Contenu de l'onboarding -->
-          <div class="relative bg-[#111111]/80 backdrop-blur-xl rounded-xl p-8 border border-white/10 mb-8 overflow-hidden">
+          <div class="relative bg-[#111111]/80 backdrop-blur-xl rounded-xl border border-white/10 min-h-[600px] flex flex-col justify-between overflow-hidden">
             <!-- Effet de gradient -->
             <div class="absolute -inset-[50%] opacity-20">
               <div class="absolute top-0 -left-[25%] w-[150%] h-[100%] bg-gradient-to-r from-[#0B1EDC] via-[#00D1FF] to-[#0047FF] blur-[80px] animate-slow-spin" />
             </div>
             
-            <h3 class="text-xl font-medium text-white mb-6 text-center relative z-10">
-              Commencez en quelques étapes simples
-            </h3>
+            <!-- En-tête avec description étendue -->
+            <div class="relative z-10 p-8 text-center">
+              <h3 class="text-2xl font-semibold text-white mb-4">
+                Commencez en quelques étapes simples
+              </h3>
+              <p class="text-base text-white/70 max-w-2xl mx-auto">
+                Optimisez votre recherche d'emploi avec notre analyse IA avancée. Obtenez des insights détaillés sur les offres, comprenez les exigences clés et prenez des décisions éclairées pour votre carrière.
+              </p>
+            </div>
             
-            <div class="grid gap-6 md:grid-cols-3 relative z-10">
-              <div 
-                v-for="(step, index) in steps" 
-                :key="index"
-                class="relative flex flex-col items-center justify-center p-6 rounded-lg bg-black/40 backdrop-blur-sm border border-white/5 min-h-[200px] transition-all duration-300 hover:border-white/20"
-              >
-                <!-- Badge numéroté -->
-                <div class="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-gradient-to-r from-[#00D1FF] to-[#0047FF] flex items-center justify-center text-white font-medium shadow-lg">
-                  {{ index + 1 }}
-                </div>
-                
-                <!-- Contenu -->
-                <div class="flex flex-col items-center justify-center space-y-3 text-center">
-                  <div class="text-3xl bg-gradient-to-r from-[#00D1FF] to-[#0047FF] bg-clip-text text-transparent">
-                    {{ step.icon }}
+            <!-- Cartes -->
+            <div class="relative z-10 px-8">
+              <div class="grid gap-6 md:grid-cols-3">
+                <div 
+                  v-for="(step, index) in steps" 
+                  :key="index"
+                  class="relative flex flex-col items-center justify-center p-6 rounded-xl bg-black/40 backdrop-blur-sm border border-white/5 min-h-[200px] transition-all duration-300 hover:border-white/20 group"
+                >
+                  <!-- Badge numéroté -->
+                  <div class="absolute -top-3 -left-3 w-8 h-8 rounded-lg bg-gradient-to-r from-[#00D1FF] to-[#0047FF] flex items-center justify-center text-white font-medium shadow-lg transform group-hover:scale-110 transition-transform duration-300">
+                    {{ index + 1 }}
                   </div>
-                  <h4 class="text-lg font-medium text-white">
-                    {{ step.title }}
-                  </h4>
-                  <p class="text-sm text-gray-400">
-                    {{ step.description }}
-                  </p>
+                  
+                  <!-- Contenu -->
+                  <div class="flex flex-col items-center justify-center space-y-4 text-center">
+                    <div class="text-3xl bg-gradient-to-r from-[#00D1FF] to-[#0047FF] bg-clip-text text-transparent transform group-hover:scale-110 transition-transform duration-300">
+                      {{ step.icon }}
+                    </div>
+                    <h4 class="text-lg font-medium text-white">
+                      {{ step.title }}
+                    </h4>
+                    <p class="text-sm text-gray-400">
+                      {{ step.description }}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- URL Input de l'onboarding -->
-          <div class="relative backdrop-blur-sm overflow-hidden group transition-all duration-300">
-            <div class="absolute -inset-[50%] opacity-10 group-hover:opacity-20 transition-opacity duration-300">
-              <div class="absolute top-0 -left-[25%] w-[150%] h-[100%] bg-gradient-to-r from-[#0B1EDC] via-[#00D1FF] to-[#0047FF] blur-[80px] animate-slow-spin" />
+            <!-- Section avantages -->
+            <div class="relative z-10 px-8 py-6">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="flex items-start gap-3 p-4 rounded-xl bg-black/20 backdrop-blur-sm border border-white/5">
+                  <div class="text-[#00D1FF]">✨</div>
+                  <div>
+                    <h5 class="text-sm font-medium text-white mb-1">Analyse intelligente</h5>
+                    <p class="text-xs text-white/60">Détection automatique des compétences requises et des points clés de l'offre</p>
+                  </div>
+                </div>
+                <div class="flex items-start gap-3 p-4 rounded-xl bg-black/20 backdrop-blur-sm border border-white/5">
+                  <div class="text-[#00D1FF]">🎯</div>
+                  <div>
+                    <h5 class="text-sm font-medium text-white mb-1">Comparaison avancée</h5>
+                    <p class="text-xs text-white/60">Comparez facilement plusieurs offres pour faire le meilleur choix</p>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            <form @submit.prevent="handleAddUrl" class="flex bg-black/20 backdrop-blur-sm rounded-lg overflow-hidden">
-              <input
-                v-model="currentUrl"
-                type="url"
-                placeholder="Collez l'URL de l'offre ici..."
-                required
-                class="flex-1 h-10 bg-transparent border-0 text-white placeholder-white/40 focus:ring-0 focus:outline-none px-4"
-              />
 
-              <Button 
-                type="submit"
-                variant="primary"
-                size="md"
-                :class="[
-                  'bg-gradient-to-r from-[#00D1FF] to-[#0047FF] hover:bg-gradient-to-r hover:from-[#33DAFF] hover:to-[#3369FF] transition-all duration-300 flex items-center justify-center',
-                  buttonContent.buttonClass
-                ]"
-              >
-                <span class="flex items-center justify-center" :class="{ 'gap-1.5': buttonContent.showText }">
-                  <svg :class="buttonContent.icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                  </svg>
-                  <span v-if="buttonContent.showText">Ajouter</span>
-                </span>
-              </Button>
-            </form>
+            <!-- URL Input de l'onboarding -->
+            <div class="relative z-10 px-8 pb-8">
+              <form @submit.prevent="handleAddUrl" class="flex bg-black/40 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10">
+                <input
+                  v-model="currentUrl"
+                  type="url"
+                  placeholder="Collez l'URL de l'offre ici..."
+                  required
+                  class="flex-1 h-12 bg-transparent border-0 text-white placeholder-white/40 focus:ring-0 focus:outline-none px-4"
+                />
+                <Button 
+                  type="submit"
+                  variant="primary"
+                  size="md"
+                  class="m-1 bg-gradient-to-r from-[#00D1FF] to-[#0047FF] hover:bg-gradient-to-r hover:from-[#33DAFF] hover:to-[#3369FF] transition-all duration-300"
+                >
+                  <span class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Commencer
+                  </span>
+                </Button>
+              </form>
+            </div>
           </div>
         </div>
 
@@ -638,40 +658,85 @@ const buttonContent = computed(() => {
             <Transition name="inner-fade" mode="out-in">
               <!-- Vue 2 - Liste des URLs -->
               <div v-if="!loading" key="urls-list" class="relative z-10 flex flex-col h-full">
-                <!-- URL Input en haut avec padding fixe -->
-                <div class="p-6 pb-0">
-                  <form @submit.prevent="handleAddUrl" class="flex bg-black/20 backdrop-blur-sm rounded-lg overflow-hidden">
+                <!-- En-tête avec description -->
+                <div class="p-8">
+                  <h2 class="text-2xl font-semibold text-white mb-3">
+                    Analysez vos offres d'emploi
+                  </h2>
+                  <p class="text-base text-white/70 max-w-2xl">
+                    Notre IA va analyser en détail chaque offre pour vous fournir des insights pertinents. 
+                    Ajoutez autant d'offres que vous le souhaitez pour une analyse complète.
+                  </p>
+                </div>
+
+                <!-- Section des plateformes supportées -->
+                <div class="px-8 pb-6">
+                  <h4 class="text-sm font-medium text-white/60 mb-3">Plateformes supportées :</h4>
+                  <div class="flex gap-4">
+                    <div class="px-4 py-2 bg-white/5 rounded-lg border border-white/10">
+                      <span class="text-sm text-white">LinkedIn</span>
+                    </div>
+                    <div class="px-4 py-2 bg-white/5 rounded-lg border border-white/10">
+                      <span class="text-sm text-white">WTTJ</span>
+                    </div>
+                    <div class="px-4 py-2 bg-white/5 rounded-lg border border-white/10">
+                      <span class="text-sm text-white">Indeed</span>
+                    </div>
+                    <div class="px-4 py-2 bg-white/5 rounded-lg border border-white/10">
+                      <span class="text-sm text-white">Free-work</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- URL Input intégré -->
+                <div class="px-8">
+                  <form @submit.prevent="handleAddUrl" class="flex bg-black/40 backdrop-blur-sm rounded-lg overflow-hidden border border-white/10">
                     <input
                       v-model="currentUrl"
                       type="url"
                       placeholder="Collez l'URL de l'offre ici..."
                       required
-                      class="flex-1 h-10 bg-transparent border-0 text-white placeholder-white/40 focus:ring-0 focus:outline-none px-4"
+                      class="flex-1 h-12 bg-transparent border-0 text-white placeholder-white/40 focus:ring-0 focus:outline-none px-4"
                     />
-
                     <Button 
                       type="submit"
                       variant="primary"
                       size="md"
-                      class="w-10 h-10 bg-gradient-to-r from-[#00D1FF] to-[#0047FF] hover:bg-gradient-to-r hover:from-[#33DAFF] hover:to-[#3369FF] transition-all duration-300 flex items-center justify-center rounded-lg"
+                      class="m-1 bg-gradient-to-r from-[#00D1FF] to-[#0047FF] hover:bg-gradient-to-r hover:from-[#33DAFF] hover:to-[#3369FF] transition-all duration-300"
                     >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                      </svg>
+                      <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Ajouter
+                      </span>
                     </Button>
                   </form>
                 </div>
 
                 <!-- Container principal avec défilement -->
-                <div class="flex-1 flex flex-col p-6 pt-4 overflow-hidden">
-                  <!-- En-tête fixe -->
-                  <div class="mb-4">
-                    <h3 class="text-xl font-medium text-white">
-                      Liste des offres à analyser
-                    </h3>
-                    <p class="text-sm text-white/60 mt-1">
-                      Ajoutez autant d'offres que vous le souhaitez pour une analyse groupée
-                    </p>
+                <div class="flex-1 flex flex-col px-6 pt-4 overflow-hidden">
+                  <!-- En-tête de la liste -->
+                  <div class="mb-4 flex items-center justify-between">
+                    <div>
+                      <h4 class="text-lg font-medium text-white">
+                        Liste des offres
+                      </h4>
+                      <p class="text-sm text-white/60 mt-1">
+                        {{ urlsList.length }} offre(s) ajoutée(s)
+                      </p>
+                    </div>
+                    <div v-if="urlsList.length > 0" class="flex items-center gap-2">
+                      <span class="text-sm text-white/60">Actions rapides :</span>
+                      <Button 
+                        variant="outline"
+                        size="sm"
+                        class="text-sm"
+                        @click="urlsList = []"
+                      >
+                        Tout effacer
+                      </Button>
+                    </div>
                   </div>
 
                   <!-- Zone défilante pour la liste -->
