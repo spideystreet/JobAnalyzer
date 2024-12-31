@@ -1,5 +1,3 @@
-import './assets/main.css'
-
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
@@ -7,7 +5,7 @@ import App from './App.vue'
 import router from './router'
 
 // Import des styles
-import './assets/styles/design-system.css'
+import './assets/styles.css'
 
 // Import des polices Google
 const link = document.createElement('link')

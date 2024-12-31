@@ -1,19 +1,27 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { authMiddleware } from './middleware'
-import HomeView from '../views/HomeView.vue'
+import OnboardingView from '../views/onboarding/OnboardingView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView
+      name: 'onboarding',
+      component: OnboardingView
     },
     {
       path: '/login',
       name: 'login',
       component: () => import('../views/auth/LoginView.vue')
+    },
+    {
+      path: '/analysis',
+      name: 'analysis',
+      component: () => import('../views/analysis/AnalysisView.vue'),
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/dashboard',

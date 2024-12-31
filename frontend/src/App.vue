@@ -1,91 +1,25 @@
 <script setup lang="ts">
-import DefaultLayout from '@/components/layout/DefaultLayout.vue'
-import '@/config/firebase'
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import DefaultLayout from '@/layouts/DefaultLayout.vue'
+import '@/config/bootstrap'
+
+const route = useRoute()
+const layout = computed(() => {
+  return (route.meta.layout || 'default') + '-layout'
+})
 </script>
 
 <template>
-  <div class="min-h-screen relative overflow-hidden bg-gradient-to-b from-background via-background/95 to-background/90">
-    <!-- Fond avec Mesh Gradient persistant -->
-    <div class="fixed inset-0 overflow-hidden pointer-events-none">
-      <!-- Orbe primaire -->
-      <div 
-        class="absolute -top-[40%] -left-[20%] w-[80%] h-[80%] rounded-full bg-primary/20 blur-[120px] opacity-20 animate-float"
-      />
-      <!-- Orbe secondaire -->
-      <div 
-        class="absolute -bottom-[40%] -right-[20%] w-[80%] h-[80%] rounded-full bg-secondary/20 blur-[120px] opacity-20 animate-float-delayed"
-      />
-      <!-- Overlay subtil pour améliorer la lisibilité -->
-      <div class="absolute inset-0 bg-background/20 backdrop-blur-[1px]" />
+  <component :is="layout">
+    <div class="page-container">
+      <RouterView v-slot="{ Component }">
+        <Transition name="page" mode="out-in" appear>
+          <component :is="Component" />
+        </Transition>
+      </RouterView>
     </div>
-
-    <!-- Contenu principal -->
-    <RouterView v-slot="{ Component }">
-      <Transition 
-        name="page" 
-        mode="out-in"
-      >
-        <component :is="Component" />
-      </Transition>
-    </RouterView>
-  </div>
+  </component>
 </template>
 
-<style>
-/* Animation de flottement pour les orbes */
-@keyframes float {
-  0%, 100% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(-1%, -1%);
-  }
-}
-
-@keyframes float-delayed {
-  0%, 100% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(1%, 1%);
-  }
-}
-
-.animate-float {
-  animation: float 20s ease-in-out infinite;
-}
-
-.animate-float-delayed {
-  animation: float-delayed 25s ease-in-out infinite;
-}
-
-/* Transitions de page */
-.page-enter-active,
-.page-leave-active {
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.page-enter-from {
-  opacity: 0;
-  transform: scale(0.98) translateY(10px);
-}
-
-.page-leave-to {
-  opacity: 0;
-  transform: scale(1.02) translateY(-10px);
-}
-
-/* Effet de flou pendant la transition */
-.page-enter-from,
-.page-leave-to {
-  filter: blur(2px);
-}
-
-/* Réinitialisation des transformations */
-.page-enter-to,
-.page-leave-from {
-  opacity: 1;
-  transform: scale(1) translateY(0);
-  filter: blur(0);
-}
-</style>
+<style src="@/styles/transitions.css"></style>
