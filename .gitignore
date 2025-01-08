@@ -189,3 +189,28 @@ node_modules/
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Logs spécifiques au projet
+logs/
+*.log.*
+scraping_logs/
+
+# Fichiers de données temporaires
+data/
+tmp/
+temp/
+
+# Fichiers de configuration locaux
+config.local.yaml
+*.local.yml
+
+# Fichiers de test et coverage
+.coverage
+coverage/
+test-results/
+
+# Secrets et clés
+*.pem
+*.key
+credentials.json
+.secrets/
