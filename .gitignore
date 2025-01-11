@@ -214,6 +214,3 @@ test-results/
 *.key
 credentials.json
 .secrets/
-
-# Fichiers de DEV
-DEVELOPMENT.md
