@@ -8,7 +8,7 @@ Analyseur automatique d'offres d'emploi Freelances avec intelligence artificiell
 
 JobAnalyzer est un outil qui :
 - Scrape automatiquement les nouvelles offres Freelances
-- Analyse et catégorise les offres avec l'IA (GPT-3.5 Turbo)
+- Analyse et catégorise les offres avec l'IA (DeepSeek v3)
 - Stocke les données de manière structurée
 - Fournit des analyses de marché et des tendances
 
@@ -23,7 +23,7 @@ JobAnalyzer est un outil qui :
 
 ### Backend (Python)
 - Scraping automatisé (Beautiful Soup)
-- Analyse IA (OpenAI GPT-3.5 Turbo)
+- Analyse IA (DeepSeek v3)
 - Base de données (Supabase)
 
 ### Frontend (React)
@@ -36,7 +36,7 @@ JobAnalyzer est un outil qui :
 - **Backend** : Python 3.11
 - **Frontend** : React
 - **Base de données** : Supabase (PostgreSQL)
-- **IA** : OpenAI GPT-3.5 Turbo
+- **IA** : DeepSeek v3
 - **Déploiement** : Google Cloud Run, Vercel
 
 ## 📦 Structure du Projet
