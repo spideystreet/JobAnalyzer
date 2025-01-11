@@ -5,7 +5,7 @@ description = "Analyseur automatique d'offres d'emploi avec IA"
 authors = ["Your Name <your.email@example.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 python-dotenv = "^1.0.0"
 pydantic = "^2.5.2"
 loguru = "^0.7.2"
