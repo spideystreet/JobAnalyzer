@@ -90,7 +90,7 @@ class JobOffer(BaseModel):
     COUNTRY: Optional[Country] = None
     REGION: Optional[str] = None  # On garde en str car la région dépend du pays
     CITY: Optional[str] = None
-    COMPANY: str
+    COMPANY: Optional[str] = None
     COMPANY_TYPE: Optional[CompanyType] = None
     CONTRACT_TYPE: ContractType
     XP: Optional[ExperienceLevel] = None

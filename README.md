@@ -119,13 +119,25 @@ JobAnalyzer/
 - [ ] Guide de contribution
 - [ ] Sécurisation des endpoints
 
-## 🤝 Contribution
+# Fonctionnement
+JobScraper (Orchestrateur)
+├── HTMLCleaner
+│   ├── Nettoie le HTML
+│   ├── Extrait les sections pertinentes
+│   └── Utilise les configs : ALLOWED_TAGS, RELEVANT_CLASSES
+│
+├── JobAnalyzer
+│   ├── Communique avec DeepSeek
+│   ├── Parse les réponses
+│   └── Utilise les configs : DEEPSEEK_*, REQUIRED_FIELDS
+│
+└── Configuration (settings.py)
+    ├── Variables d'environnement (.env)
+    ├── Constantes de configuration
+    └── Utilisé par tous les composants
 
-Nous accueillons les contributions ! Merci de :
-- Créer une issue avant de commencer
-- Suivre les conventions de code
-- Ajouter des tests pour les nouvelles fonctionnalités
-- Respecter l'éthique et la légalité du scraping
+Flow de données :
+URL → JobScraper._fetch_page() → HTMLCleaner.clean() → JobAnalyzer.analyze() → Résultat
 
 ## 📜 Licence
 
