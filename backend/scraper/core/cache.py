@@ -34,17 +34,41 @@ class JobCache:
             logger.error(f"❌ Erreur de connexion Redis: {str(e)}")
             raise
 
-    def _get_key(self, url: str) -> str:
+    def _get_key(self, url: str, prefix: str = "job") -> str:
         """
         Génère la clé Redis pour une URL.
         
         Args:
             url: L'URL de l'offre
+            prefix: Préfixe pour différencier les types de données
             
         Returns:
             str: La clé formatée
         """
-        return f"job:{url}"
+        return f"{prefix}:{url}"
+
+    async def store_raw_html(self, url: str, html_content: str) -> None:
+        """
+        Stocke le HTML brut d'une offre dans Redis.
+        
+        Args:
+            url: L'URL de l'offre
+            html_content: Le contenu HTML brut à stocker
+        """
+        try:
+            # Utilise un préfixe différent pour le HTML brut
+            key = self._get_key(url, prefix="raw_html")
+            self.redis.set(
+                key,
+                html_content,
+                ex=CACHE_TTL
+            )
+            # Marque aussi l'URL comme traitée
+            await self.mark_processed(url)
+            logger.debug(f"✅ HTML stocké pour: {url}")
+        except Exception as e:
+            logger.error(f"❌ Erreur lors du stockage du HTML: {str(e)}")
+            raise
 
     async def is_processed(self, url: str) -> bool:
         """
@@ -113,4 +137,115 @@ class JobCache:
             self.redis.close()
             logger.info("👋 Connexion Redis fermée")
         except Exception as e:
-            logger.error(f"❌ Erreur lors de la fermeture de Redis: {str(e)}") 
+            logger.error(f"❌ Erreur lors de la fermeture de Redis: {str(e)}")
+
+    async def get_all_raw_html_keys(self) -> list[str]:
+        """
+        Récupère toutes les clés des HTML bruts stockés.
+        
+        Returns:
+            list[str]: Liste des clés raw_html
+        """
+        try:
+            pattern = self._get_key("*", prefix="raw_html")
+            keys = self.redis.keys(pattern)
+            logger.debug(f"✅ {len(keys)} clés raw_html trouvées")
+            return keys
+        except Exception as e:
+            logger.error(f"❌ Erreur lors de la récupération des clés raw_html: {str(e)}")
+            return []
+
+    async def get_raw_html(self, key: str) -> Optional[str]:
+        """
+        Récupère le HTML brut pour une clé donnée.
+        
+        Args:
+            key: La clé Redis complète (raw_html:url)
+            
+        Returns:
+            Optional[str]: Le contenu HTML ou None
+        """
+        try:
+            content = self.redis.get(key)
+            if content:
+                logger.debug(f"✅ HTML récupéré pour: {key}")
+                return content
+            return None
+        except Exception as e:
+            logger.error(f"❌ Erreur lors de la récupération du HTML: {str(e)}")
+            return None
+
+    async def store_analysis(self, key: str, analysis: dict) -> None:
+        """
+        Stocke le résultat de l'analyse DeepSeek.
+        
+        Args:
+            key: La clé Redis de l'offre (raw_html:url)
+            analysis: Le dictionnaire contenant l'analyse
+        """
+        try:
+            # Extrait l'URL de la clé raw_html:url
+            url = key.split(":", 1)[1]
+            # Stocke avec le préfixe analysis
+            analysis_key = self._get_key(url, prefix="analysis")
+            self.redis.set(
+                analysis_key,
+                str(analysis),  # Convertit le dict en str
+                ex=CACHE_TTL
+            )
+            logger.debug(f"✅ Analyse stockée pour: {url}")
+        except Exception as e:
+            logger.error(f"❌ Erreur lors du stockage de l'analyse: {str(e)}")
+            raise
+
+    async def store_cleaned_html(self, key: str, cleaned_html: str) -> None:
+        """
+        Stocke le HTML nettoyé dans Redis.
+        
+        Args:
+            key: La clé Redis de l'offre (raw_html:url)
+            cleaned_html: Le contenu HTML nettoyé
+        """
+        try:
+            cleaned_key = key.replace('raw_html:', 'cleaned_html:')
+            self.redis.set(cleaned_key, cleaned_html, ex=CACHE_TTL)
+            logger.debug(f"✅ HTML nettoyé stocké pour: {cleaned_key}")
+        except Exception as e:
+            logger.error(f"❌ Erreur lors du stockage du HTML nettoyé: {str(e)}")
+            raise
+
+    async def get_cleaned_html(self, key: str) -> Optional[str]:
+        """
+        Récupère le HTML nettoyé depuis Redis.
+        
+        Args:
+            key: La clé Redis de l'offre (cleaned_html:url)
+            
+        Returns:
+            Optional[str]: Le contenu HTML nettoyé ou None
+        """
+        try:
+            content = self.redis.get(key)
+            if content:
+                logger.debug(f"✅ HTML nettoyé récupéré pour: {key}")
+                return content
+            return None
+        except Exception as e:
+            logger.error(f"❌ Erreur lors de la récupération du HTML nettoyé: {str(e)}")
+            return None
+
+    async def get_all_cleaned_html_keys(self) -> list[str]:
+        """
+        Récupère toutes les clés des HTML nettoyés.
+        
+        Returns:
+            list[str]: Liste des clés cleaned_html
+        """
+        try:
+            pattern = self._get_key("*", prefix="cleaned_html")
+            keys = self.redis.keys(pattern)
+            logger.debug(f"✅ {len(keys)} clés cleaned_html trouvées")
+            return keys
+        except Exception as e:
+            logger.error(f"❌ Erreur lors de la récupération des clés cleaned_html: {str(e)}")
+            return []

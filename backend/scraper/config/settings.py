@@ -21,7 +21,7 @@ SCRAPING_SOURCES = [
         'name': 'free-work-fullstack',
         'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=D%C3%A9veloppeur%C2%B7euse%20fullstack&freshness=less_than_24_hours",
         'enabled': True,
-        'max_pages': 10,
+        'max_pages': 10,  # Limite à 10 pages pour les tests
         'selectors': {
             'job_link': 'a[href*="/job-mission/"]',
             'next_button': 'button:-soup-contains("Suivant")'
@@ -29,15 +29,14 @@ SCRAPING_SOURCES = [
     },
     {
         'name': 'free-work-data',
-        'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=D%C3%A9veloppeur%C2%B7euse%20data%20%28d%C3%A9cisionnel%20%2F%20BI%20%2F%20Big%20Data%20%2F%20Data%20engineer%29&freshness=less_than_7_days",
+        'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=D%C3%A9veloppeur%C2%B7euse%20data&freshness=less_than_24_hours",
         'enabled': True,
-        'max_pages': 10,
+        'max_pages': 10,  # Limite à 10 pages pour les tests
         'selectors': {
             'job_link': 'a[href*="/job-mission/"]',
             'next_button': 'button:-soup-contains("Suivant")'
         }
     }
-    # Autres sources à ajouter ici
 ]
 
 REQUEST_DELAY = 2  # secondes entre chaque requête
@@ -170,7 +169,7 @@ URL: {url}
 📊 Stats nettoyage: {original_size:,} → {cleaned_size:,} chars | {scripts_removed} scripts supprimés"""
 
 # Configuration du cache Redis
-REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
+REDIS_HOST = os.getenv('REDIS_HOST', 'redis')  # Nom du service dans docker-compose
 REDIS_PORT = int(os.getenv('REDIS_PORT', 6379))
 REDIS_DB = int(os.getenv('REDIS_DB', 0))
 CACHE_TTL = 48 * 3600  # 48 heures

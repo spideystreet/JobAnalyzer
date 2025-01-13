@@ -1,5 +1,5 @@
 """
-DAG Airflow pour le scraping quotidien des offres d'emploi.
+DAG Airflow pour l'extraction des offres d'emploi.
 """
 
 import asyncio
@@ -9,7 +9,6 @@ from airflow.operators.python import PythonOperator
 from loguru import logger
 
 from backend.scraper.core.list_scraper import JobListScraper
-from backend.scraper.core.job_scraper import JobScraper
 from backend.scraper.core.cache import JobCache
 from backend.scraper.config.settings import SCRAPING_INTERVAL
 
@@ -24,25 +23,30 @@ default_args = {
     'execution_timeout': timedelta(hours=2)
 }
 
-async def process_jobs():
+async def extract_jobs():
     """
-    Fonction principale qui gère le processus de scraping.
-    Récupère toutes les nouvelles offres et les analyse.
+    Fonction d'extraction pure qui :
+    1. Récupère les URLs des offres
+    2. Extrait le HTML brut
+    3. Stocke dans Redis
     """
     try:
         # Initialisation des composants
         list_scraper = JobListScraper()
-        job_scraper = JobScraper()
         cache = JobCache()
         
-        logger.info("🚀 Début du processus de scraping")
+        logger.info("🚀 Début de l'extraction")
         
-        # Récupère toutes les URLs
-        urls = await list_scraper.get_all_job_urls()
-        logger.info(f"📑 {len(urls)} offres trouvées au total")
+        try:
+            # Récupère toutes les URLs
+            urls = await list_scraper.get_all_job_urls()
+            logger.info(f"📑 {len(urls)} offres trouvées au total")
+        except Exception as e:
+            logger.exception(f"❌ Erreur lors de la récupération des URLs: {str(e)}")
+            raise
         
         # Compteurs pour les statistiques
-        processed = 0
+        extracted = 0
         skipped = 0
         failed = 0
         
@@ -51,32 +55,32 @@ async def process_jobs():
             try:
                 # Vérifie si l'URL a déjà été traitée
                 if await cache.is_processed(url):
-                    logger.debug(f"⏭️ URL déjà traitée: {url}")
+                    logger.debug(f"⏭️ URL déjà extraite: {url}")
                     skipped += 1
                     continue
                 
-                # Scrape et analyse l'offre
-                job_data = await job_scraper.scrape_job_offer(url)
+                # Extrait uniquement le HTML brut
+                html_content = await list_scraper._fetch_page(url)
                 
-                if job_data:
-                    # TODO: Sauvegarder dans Supabase
-                    await cache.mark_processed(url)
-                    processed += 1
-                    logger.success(f"✅ Offre traitée: {url}")
+                if html_content:
+                    # Stocke le HTML brut dans Redis
+                    await cache.store_raw_html(url, html_content)
+                    extracted += 1
+                    logger.success(f"✅ HTML extrait: {url}")
                 else:
                     failed += 1
-                    logger.error(f"❌ Échec du traitement: {url}")
+                    logger.error(f"❌ Échec de l'extraction: {url}")
                     
             except Exception as e:
                 failed += 1
-                logger.exception(f"❌ Erreur lors du traitement de {url}: {str(e)}")
+                logger.exception(f"❌ Erreur lors de l'extraction de {url}: {str(e)}")
         
         # Log des statistiques finales
         logger.success(
-            "📊 Bilan du scraping:\n"
+            "📊 Bilan de l'extraction:\n"
             f"  - Offres trouvées: {len(urls)}\n"
-            f"  - Traitées avec succès: {processed}\n"
-            f"  - Déjà vues: {skipped}\n"
+            f"  - HTML extraits: {extracted}\n"
+            f"  - Déjà vus: {skipped}\n"
             f"  - Échecs: {failed}"
         )
         
@@ -87,27 +91,24 @@ async def process_jobs():
         # Ferme la connexion Redis
         cache.close()
 
-def run_scraping():
+def run_extraction():
     """Point d'entrée pour Airflow qui exécute la fonction asynchrone."""
-    asyncio.run(process_jobs())
+    asyncio.run(extract_jobs())
 
 # Création du DAG
 dag = DAG(
-    'job_scraping',
+    'DATA_PIPELINE.01_JOB_SCRAPING',
     default_args=default_args,
-    description='Scraping quotidien des offres d\'emploi',
+    description='Extraction quotidienne du HTML des offres d\'emploi',
     schedule_interval=SCRAPING_INTERVAL,
     start_date=datetime(2024, 1, 1),
     catchup=False,
-    tags=['scraping', 'jobs']
+    tags=['ingestion', 'scraping', 'extract', 'step_01']
 )
 
-# Tâche de scraping
-scraping_task = PythonOperator(
-    task_id='scrape_new_jobs',
-    python_callable=run_scraping,
+# Tâche d'extraction
+extraction_task = PythonOperator(
+    task_id='extract_job_html',
+    python_callable=run_extraction,
     dag=dag
-)
-
-# Si on ajoute d'autres tâches plus tard, on peut définir les dépendances ici
-# Par exemple : scraping_task >> notification_task 
+) 

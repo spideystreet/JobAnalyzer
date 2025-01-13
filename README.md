@@ -22,9 +22,11 @@ JobAnalyzer est un outil qui :
 ## 🏗 Architecture
 
 ### Backend (Python)
-- Scraping automatisé (Beautiful Soup)
+- Multi-source scraping (Beautiful Soup)
+  - Free-Work
 - Analyse IA (DeepSeek v3)
 - Base de données (Supabase)
+- Orchestration (Airflow)
 
 ### Frontend (React)
 - Dashboard interactif
@@ -34,9 +36,11 @@ JobAnalyzer est un outil qui :
 ## 🛠 Technologies
 
 - **Backend** : Python 3.11
+- **Gestion des dépendances** : Poetry
 - **Frontend** : React
 - **Base de données** : Supabase (PostgreSQL)
 - **IA** : DeepSeek v3
+- **Orchestration** : Apache Airflow
 - **Déploiement** : Google Cloud Run, Vercel
 
 ## 📦 Structure du Projet
@@ -44,13 +48,22 @@ JobAnalyzer est un outil qui :
 ```
 JobAnalyzer/
 ├── backend/
-│   ├── scraper/        # Scraping FreeWork
-│   ├── models/         # Modèles de données
-│   └── database/       # Client Supabase
+│   ├── airflow/           # DAGs Airflow
+│   ├── scraper/          
+│   │   ├── config/       # Configuration et settings
+│   │   ├── core/         # Composants principaux
+│   │   │   ├── list_scraper.py    # Extraction des URLs
+│   │   │   ├── job_scraper.py     # Scraping détaillé
+│   │   │   ├── job_analyzer.py    # Analyse DeepSeek
+│   │   │   ├── html_cleaner.py    # Nettoyage HTML
+│   │   │   └── cache.py           # Mise en cache
+│   │   └── tests/        # Tests unitaires
+│   ├── models/           # Modèles de données
+│   └── database/         # Client Supabase
 ├── frontend/
 │   ├── src/
 │   └── public/
-└── docker/            # Configuration Docker
+└── docker/              # Configuration Docker
 ```
 
 ## 🔒 Sécurité
@@ -120,24 +133,23 @@ JobAnalyzer/
 - [ ] Sécurisation des endpoints
 
 # Fonctionnement
-JobScraper (Orchestrateur)
-├── HTMLCleaner
-│   ├── Nettoie le HTML
-│   ├── Extrait les sections pertinentes
-│   └── Utilise les configs : ALLOWED_TAGS, RELEVANT_CLASSES
-│
-├── JobAnalyzer
-│   ├── Communique avec DeepSeek
-│   ├── Parse les réponses
-│   └── Utilise les configs : DEEPSEEK_*, REQUIRED_FIELDS
-│
-└── Configuration (settings.py)
-    ├── Variables d'environnement (.env)
-    ├── Constantes de configuration
-    └── Utilisé par tous les composants
+
+Architecture du Scraper :
+```
+JobListScraper (URLs)                JobScraper (Détails)
+├── Configuration source            ├── HTMLCleaner
+│   ├── Sélecteurs CSS             │   ├── Nettoie le HTML
+│   ├── URLs de base               │   └── Extrait les sections
+│   └── Rate limiting              │
+│                                  ├── JobAnalyzer
+Multi-source support :             │   ├── DeepSeek API
+├── Free-Work                      │   ├── Parse les réponses
+├── Malt (à venir)                 │   ├── Validation
+└── Comet (à venir)               └── Cache
+                                      └── Évite les re-scraping
 
 Flow de données :
-URL → JobScraper._fetch_page() → HTMLCleaner.clean() → JobAnalyzer.analyze() → Résultat
+Source → JobListScraper → URLs → JobScraper → HTMLCleaner → JobAnalyzer → Base de données
 
 ## 📜 Licence
 

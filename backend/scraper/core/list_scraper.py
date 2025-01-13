@@ -84,34 +84,6 @@ class JobListScraper:
         logger.info(f"📑 {len(urls)} offres trouvées sur la page")
         return urls
 
-    def _should_continue_to_next_page(self, html: str, source: Dict, current_page_urls: List[str]) -> bool:
-        """
-        Détermine s'il faut continuer vers la page suivante.
-        La décision est basée sur :
-        1. Si la page actuelle a retourné des offres
-        2. Si un bouton "suivant" est présent et actif
-        
-        Args:
-            html: Le contenu HTML de la page courante
-            source: Configuration de la source
-            current_page_urls: URLs trouvées sur la page actuelle
-            
-        Returns:
-            bool: True s'il faut continuer vers la page suivante
-        """
-        # Si la page actuelle n'a pas d'offres, inutile de continuer
-        if not current_page_urls:
-            logger.debug("🚫 Page sans offres, arrêt du scraping")
-            return False
-            
-        # Vérifie la présence d'un bouton suivant actif
-        soup = BeautifulSoup(html, 'lxml')
-        next_button = soup.select_one(source['selectors']['next_button'])
-        has_next = next_button is not None and not next_button.get('disabled')
-        
-        logger.debug(f"📊 Page actuelle : {len(current_page_urls)} offres, bouton suivant : {'présent' if has_next else 'absent'}")
-        return has_next
-
     async def _scrape_source(self, source: Dict) -> List[str]:
         """
         Scrape toutes les offres d'une source.
@@ -124,31 +96,45 @@ class JobListScraper:
         """
         all_urls = []
         page = 1
-        continue_scraping = True
+        max_pages = source.get('max_pages')
         
         logger.info(f"🔍 Début du scraping de {source['name']}...")
         
-        while continue_scraping and page <= source['max_pages']:
+        while True:
+            # Vérifie si on a atteint la limite de pages
+            if max_pages and page > max_pages:
+                logger.info(f"🛑 Limite de {max_pages} pages atteinte")
+                break
+
             logger.info(f"📄 Traitement de la page {page}")
             
             # 1. Récupère le HTML de la page
-            url = f"{source['base_url']}?page={page}"
+            url = f"{source['base_url']}&page={page}" if '?' in source['base_url'] else f"{source['base_url']}?page={page}"
             html = await self._fetch_page(url)
             if not html:
+                logger.warning(f"⚠️ Impossible de récupérer la page {page}")
                 break
                 
             # 2. Extrait les URLs de la page courante
             page_urls = self._extract_job_urls(html, source)
             all_urls.extend(page_urls)
             
-            # 3. Détermine s'il faut continuer vers la page suivante
-            continue_scraping = self._should_continue_to_next_page(html, source, page_urls)
+            # 3. Vérifie s'il faut continuer
+            if not page_urls:
+                logger.debug("🚫 Page sans offres, arrêt du scraping")
+                break
+                
+            # Vérifie la présence d'un bouton suivant actif
+            soup = BeautifulSoup(html, 'lxml')
+            next_button = soup.select_one(source['selectors']['next_button'])
+            if not next_button or next_button.get('disabled'):
+                logger.debug("🚫 Plus de pages suivantes")
+                break
             
-            # 4. Passe à la page suivante si nécessaire
-            if continue_scraping:
-                page += 1
-                logger.debug(f"⏳ Attente de {REQUEST_DELAY} secondes avant la page suivante...")
-                await asyncio.sleep(REQUEST_DELAY)
+            # 4. Passe à la page suivante
+            page += 1
+            logger.debug(f"⏳ Attente de {REQUEST_DELAY} secondes avant la page suivante...")
+            await asyncio.sleep(REQUEST_DELAY)
         
         logger.success(f"✅ Scraping de {source['name']} terminé : {len(all_urls)} offres trouvées")
         return all_urls
