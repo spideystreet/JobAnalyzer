@@ -8,14 +8,15 @@ Analyseur automatique d'offres d'emploi Freelances avec intelligence artificiell
 
 JobAnalyzer est un outil qui :
 - Scrape automatiquement les nouvelles offres Freelances
-- Analyse et catégorise les offres avec l'IA (DeepSeek v3)
-- Stocke les données de manière structurée
+- Nettoie et structure le HTML des offres (96% de réduction)
+- Analyse et catégorise les offres avec l'IA (DeepSeek)
+- Stocke les données de manière structurée dans Redis
 - Fournit des analyses de marché et des tendances
 
 ## ⚠️ Avertissements
 
 - Respectez les conditions d'utilisation des sites sources
-- Ne partagez JAMAIS vos clés API (OpenAI, Supabase)
+- Ne partagez JAMAIS vos clés API (DeepSeek)
 - Utilisez le rate limiting pour ne pas surcharger les sites
 - Les données scrappées doivent être utilisées de manière éthique
 
@@ -23,32 +24,43 @@ JobAnalyzer est un outil qui :
 
 ### Backend (Python)
 - Multi-source scraping (Beautiful Soup)
-  - Free-Work
-- Analyse IA (DeepSeek v3)
-- Base de données (Supabase)
+  - Free-Work (Implémenté)
+  - Malt (À venir)
+  - Comet (À venir)
+- Analyse IA (DeepSeek)
+- Cache (Redis)
 - Orchestration (Airflow)
 
-### Frontend (React)
-- Dashboard interactif
-- Visualisation des données
-- Filtres avancés
+### Pipeline de Données
+1. **DAG 01 - Scraping** (`01_JOB_SCRAPING_dag.py`)
+   - Extraction des URLs d'offres
+   - Scraping du HTML détaillé
+   - Mise en cache Redis
+
+2. **DAG 02 - Transformation** (`02_JOB_TRANSFO.py`)
+   - Nettoyage du HTML (96% de réduction)
+   - Analyse IA avec DeepSeek
+   - Stockage structuré
 
 ## 🛠 Technologies
 
-- **Backend** : Python 3.11
-- **Gestion des dépendances** : Poetry
-- **Frontend** : React
-- **Base de données** : Supabase (PostgreSQL)
-- **IA** : DeepSeek v3
+- **Backend** : Python 3.10
+- **Scraping** : Beautiful Soup 4
+- **Cache** : Redis
+- **IA** : DeepSeek
 - **Orchestration** : Apache Airflow
-- **Déploiement** : Google Cloud Run, Vercel
+- **Conteneurisation** : Docker & Docker Compose
 
 ## 📦 Structure du Projet
 
 ```
 JobAnalyzer/
 ├── backend/
-│   ├── airflow/           # DAGs Airflow
+│   ├── airflow/           
+│   │   ├── dags/         # DAGs Airflow
+│   │   │   ├── 01_JOB_SCRAPING_dag.py
+│   │   │   └── 02_JOB_TRANSFO.py
+│   │   └── logs/        # Logs applicatifs
 │   ├── scraper/          
 │   │   ├── config/       # Configuration et settings
 │   │   ├── core/         # Composants principaux
@@ -56,14 +68,12 @@ JobAnalyzer/
 │   │   │   ├── job_scraper.py     # Scraping détaillé
 │   │   │   ├── job_analyzer.py    # Analyse DeepSeek
 │   │   │   ├── html_cleaner.py    # Nettoyage HTML
-│   │   │   └── cache.py           # Mise en cache
+│   │   │   └── cache.py           # Gestion Redis
 │   │   └── tests/        # Tests unitaires
-│   ├── models/           # Modèles de données
-│   └── database/         # Client Supabase
-├── frontend/
-│   ├── src/
-│   └── public/
-└── docker/              # Configuration Docker
+│   └── models/           # Modèles de données
+├── docker/              
+│   └── airflow/         # Configuration Airflow
+└── scripts/             # Scripts utilitaires
 ```
 
 ## 🔒 Sécurité
@@ -75,81 +85,63 @@ JobAnalyzer/
 
 2. **Rate Limiting**
    - Respecter les limites d'API
-   - Implémenter des délais entre les requêtes
-   - Gérer les erreurs de manière gracieuse
+   - Délais configurables entre les requêtes
+   - Gestion des erreurs avec retry
 
 ## 🚀 Installation
 
 1. **Prérequis**
-   - Python 3.11+
-   - Docker
-   - Node.js 18+
-   - Clés API (voir ci-dessous)
+   - Docker & Docker Compose
+   - Clé API DeepSeek
 
 2. **Configuration**
    ```bash
-   # Ne JAMAIS commiter ce fichier
+   # Copier le fichier d'exemple
    cp .env.example .env
    
-   # Configurer vos variables dans .env :
-   # - OPENAI_API_KEY
-   # - SUPABASE_URL
-   # - SUPABASE_KEY
+   # Configurer dans .env :
+   DEEPSEEK_API_KEY=votre_clé_api
    ```
 
 3. **Lancement**
    ```bash
-   # Développement
+   # Construction et démarrage
    docker compose up --build
 
-   # Production
-   # Instructions à venir
+   # Vérification des services
+   docker compose ps
    ```
 
-## 📊 Structure de la Base de Données
+## 🔄 Pipeline de Données
 
-### Table `JOB_OFFERS`
-- Stockage des offres d'emploi
-- Classification par domaine
-- Analyse IA
-- Informations géographiques
+1. **Scraping (DAG 01)**
+   - Extraction quotidienne des nouvelles offres
+   - Gestion intelligente de la pagination
+   - Mise en cache Redis avec déduplication
 
-## 🔄 Workflow
+2. **Transformation (DAG 02)**
+   - Nettoyage HTML optimisé (96% de réduction)
+   - Analyse sémantique par DeepSeek
+   - Logs détaillés de chaque étape
 
-1. Scraping quotidien des nouvelles offres
-2. Analyse et enrichissement par IA
-3. Stockage structuré
-4. Mise à jour du dashboard
+## 📊 Performances Actuelles
+
+- **Scraping** : ~30 offres en 2-3 minutes
+- **Nettoyage HTML** : 96% de réduction de taille
+- **Analyse IA** : ~4 secondes par offre
+- **Pipeline complet** : ~2 minutes pour 29 offres
 
 ## 📝 TODO
 
-- [ ] Implémentation du scraper
-- [ ] Intégration OpenAI
-- [ ] Configuration Cloud Run
-- [ ] Développement frontend
+- [x] Implémentation du scraper Free-Work
+- [x] Intégration DeepSeek
+- [x] Pipeline de transformation
+- [x] Logging avancé
 - [ ] Tests automatisés
-- [ ] Documentation complète
-- [ ] Guide de contribution
-- [ ] Sécurisation des endpoints
-
-# Fonctionnement
-
-Architecture du Scraper :
-```
-JobListScraper (URLs)                JobScraper (Détails)
-├── Configuration source            ├── HTMLCleaner
-│   ├── Sélecteurs CSS             │   ├── Nettoie le HTML
-│   ├── URLs de base               │   └── Extrait les sections
-│   └── Rate limiting              │
-│                                  ├── JobAnalyzer
-Multi-source support :             │   ├── DeepSeek API
-├── Free-Work                      │   ├── Parse les réponses
-├── Malt (à venir)                 │   ├── Validation
-└── Comet (à venir)               └── Cache
-                                      └── Évite les re-scraping
-
-Flow de données :
-Source → JobListScraper → URLs → JobScraper → HTMLCleaner → JobAnalyzer → Base de données
+- [ ] Support Malt
+- [ ] Support Comet
+- [ ] API REST
+- [ ] Interface utilisateur
 
 ## 📜 Licence
 
