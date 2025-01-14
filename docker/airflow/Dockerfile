@@ -28,3 +28,6 @@ WORKDIR /opt/airflow
 
 # Configuration du PYTHONPATH pour inclure le dossier parent
 ENV PYTHONPATH=/opt/airflow:/opt/airflow/backend 
+
+# Ajout du PYTHONPATH
+ENV PYTHONPATH="${PYTHONPATH}:/opt/airflow/" 

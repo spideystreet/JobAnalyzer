@@ -33,7 +33,7 @@ class JobAnalyzer:
             html_content: Le contenu HTML nettoyé de l'offre
             
         Returns:
-            Dict[str, Any]: Les informations extraites de l'offre
+            Dict[str, Any]: Les informations extraites de l'offre avec les clés en majuscules
         """
         try:
             # Construction du prompt
@@ -46,8 +46,25 @@ class JobAnalyzer:
             if not self._validate_response(response):
                 logger.warning("⚠️ Réponse invalide de DeepSeek")
                 return self._get_empty_response()
-                
-            return response
+            
+            # Transformation des clés en majuscules
+            uppercase_response = {
+                key.upper(): value 
+                for key, value in response.items()
+            }
+            
+            # Gestion de DURATION_DAYS selon CONTRACT_TYPE
+            if uppercase_response.get('CONTRACT_TYPE') == 'CDI':
+                uppercase_response['DURATION_DAYS'] = None
+            elif uppercase_response.get('DURATION_DAYS') == "None":
+                uppercase_response['DURATION_DAYS'] = None
+            else:
+                try:
+                    uppercase_response['DURATION_DAYS'] = int(uppercase_response['DURATION_DAYS'])
+                except (ValueError, TypeError):
+                    uppercase_response['DURATION_DAYS'] = None
+            
+            return uppercase_response
             
         except Exception as e:
             logger.error(f"❌ Erreur lors de l'analyse : {str(e)}")
@@ -125,5 +142,5 @@ class JobAnalyzer:
         return all(field in response for field in REQUIRED_FIELDS)
 
     def _get_empty_response(self) -> Dict[str, Any]:
-        """Retourne une réponse vide avec la structure attendue."""
-        return {field: "" for field in REQUIRED_FIELDS} 
+        """Retourne une réponse vide avec la structure attendue et les clés en majuscules."""
+        return {field.upper(): "" for field in REQUIRED_FIELDS} 

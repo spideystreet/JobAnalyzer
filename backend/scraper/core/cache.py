@@ -186,6 +186,10 @@ class JobCache:
         try:
             # Extrait l'URL de la clé raw_html:url
             url = key.split(":", 1)[1]
+            
+            # Ajoute l'URL à l'analyse
+            analysis['URL'] = url
+            
             # Stocke avec le préfixe analysis
             analysis_key = self._get_key(url, prefix="analysis")
             self.redis.set(
@@ -249,3 +253,59 @@ class JobCache:
         except Exception as e:
             logger.error(f"❌ Erreur lors de la récupération des clés cleaned_html: {str(e)}")
             return []
+
+    async def get_all_analysis_keys(self) -> list[str]:
+        """
+        Récupère toutes les clés des analyses stockées.
+        
+        Returns:
+            list[str]: Liste des clés analysis
+        """
+        try:
+            pattern = self._get_key("*", prefix="analysis")
+            keys = self.redis.keys(pattern)
+            logger.debug(f"✅ {len(keys)} clés analysis trouvées")
+            return keys
+        except Exception as e:
+            logger.error(f"❌ Erreur lors de la récupération des clés analysis: {str(e)}")
+            return []
+
+    async def get_analysis(self, key: str) -> Optional[dict]:
+        """
+        Récupère une analyse depuis Redis.
+        
+        Args:
+            key: La clé Redis de l'analyse (analysis:url)
+            
+        Returns:
+            Optional[dict]: Le dictionnaire d'analyse ou None
+        """
+        try:
+            content = self.redis.get(key)
+            if content:
+                logger.debug(f"✅ Analyse récupérée pour: {key}")
+                return eval(content)  # Convertit la str en dict
+            return None
+        except Exception as e:
+            logger.error(f"❌ Erreur lors de la récupération de l'analyse: {str(e)}")
+            return None
+
+    async def delete_analysis(self, key: str) -> bool:
+        """
+        Supprime une analyse de Redis après son chargement dans Supabase.
+        
+        Args:
+            key: La clé Redis de l'analyse (analysis:url)
+            
+        Returns:
+            bool: True si supprimé avec succès
+        """
+        try:
+            deleted = self.redis.delete(key)
+            if deleted:
+                logger.debug(f"✅ Analyse supprimée: {key}")
+                return True
+            return False
+        except Exception as e:
+            logger.error(f"❌ Erreur lors de la suppression de l'analyse: {str(e)}")
+            return False
