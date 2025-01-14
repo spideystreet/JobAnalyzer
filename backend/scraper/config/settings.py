@@ -53,7 +53,7 @@ REQUIRED_FIELDS = {
     'TITLE': 'Le titre du poste',
     'COMPANY': 'Le nom de l\'entreprise',
     'COMPANY_TYPE': f'Un parmi: [{", ".join(CompanyType._member_names_)}]',
-    'CONTRACT_TYPE': f'Un parmi: [{", ".join(ContractType._member_names_)}]',
+    'CONTRACT_TYPE': f'[Liste de type de contrat], pas obligé qu\'il y en ai plsuieurs, il peut y avoir un seul type parmi: [{", ".join(ContractType._member_names_)}]',
     'DOMAIN': f'Analyse bien le domaine et choisis un parmi: [{", ".join(JobDomain._member_names_)}]',
     'XP': f'Le niveau d\'experience, choisis un parmi: [{", ".join(ExperienceLevel._member_names_)}] sachant que Junior = <2 ans, Intermédiaire = 2-5 ans, Confirmé = 5-10 ans, Sénior = >10 ans',
     'REMOTE': f'Un parmi: [{", ".join(RemoteType._member_names_)}]',

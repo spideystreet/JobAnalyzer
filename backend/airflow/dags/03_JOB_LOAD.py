@@ -105,6 +105,16 @@ async def load_analyses():
                 if analysis.get('DURATION_DAYS') == "None":
                     analysis['DURATION_DAYS'] = None
                 
+                # Conversion de CONTRACT_TYPE en liste s'il ne l'est pas déjà
+                contract_type = analysis.get('CONTRACT_TYPE')
+                if contract_type:
+                    if isinstance(contract_type, str):
+                        analysis['CONTRACT_TYPE'] = [contract_type]
+                    elif not isinstance(contract_type, list):
+                        analysis['CONTRACT_TYPE'] = [str(contract_type)]
+                else:
+                    analysis['CONTRACT_TYPE'] = []
+                
                 # Chargement dans Supabase
                 success = await storage.store_job_analysis(analysis)
                 if success:
