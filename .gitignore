@@ -182,6 +182,7 @@ node_modules/
 
 # Environment
 .env*.local
+.cursorrules
 
 # Vercel
 .vercel
