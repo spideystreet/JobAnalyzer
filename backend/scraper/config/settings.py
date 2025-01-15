@@ -139,7 +139,31 @@ REQUIRED_FIELDS = {
 
             RAPPEL DES CALCULS:
             - X ans ou X année(s) = X * 365 jours
-            - X mois = X * 30 jours'''
+            - X mois = X * 30 jours''',
+
+    'TJM_MIN': '''Le TJM minimum en euros (nombre entier uniquement)
+        RÈGLES STRICTES :
+        1. Chercher dans le texte les mentions de tarifs journaliers
+        2. Convertir les tarifs annuels en TJM (diviser par 220 jours)
+        3. Ne garder que le nombre, sans le symbole de monnaie
+        4. Si pas de TJM trouvé, retourner NULL
+        
+        Exemples:
+        "400-600€/jour" -> 400
+        "500€/j" -> 500
+        "entre 600 et 800€/jour" -> 600''',
+
+    'TJM_MAX': '''Le TJM maximum en euros (nombre entier uniquement)
+        RÈGLES STRICTES :
+        1. Chercher dans le texte les mentions de tarifs journaliers
+        2. Convertir les tarifs annuels en TJM (diviser par 220 jours)
+        3. Ne garder que le nombre, sans le symbole de monnaie
+        4. Si pas de TJM trouvé, retourner NULL
+        
+        Exemples:
+        "400-600€/jour" -> 600
+        "500€/j" -> 500 (même valeur que min si tarif unique)
+        "entre 600 et 800€/jour" -> 800''',
 }
 
 # Configuration du nettoyage HTML

@@ -78,3 +78,12 @@ class JobScraper:
             'country': '',
             'cleaning_stats': {}
         } 
+
+    def _map_job_data(self, job_data: dict) -> dict:
+        """Map les données brutes du job vers le format attendu."""
+        return {
+            # ... existing mappings ...
+            'tjm_min': job_data.get('TJM_MIN'),
+            'tjm_max': job_data.get('TJM_MAX'),
+            # ... rest of existing mappings ...
+        } 
