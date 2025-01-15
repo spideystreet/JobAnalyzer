@@ -1,4 +1,5 @@
 """
+"""
 Module principal de scraping des offres.
 """
 
@@ -72,18 +73,17 @@ class JobScraper:
             'url': '',
             'title': '',
             'company': '',
+            'company_type': '',
+            'contract_type': '',
             'domain': '',
             'xp': '',
             'remote': '',
             'country': '',
+            'region': '',
+            'city': '',
+            'technos': [],
+            'tjm_min': None,
+            'tjm_max': None,
+            'duration_days': None,
             'cleaning_stats': {}
-        } 
-
-    def _map_job_data(self, job_data: dict) -> dict:
-        """Map les données brutes du job vers le format attendu."""
-        return {
-            # ... existing mappings ...
-            'tjm_min': job_data.get('TJM_MIN'),
-            'tjm_max': job_data.get('TJM_MAX'),
-            # ... rest of existing mappings ...
-        } 
+        }
