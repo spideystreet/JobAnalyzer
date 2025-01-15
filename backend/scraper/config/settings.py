@@ -52,12 +52,17 @@ DEEPSEEK_MODEL = 'deepseek-chat'
 REQUIRED_FIELDS = {
     'TITLE': 'Le titre du poste',
     'COMPANY': 'Le nom de l\'entreprise',
-    'COMPANY_TYPE': f'Un parmi: [{", ".join(CompanyType._member_names_)}]',
-    'CONTRACT_TYPE': f'[Liste de type de contrat], pas obligé qu\'il y en ai plsuieurs, il peut y avoir un seul type parmi: [{", ".join(ContractType._member_names_)}]',
-    'DOMAIN': f'Analyse bien le domaine et choisis un parmi: [{", ".join(JobDomain._member_names_)}]',
-    'XP': f'Le niveau d\'experience, choisis un parmi: [{", ".join(ExperienceLevel._member_names_)}] sachant que Junior = <2 ans, Intermédiaire = 2-5 ans, Confirmé = 5-10 ans, Sénior = >10 ans',
-    'REMOTE': f'Un parmi: [{", ".join(RemoteType._member_names_)}]',
-    'COUNTRY': f'Un parmi: [{", ".join(Country._member_names_)}]',
+    'COMPANY_TYPE': f'Un parmi: [{", ".join(type.value for type in CompanyType)}]',
+    'CONTRACT_TYPE': f'''[Liste EXHAUSTIVE des types de contrat mentionnés dans l'offre]
+        IMPORTANT:
+        1. Chercher TOUS les types de contrat mentionnés dans l'offre
+        2. Retourner une liste même s'il n'y a qu'un seul type
+        3. Types possibles: [{", ".join(type.value for type in ContractType)}]
+        5. Parcourir TOUT le texte, les types peuvent être mentionnés n'importe où''',
+    'DOMAIN': f'Analyse bien le domaine et choisis un parmi: [{", ".join(type.value for type in JobDomain)}]',
+    'XP': f'Le niveau d\'experience, choisis un parmi: [{", ".join(type.value for type in ExperienceLevel)}] sachant que Junior = <2 ans, Intermédiaire = 2-5 ans, Confirmé = 5-10 ans, Sénior = >10 ans',
+    'REMOTE': f'Un parmi: [{", ".join(type.value for type in RemoteType)}]',
+    'COUNTRY': f'Un parmi: [{", ".join(type.value for type in Country)}]',
     'REGION': f'Une région parmi: [{", ".join(get_all_regions())}], selon le pays',
     'TECHNOS': '[Liste des technologies requises] (technos/outils uniquement pas soft-skills ou autres)',
     'DURATION_DAYS': '''La durée en jours (0 si le CONTRACT_TYPE est strictement égal à CDI)

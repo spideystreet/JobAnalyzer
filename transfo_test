@@ -1,0 +1,7 @@
+[[34m2025-01-14T20:14:20.442+0000[0m] {[34mdagbag.py:[0m536} INFO[0m - Filling up the DagBag from /opt/airflow/dags[0m
+[[34m2025-01-14T20:14:20.588+0000[0m] {[34mdag.py:[0m3966} INFO[0m - dagrun id: DATA_PIPELINE.02_JOB_TRANSFO[0m
+[[34m2025-01-14T20:14:20.604+0000[0m] {[34mdag.py:[0m3982} INFO[0m - created dagrun <DagRun DATA_PIPELINE.02_JOB_TRANSFO @ 2024-01-14T00:00:00+00:00: manual__2024-01-14T00:00:00+00:00, state:running, queued_at: None. externally triggered: False>[0m
+[[34m2025-01-14T20:14:20.609+0000[0m] {[34mdag.py:[0m3930} INFO[0m - *****************************************************[0m
+[[34m2025-01-14T20:14:20.610+0000[0m] {[34mdag.py:[0m3934} INFO[0m - Running task transform_html[0m
+[2025-01-14 20:14:20,778] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='DATA_PIPELINE.02_JOB_TRANSFO' AIRFLOW_CTX_TASK_ID='transform_html' AIRFLOW_CTX_EXECUTION_DATE='2024-01-14T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2024-01-14T00:00:00+00:00'
+[[34m2025-01-14T20:14:20.778+0000[0m] {[34mtaskinstance.py:[0m1662} INFO[0m - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='DATA_PIPELINE.02_JOB_TRANSFO' AIRFLOW_CTX_TASK_ID='transform_html' AIRFLOW_CTX_EXECUTION_DATE='2024-01-14T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2024-01-14T00:00:00+00:00'[0m

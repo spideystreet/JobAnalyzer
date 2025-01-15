@@ -24,15 +24,46 @@ class ContractType(str, Enum):
 
 class JobDomain(str, Enum):
     """Domaine du poste."""
+    # Développement Web
     FULLSTACK = "Fullstack"
     FRONTEND = "Frontend"
     BACKEND = "Backend"
+    
+    # Data
+    DATA_ENGINEER = "Data Engineer"
+    DATA_SCIENTIST = "Data Scientist"
+    DATA_ANALYST = "Data Analyst"
+    ML_ENGINEER = "Machine Learning Engineer"
+    
+    # Infrastructure & Cloud
     DEVOPS = "DevOps"
-    DATA = "Data"
-    MOBILE = "Mobile"
-    SECURITY = "Security"
-    QA = "QA"
-    PM = "Product Management"
+    CLOUD_ARCHITECT = "Cloud Architect"
+    CLOUD_ENGINEER = "Cloud Engineer"
+
+    # Mobile & Apps
+    MOBILE_IOS = "Mobile iOS"
+    MOBILE_ANDROID = "Mobile Android"
+    MOBILE_CROSS = "Mobile Cross-Platform"
+    
+    # Sécurité
+    CYBERSECURITY = "Cybersecurity"
+    PENTESTER = "Pentester"
+    
+    # Qualité & Tests
+    QA_ENGINEER = "QA Engineer"
+    TEST_AUTOMATION = "Test Automation Engineer"
+    PERFORMANCE_ENGINEER = "Performance Engineer"
+    
+    # Management & Product
+    TECH_LEAD = "Tech Lead"
+    PRODUCT_MANAGER = "Product Manager"
+    PRODUCT_OWNER = "Product Owner"
+    SCRUM_MASTER = "Scrum Master"
+    
+    # Autres spécialisations
+    BLOCKCHAIN = "Blockchain Developer"
+    GAME_DEV = "Game Developer"
+    LOW_LEVEL = "Low Level Developer"
 
 class ExperienceLevel(str, Enum):
     """Niveau d'expérience requis."""
@@ -55,9 +86,9 @@ class ExperienceLevel(str, Enum):
 
 class RemoteType(str, Enum):
     """Type de travail à distance."""
-    FULL = "Full Remote"
-    HYBRID = "Hybrid"
-    OFFICE = "Office"
+    FULL = "100%"
+    HYBRID = "Hybride"
+    OFFICE = "Non"
 
 class Country(str, Enum):
     """Pays du poste."""
