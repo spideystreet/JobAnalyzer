@@ -53,14 +53,14 @@ REQUIRED_FIELDS = {
     'TITLE': 'Le titre du poste',
     'COMPANY': 'Le nom de l\'entreprise',
     'COMPANY_TYPE': f'Un parmi: [{", ".join(type.value for type in CompanyType)}]',
-    'CONTRACT_TYPE': f'''[Liste EXHAUSTIVE des types de contrat mentionnés dans l'offre]
+    'CONTRACT_TYPE': f'[Liste EXHAUSTIVE des types de contrat mentionnés dans l\'offre]
         IMPORTANT:
-        1. Chercher TOUS les types de contrat mentionnés dans l'offre
-        2. Retourner une liste même s'il n'y a qu'un seul type
-        3. Types possibles: [{", ".join(type.value for type in ContractType)}]
-        5. Parcourir TOUT le texte, les types peuvent être mentionnés n'importe où''',
-    'DOMAIN': f'Analyse bien le domaine et choisis un parmi: [{", ".join(type.value for type in JobDomain)}]',
-    'XP': f'Le niveau d\'experience, choisis un parmi: [{", ".join(type.value for type in ExperienceLevel)}] sachant que Junior = <2 ans, Intermédiaire = 2-5 ans, Confirmé = 5-10 ans, Sénior = >10 ans',
+        1. Chercher TOUS les types de contrat mentionnés dans l\'offre, ceux mentionnés mentionnés à l\'intérieur des balises <div class="tags relative w-full">
+        2. Retourner une liste même s\'il n\'y a qu\'un seul type
+        3. Types possibles: [{", ".join(type.value for type in ContractType)}]',
+    'DOMAIN': f'Analyse bien le domaine d\'expertise qui correspond et choisis un parmi: [{", ".join(type.value for type in JobDomain)}]',
+    'XP': f'Le niveau d\'experience, choisis un parmi: [{", ".join(type.value for type in ExperienceLevel)}]
+        sachant que Junior = <2 ans, Intermédiaire = 2-5 ans, Confirmé = 5-10 ans, Sénior = >10 ans',
     'REMOTE': f'Un parmi: [{", ".join(type.value for type in RemoteType)}]',
     'COUNTRY': f'Un parmi: [{", ".join(type.value for type in Country)}]',
     'REGION': f'Une région parmi: [{", ".join(get_all_regions())}], selon le pays',

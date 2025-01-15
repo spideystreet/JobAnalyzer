@@ -37,16 +37,13 @@ class JobDomain(str, Enum):
     
     # Infrastructure & Cloud
     DEVOPS = "DevOps"
-    CLOUD_ARCHITECT = "Cloud Architect"
-    CLOUD_ENGINEER = "Cloud Engineer"
+    CLOUD = "Cloud"
 
     # Mobile & Apps
-    MOBILE_IOS = "Mobile iOS"
-    MOBILE_ANDROID = "Mobile Android"
-    MOBILE_CROSS = "Mobile Cross-Platform"
+    MOBILE = "Mobile"
     
     # Sécurité
-    CYBERSECURITY = "Cybersecurity"
+    CYBERSECURITY = "Cybersécurité"
     PENTESTER = "Pentester"
     
     # Qualité & Tests
