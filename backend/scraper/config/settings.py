@@ -65,7 +65,7 @@ REQUIRED_FIELDS = {
     'COUNTRY': f'Un parmi: [{", ".join(type.value for type in Country)}]',
     'REGION': f'Une région parmi: [{", ".join(get_all_regions())}], selon le pays',
     'TECHNOS': '[Liste des technologies requises] (technos/outils uniquement pas soft-skills ou autres)',
-    'DURATION_DAYS': '''La durée en jours (0 si le CONTRACT_TYPE est strictement égal à CDI)
+    'DURATION_DAYS': '''La durée en jours
             EXEMPLE 1 (Années):
             CDI
             Freelance
