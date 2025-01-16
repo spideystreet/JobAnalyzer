@@ -12,6 +12,7 @@ import os
 import sys
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.utils.log.logging_mixin import LoggingMixin
 from loguru import logger
 
 # Configuration avancée du logger
@@ -31,9 +32,9 @@ logger.add(
     mode="a"
 )
 
-# Log aussi dans stderr pour Airflow
+# Log dans stdout pour Airflow
 logger.add(
-    sys.stderr,
+    sys.stdout,
     format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {message}",
     level="INFO",
     backtrace=True,
@@ -59,6 +60,9 @@ default_args = {
     'execution_timeout': timedelta(hours=2)
 }
 
+# Création d'un logger Airflow
+airflow_logger = LoggingMixin().log
+
 async def extract_jobs():
     """
     Étape 1: Extraction des offres d'emploi
@@ -67,13 +71,13 @@ async def extract_jobs():
         list_scraper = JobListScraper()
         cache = JobCache()
         
-        logger.info("🚀 Début de l'extraction")
+        airflow_logger.info("🚀 Début de l'extraction")
         
         try:
             urls = await list_scraper.get_all_job_urls()
-            logger.info(f"📑 {len(urls)} offres trouvées au total")
+            airflow_logger.info(f"📑 {len(urls)} offres trouvées au total")
         except Exception as e:
-            logger.exception(f"❌ Erreur lors de la récupération des URLs: {str(e)}")
+            airflow_logger.error(f"❌ Erreur lors de la récupération des URLs: {str(e)}")
             raise
         
         extracted = 0
@@ -83,7 +87,7 @@ async def extract_jobs():
         for url in urls:
             try:
                 if await cache.is_processed(url):
-                    logger.debug(f"⏭️ URL déjà extraite: {url}")
+                    airflow_logger.debug(f"⏭️ URL déjà extraite: {url}")
                     skipped += 1
                     continue
                 
@@ -92,16 +96,16 @@ async def extract_jobs():
                 if html_content:
                     await cache.store_raw_html(url, html_content)
                     extracted += 1
-                    logger.success(f"✅ HTML extrait: {url}")
+                    airflow_logger.info(f"✅ HTML extrait: {url}")
                 else:
                     failed += 1
-                    logger.error(f"❌ Échec de l'extraction: {url}")
+                    airflow_logger.error(f"❌ Échec de l'extraction: {url}")
                     
             except Exception as e:
                 failed += 1
-                logger.exception(f"❌ Erreur lors de l'extraction de {url}: {str(e)}")
+                airflow_logger.error(f"❌ Erreur lors de l'extraction de {url}: {str(e)}")
         
-        logger.success(
+        airflow_logger.info(
             "📊 Bilan de l'extraction:\n"
             f"  - Offres trouvées: {len(urls)}\n"
             f"  - HTML extraits: {extracted}\n"
@@ -110,7 +114,7 @@ async def extract_jobs():
         )
         
     except Exception as e:
-        logger.exception(f"❌ Erreur fatale: {str(e)}")
+        airflow_logger.error(f"❌ Erreur fatale: {str(e)}")
         raise
     finally:
         cache.close()
@@ -125,9 +129,9 @@ async def transform_and_analyze():
         analyzer = JobAnalyzer()
         
         # Partie 1: Nettoyage HTML
-        logger.info("🧹 Début du nettoyage HTML")
+        airflow_logger.info("🧹 Début du nettoyage HTML")
         raw_keys = await cache.get_all_raw_html_keys()
-        logger.info(f"📑 {len(raw_keys)} offres à nettoyer")
+        airflow_logger.info(f"📑 {len(raw_keys)} offres à nettoyer")
         
         cleaned = 0
         cleaning_failed = 0
@@ -136,23 +140,23 @@ async def transform_and_analyze():
             try:
                 html_content = await cache.get_raw_html(key)
                 if not html_content:
-                    logger.warning(f"⚠️ HTML non trouvé pour {key}")
+                    airflow_logger.warning(f"⚠️ HTML non trouvé pour {key}")
                     cleaning_failed += 1
                     continue
                 
                 cleaned_html = cleaner.clean(html_content)
                 await cache.store_cleaned_html(key, cleaned_html)
                 cleaned += 1
-                logger.success(f"✅ Nettoyage réussi: {key}")
+                airflow_logger.info(f"✅ Nettoyage réussi: {key}")
                     
             except Exception as e:
                 cleaning_failed += 1
-                logger.exception(f"❌ Erreur lors du nettoyage de {key}: {str(e)}")
+                airflow_logger.error(f"❌ Erreur lors du nettoyage de {key}: {str(e)}")
         
         # Partie 2: Analyse
-        logger.info("🧠 Début de l'analyse")
+        airflow_logger.info("🧠 Début de l'analyse")
         cleaned_keys = await cache.get_all_cleaned_html_keys()
-        logger.info(f"📑 {len(cleaned_keys)} offres à analyser")
+        airflow_logger.info(f"📑 {len(cleaned_keys)} offres à analyser")
         
         analyzed = 0
         analysis_failed = 0
@@ -161,7 +165,7 @@ async def transform_and_analyze():
             try:
                 cleaned_html = await cache.get_cleaned_html(key)
                 if not cleaned_html:
-                    logger.warning(f"⚠️ HTML nettoyé non trouvé pour {key}")
+                    airflow_logger.warning(f"⚠️ HTML nettoyé non trouvé pour {key}")
                     analysis_failed += 1
                     continue
                 
@@ -170,16 +174,16 @@ async def transform_and_analyze():
                 if analysis:
                     await cache.store_analysis(key, analysis)
                     analyzed += 1
-                    logger.success(f"✅ Analyse réussie: {key}")
+                    airflow_logger.info(f"✅ Analyse réussie: {key}")
                 else:
                     analysis_failed += 1
-                    logger.error(f"❌ Échec de l'analyse: {key}")
+                    airflow_logger.error(f"❌ Échec de l'analyse: {key}")
                     
             except Exception as e:
                 analysis_failed += 1
-                logger.exception(f"❌ Erreur lors de l'analyse de {key}: {str(e)}")
+                airflow_logger.error(f"❌ Erreur lors de l'analyse de {key}: {str(e)}")
         
-        logger.success(
+        airflow_logger.info(
             "📊 Bilan de la transformation:\n"
             f"  - Nettoyages réussis: {cleaned}/{len(raw_keys)}\n"
             f"  - Analyses réussies: {analyzed}/{len(cleaned_keys)}\n"
@@ -188,7 +192,7 @@ async def transform_and_analyze():
         )
         
     except Exception as e:
-        logger.exception(f"❌ Erreur fatale lors de la transformation: {str(e)}")
+        airflow_logger.error(f"❌ Erreur fatale lors de la transformation: {str(e)}")
         raise
     finally:
         cache.close()
@@ -201,10 +205,10 @@ async def load_to_supabase():
         cache = JobCache()
         storage = JobStorage()
         
-        logger.info("📤 Début du chargement des analyses vers Supabase")
+        airflow_logger.info("📤 Début du chargement des analyses vers Supabase")
         
         analysis_keys = await cache.get_all_analysis_keys()
-        logger.info(f"📊 {len(analysis_keys)} analyses à charger")
+        airflow_logger.info(f"📊 {len(analysis_keys)} analyses à charger")
         
         success_count = 0
         failure_count = 0
@@ -213,20 +217,20 @@ async def load_to_supabase():
             try:
                 analysis = await cache.get_analysis(key)
                 if not analysis:
-                    logger.warning(f"⚠️ Analyse non trouvée pour {key}")
+                    airflow_logger.warning(f"⚠️ Analyse non trouvée pour {key}")
                     failure_count += 1
                     continue
                 
                 try:
                     url = key.split("analysis:", 1)[1]
                     if not url:
-                        logger.error(f"❌ URL non trouvée dans la clé: {key}")
+                        airflow_logger.error(f"❌ URL non trouvée dans la clé: {key}")
                         failure_count += 1
                         continue
-                    logger.debug(f"🔗 URL extraite: {url}")
+                    airflow_logger.debug(f"🔗 URL extraite: {url}")
                     analysis['URL'] = url
                 except Exception as e:
-                    logger.error(f"❌ Erreur lors de l'extraction de l'URL depuis {key}: {str(e)}")
+                    airflow_logger.error(f"❌ Erreur lors de l'extraction de l'URL depuis {key}: {str(e)}")
                     failure_count += 1
                     continue
                 
@@ -245,17 +249,17 @@ async def load_to_supabase():
                 success = await storage.store_job_analysis(analysis)
                 if success:
                     success_count += 1
-                    logger.success(f"✅ Analyse chargée avec succès : {key}")
+                    airflow_logger.info(f"✅ Analyse chargée avec succès : {key}")
                     await cache.delete_analysis(key)
                 else:
                     failure_count += 1
-                    logger.error(f"❌ Échec du chargement de l'analyse : {key}")
+                    airflow_logger.error(f"❌ Échec du chargement de l'analyse : {key}")
                 
             except Exception as e:
                 failure_count += 1
-                logger.exception(f"❌ Erreur lors du chargement de {key}: {str(e)}")
+                airflow_logger.error(f"❌ Erreur lors du chargement de {key}: {str(e)}")
         
-        logger.success(
+        airflow_logger.info(
             "📊 Bilan du chargement:\n"
             f"  - Analyses à charger: {len(analysis_keys)}\n"
             f"  - Chargements réussis: {success_count}\n"
@@ -263,22 +267,40 @@ async def load_to_supabase():
         )
         
     except Exception as e:
-        logger.exception(f"❌ Erreur fatale lors du chargement: {str(e)}")
+        airflow_logger.error(f"❌ Erreur fatale lors du chargement: {str(e)}")
         raise
     finally:
         cache.close()
 
 def run_extract():
     """Point d'entrée pour l'extraction"""
-    asyncio.run(extract_jobs())
+    airflow_logger.info("🚀 Début de l'extraction des offres...")
+    try:
+        asyncio.run(extract_jobs())
+        airflow_logger.info("✅ Extraction terminée avec succès")
+    except Exception as e:
+        airflow_logger.error(f"❌ Erreur lors de l'extraction: {str(e)}")
+        raise
 
 def run_transform():
     """Point d'entrée pour la transformation"""
-    asyncio.run(transform_and_analyze())
+    airflow_logger.info("🔄 Début de la transformation et analyse...")
+    try:
+        asyncio.run(transform_and_analyze())
+        airflow_logger.info("✅ Transformation et analyse terminées avec succès")
+    except Exception as e:
+        airflow_logger.error(f"❌ Erreur lors de la transformation: {str(e)}")
+        raise
 
 def run_load():
     """Point d'entrée pour le chargement"""
-    asyncio.run(load_to_supabase())
+    airflow_logger.info("📤 Début du chargement vers Supabase...")
+    try:
+        asyncio.run(load_to_supabase())
+        airflow_logger.info("✅ Chargement terminé avec succès")
+    except Exception as e:
+        airflow_logger.error(f"❌ Erreur lors du chargement: {str(e)}")
+        raise
 
 # Création du DAG
 dag = DAG(
