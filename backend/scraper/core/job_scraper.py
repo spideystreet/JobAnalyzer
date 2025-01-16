@@ -1,5 +1,4 @@
 """
-"""
 Module principal de scraping des offres.
 """
 

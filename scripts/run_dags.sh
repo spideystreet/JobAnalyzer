@@ -1,9 +1,19 @@
 #!/bin/bash
 
+# Couleurs pour les messages
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m'
+
 # Obtenir la date du jour au format YYYY-MM-DD
 TODAY=$(date +%Y-%m-%d)
 
-# Exécuter les DAGs en séquence
-docker compose exec airflow-scheduler airflow dags test DATA_PIPELINE.01_JOB_SCRAPING $TODAY && \
-docker compose exec airflow-scheduler airflow dags test DATA_PIPELINE.02_JOB_TRANSFO $TODAY && \
-docker compose exec airflow-scheduler airflow dags test DATA_PIPELINE.03_JOB_LOAD $TODAY
+echo -e "${GREEN}🚀 Lancement du pipeline...${NC}"
+
+# Exécuter le DAG
+docker compose exec airflow-scheduler airflow dags trigger DATA_PIPELINE.JOB_PIPELINE
+
+echo -e "${GREEN}📊 Pipeline déclenché ! Affichage des logs...${NC}"
+
+# Suivre les logs en direct
+docker compose logs -f airflow-scheduler
