@@ -72,9 +72,17 @@ class JobScraper:
             'url': '',
             'title': '',
             'company': '',
+            'company_type': '',
+            'contract_type': '',
             'domain': '',
             'xp': '',
             'remote': '',
             'country': '',
+            'region': '',
+            'city': '',
+            'technos': [],
+            'tjm_min': None,
+            'tjm_max': None,
+            'duration_days': None,
             'cleaning_stats': {}
-        } 
+        }

@@ -3,7 +3,7 @@ FROM apache/airflow:2.7.3-python3.10
 
 USER root
 
-# Installation des dépendances système nécessaires
+# Installation des dépendances système
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
@@ -17,17 +17,13 @@ RUN mkdir -p /opt/airflow/backend && \
 USER airflow
 
 # Copie des fichiers du projet
-COPY --chown=airflow:root ./backend /opt/airflow/backend
-COPY --chown=airflow:root pyproject.toml poetry.lock /opt/airflow/
-
-# Installation des dépendances depuis requirements.txt
+COPY backend/ /opt/airflow/backend/
 COPY requirements.txt /opt/airflow/
-RUN pip install --user -r requirements.txt
+
+# Installation des dépendances Python
+RUN pip install --no-cache-dir -r /opt/airflow/requirements.txt
 
 WORKDIR /opt/airflow
 
-# Configuration du PYTHONPATH pour inclure le dossier parent
-ENV PYTHONPATH=/opt/airflow:/opt/airflow/backend 
-
-# Ajout du PYTHONPATH
-ENV PYTHONPATH="${PYTHONPATH}:/opt/airflow/" 
+# Configuration de l'environnement
+ENV PYTHONPATH=/opt/airflow 

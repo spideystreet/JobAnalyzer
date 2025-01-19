@@ -50,17 +50,56 @@ DEEPSEEK_MODEL = 'deepseek-chat'
 
 # Configuration du prompt
 REQUIRED_FIELDS = {
-    'TITLE': 'Le titre du poste',
-    'COMPANY': 'Le nom de l\'entreprise',
-    'COMPANY_TYPE': f'Un parmi: [{", ".join(CompanyType._member_names_)}]',
-    'CONTRACT_TYPE': f'Un parmi: [{", ".join(ContractType._member_names_)}]',
-    'DOMAIN': f'Analyse bien le domaine et choisis un parmi: [{", ".join(JobDomain._member_names_)}]',
-    'XP': f'Le niveau d\'experience, choisis un parmi: [{", ".join(ExperienceLevel._member_names_)}] sachant que Junior = <2 ans, Intermédiaire = 2-5 ans, Confirmé = 5-10 ans, Sénior = >10 ans',
-    'REMOTE': f'Un parmi: [{", ".join(RemoteType._member_names_)}]',
-    'COUNTRY': f'Un parmi: [{", ".join(Country._member_names_)}]',
-    'REGION': f'Une région parmi: [{", ".join(get_all_regions())}], selon le pays',
-    'TECHNOS': '[Liste des technologies requises] (technos/outils uniquement pas soft-skills ou autres)',
-    'DURATION_DAYS': '''La durée en jours (0 si le CONTRACT_TYPE est strictement égal à CDI)
+    'TITLE': '''Le titre du poste''',
+
+    'COMPANY': '''Le nom de l'entreprise''',
+
+    'COMPANY_TYPE': f'''Un parmi: [{", ".join(type.value for type in CompanyType)}]''',
+
+    'CONTRACT_TYPE': f'''[Liste EXHAUSTIVE des types de contrat mentionnés dans l'offre]
+        IMPORTANT:
+        1. Chercher TOUS les types de contrat mentionnés dans l'offre, ceux mentionnés à l'intérieur des balises <div class="tags relative w-full">
+        2. Retourner une liste même s'il n'y a qu'un seul type
+        3. Types possibles: [{", ".join(type.value for type in ContractType)}]''',
+
+    'DOMAIN': f'''Analyse bien le domaine d'expertise qui correspond et choisis un parmi: [{", ".join(type.value for type in JobDomain)}]''',
+
+    'XP': f'''Le niveau d'experience, choisis un parmi: [{", ".join(type.value for type in ExperienceLevel)}]
+        RÈGLES STRICTES :
+        Junior = <2 ans
+        Intermédiaire = 2-5 ans
+        Confirmé = 5-10 ans
+        Sénior = >10 ans''',
+
+    'REMOTE': f'''Un parmi: [{", ".join(type.value for type in RemoteType)}]''',
+
+    'COUNTRY': f'''Un parmi: [{", ".join(type.value for type in Country)}]''',
+
+    'REGION': f'''Une région parmi: [{", ".join(get_all_regions())}], selon le pays''',
+    
+    'TECHNOS': f'''[Liste des technologies requises]
+        RÈGLES STRICTES de normalisation des technos :
+        1. TOUJOURS utiliser la casse officielle de la technologie
+        2. Supprimer les numéros de version
+        
+        Exemples OBLIGATOIRES à suivre :
+        ❌ Incorrect         ✅ Correct
+        "POWERBI"           "Power BI"
+        "JAVASCRIPT"        "JavaScript"
+        "ReactJS"           "React"
+        "NODEJS"            "Node.js"
+        "VueJS"            "Vue.js"
+        "PYTHON"           "Python"
+        "ANGULAR 14"       "Angular"
+        "azure devops"     "Azure DevOps"
+        "Aws lambda"       "AWS Lambda"
+        
+        IMPORTANT : 
+        - Exclure les soft skills et compétences non techniques
+        - Ne garder que les technologies, frameworks, outils et langages
+        - Toujours utiliser la nomenclature officielle de la technologie''',
+
+    'DURATION_DAYS': '''La durée en jours
             EXEMPLE 1 (Années):
             CDI
             Freelance
@@ -100,8 +139,32 @@ REQUIRED_FIELDS = {
 
             RAPPEL DES CALCULS:
             - X ans ou X année(s) = X * 365 jours
-            - X mois = X * 30 jours'''
-            }
+            - X mois = X * 30 jours''',
+
+    'TJM_MIN': '''Le TJM minimum en euros (nombre entier uniquement)
+        RÈGLES STRICTES :
+        1. Chercher dans le texte les mentions de tarifs journaliers
+        2. Convertir les tarifs annuels en TJM (diviser par 220 jours)
+        3. Ne garder que le nombre, sans le symbole de monnaie
+        4. Si pas de TJM trouvé, retourner NULL
+        
+        Exemples:
+        "400-600€/jour" -> 400
+        "500€/j" -> 500
+        "entre 600 et 800€/jour" -> 600''',
+
+    'TJM_MAX': '''Le TJM maximum en euros (nombre entier uniquement)
+        RÈGLES STRICTES :
+        1. Chercher dans le texte les mentions de tarifs journaliers
+        2. Convertir les tarifs annuels en TJM (diviser par 220 jours)
+        3. Ne garder que le nombre, sans le symbole de monnaie
+        4. Si pas de TJM trouvé, retourner NULL
+        
+        Exemples:
+        "400-600€/jour" -> 600
+        "500€/j" -> 500 (même valeur que min si tarif unique)
+        "entre 600 et 800€/jour" -> 800''',
+}
 
 # Configuration du nettoyage HTML
 ALLOWED_TAGS = [

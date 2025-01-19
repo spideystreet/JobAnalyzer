@@ -64,6 +64,16 @@ class JobAnalyzer:
                 except (ValueError, TypeError):
                     uppercase_response['DURATION_DAYS'] = None
             
+            # Assurer que CONTRACT_TYPE est une liste
+            contract_type = uppercase_response.get('CONTRACT_TYPE')
+            if contract_type:
+                if isinstance(contract_type, str):
+                    uppercase_response['CONTRACT_TYPE'] = [contract_type]
+                elif not isinstance(contract_type, list):
+                    uppercase_response['CONTRACT_TYPE'] = [str(contract_type)]
+            else:
+                uppercase_response['CONTRACT_TYPE'] = []
+            
             return uppercase_response
             
         except Exception as e:

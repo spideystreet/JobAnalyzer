@@ -13,6 +13,8 @@ JobAnalyzer est un outil qui :
 - Stocke les données de manière structurée dans Redis
 - Fournit des analyses de marché et des tendances
 
+L'avantage de l'IA sera qu'elle peut péréniser les technos
+
 ## ⚠️ Avertissements
 
 - Respectez les conditions d'utilisation des sites sources
