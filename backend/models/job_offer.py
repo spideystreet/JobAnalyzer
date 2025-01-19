@@ -85,7 +85,7 @@ class ContractType(str, Enum):
     ALTERNANCE = "Alternance"
 
 class JobOffer(BaseModel):
-    ID: Optional[str] = None
+    ID: Optional[int] = None
     TITLE: str
     COUNTRY: Optional[Country] = None
     REGION: Optional[str] = None  # On garde en str car la région dépend du pays

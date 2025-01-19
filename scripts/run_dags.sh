@@ -10,6 +10,9 @@ TODAY=$(date +%Y-%m-%d)
 
 echo -e "${GREEN}🚀 Lancement du pipeline...${NC}"
 
+# Activer le DAG
+docker compose exec airflow-scheduler airflow dags unpause DATA_PIPELINE.JOB_PIPELINE
+
 # Exécuter le DAG
 docker compose exec airflow-scheduler airflow dags trigger DATA_PIPELINE.JOB_PIPELINE
 
