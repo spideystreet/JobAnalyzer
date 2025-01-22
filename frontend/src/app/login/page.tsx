@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { IconCloud } from "@/components/ui/interactive-icon-cloud";
+import { Typewriter } from "@/components/ui/typewriter";
 
 export default function Home() {
   const iconSlugs = [
@@ -34,11 +35,31 @@ export default function Home() {
     "sonarqube",
     "figma",
   ];
-  
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <h1>Hello World</h1>
-      <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center justify-center min-h-screen p-16 bg-background">
+      <div className="flex flex-col items-center text-4xl font-bold">
+        <span className="text-center text-6xl">{/* Taille plus grande pour l'émoji */}
+          {"🧑‍💻"}
+        </span>
+        <span>{"Je souhaite devenir Freelance "}</span>
+        <span className="text-4xl font-bold text-yellow-500 ml-2">
+          <Typewriter
+            text={[
+              "développeur full-stack",
+              "data analyst",
+              "développeur web",
+              "data engineer",
+              "développeur mobile (iOS)",
+            ]}
+            speed={70}
+            waitTime={1500}
+            deleteSpeed={20}
+            cursorChar={"_"}
+          />
+        </span>
+      </div>
+      <div className="flex flex-col items-center mt-8">
         <IconCloud iconSlugs={iconSlugs} />
       </div>
     </div>

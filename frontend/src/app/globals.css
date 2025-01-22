@@ -70,3 +70,61 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes border-follow {
+  0% {
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -50%);
+  }
+  25% {
+    left: 100%;
+    top: 0;
+    transform: translate(-50%, -50%);
+  }
+  50% {
+    left: 100%;
+    top: 100%;
+    transform: translate(-50%, -50%);
+  }
+  75% {
+    left: 0;
+    top: 100%;
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes color-change {
+  0% {
+    color: #3b82f6; 
+  }
+  33% {
+    color: #ef4444;
+  }
+  66% {
+    color: #22c55e;
+  }
+  100% {
+    color: #3b82f6; 
+  }
+}
+
+@keyframes border-color-change {
+  0% {
+    border-color: #3b82f6; 
+  }
+  33% {
+    border-color: #ef4444;
+  }
+  66% {
+    border-color: #22c55e;
+  }
+  100% {
+    border-color: #3b82f6; 
+  }
+}
