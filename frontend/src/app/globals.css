@@ -141,3 +141,19 @@ body {
   justify-content: center;
   gap: 1rem; /* Ajustez l'espacement entre les éléments */
 }
+
+.fill-gray-400 {
+  fill: rgba(156, 163, 175, 0.5); /* Couleur grise avec opacité */
+}
+
+.stroke-gray-400 {
+  stroke: rgba(156, 163, 175, 0.5); /* Couleur grise avec opacité */
+}
+
+.button-analyser {
+  border-width: 1px; /* Épaisseur de la bordure */
+  border-style: solid;
+  border-color: currentColor; /* Utilise la couleur actuelle du texte */
+  padding: 0.5rem 1rem; /* Ajustez le padding si nécessaire */
+  border-radius: 1.4rem; /* Arrondir les coins */
+}

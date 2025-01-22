@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react"; // Assurez-vous que useEffect et useState sont importés
 import { Hero } from "@/components/ui/animated-hero"; // Importation du composant Hero
 import { IconCloud } from "@/components/ui/interactive-icon-cloud"; // Importation du composant IconCloud
-import { RainbowButton } from "@/components/ui/rainbow-button"; // Importation du composant RainbowButton
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip"; // Importation du composant AnimatedTooltip
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button"; // Importation du nouveau bouton
-import DisplayCards from "@/components/ui/display-cards"; // Importation du composant DisplayCards
+import { GridPattern } from "@/components/ui/grid-pattern"; // Importation du composant GridPattern
+import { cn } from "@/lib/utils"; // Importation de la fonction cn
 
 
 export default function Home() {
@@ -57,19 +57,36 @@ export default function Home() {
   ];
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center p-8 bg-background">
-      <div className="flex-center mb-4">
-        <p className="text-lg md:text-xl leading-relaxed tracking-tight text-muted-foreground max-w-xl text-center font-regular">
-          Fait gentillement par la petite arraignée sympa du quartier
+    <div className="relative min-h-screen flex flex-col items-center justify-start p-8 bg-background">
+      <GridPattern
+        squares={[
+          [4, 4], [5, 4], [6, 4], [7, 4], [8, 4], [9, 4], [10, 4],
+          [4, 5], [5, 5], [6, 5], [7, 5], [8, 5], [9, 5], [10, 5],
+          [4, 6], [5, 6], [6, 6], [7, 6], [8, 6], [9, 6], [10, 6],
+          [4, 7], [5, 7], [6, 7], [7, 7], [8, 7], [9, 7], [10, 7],
+          [4, 8], [5, 8], [6, 8], [7, 8], [8, 8], [9, 8], [10, 8],
+          [4, 9], [5, 9], [6, 9], [7, 9], [8, 9], [9, 9], [10, 9],
+          [4, 10], [5, 10], [6, 10], [7, 10], [8, 10], [9, 10], [10, 10],
+          // Ajoutez plus de coordonnées si nécessaire
+        ]}
+        className={cn(
+          "absolute inset-0 w-full h-full [mask-image:radial-gradient(800px_circle_at_center,white,transparent)] skew-y-12"
+        )}
+      />
+      <div className="flex-center mb-8">
+        <p className="text-sm md:text-base leading-relaxed tracking-tight text-muted-foreground max-w-xl text-center font-regular">
+          Fait gentiment par la petite araignée sympa du quartier 👋
         </p>
-        <AnimatedTooltip items={tooltipItems} /> {/* Utilisation du composant AnimatedTooltip */}
+        <a href="https://www.linkedin.com/in/hicham-djebali-35bb271a2/" target="_blank" rel="noopener noreferrer">
+          <AnimatedTooltip items={tooltipItems} />
+        </a>
       </div>
-      <Hero /> {/* Utilisation du composant Hero */}
-      <div className="flex-center">
-        <InteractiveHoverButton text="Analyser" /> {/* Utilisation du nouveau bouton */}
+      <div className="flex-center mt-16">
+        <Hero />
+        <InteractiveHoverButton text="Analyser" />
       </div>
-      <div className="flex items-center justify-center mt-10">
-        <IconCloud iconSlugs={iconSlugs} /> {/* Utilisation du composant IconCloud */}
+      <div className="flex items-center justify-center mt-16">
+        <IconCloud iconSlugs={iconSlugs} />
       </div>
     </div>
   );
