@@ -53,9 +53,9 @@ function Hero() {
               </span>
             </h1>
 
-            <p className="text-lg md:text-xl leading-relaxed tracking-tight text-muted-foreground max-w-2xl text-center font-regular">
-              Analysez votre marché et récoltez des informations sur les tendances
-              d'utilisations des technos de votre domaine.
+            <p className="text-lg md:text-2xl leading-relaxed tracking-tight text-muted-foreground max-w-2xl text-center font-regular">
+                Décryptez le marché du freelancing IT en quelques clics.<br />
+                J'ai conçu un petit outil qui analyse les technos tendances, les tarifs et les opportunités du moment.
             </p>
           </div>
         </div>
