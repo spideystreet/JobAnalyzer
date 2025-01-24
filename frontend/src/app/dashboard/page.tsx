@@ -180,7 +180,7 @@ export default function JobHeatmap() {
       <MapContainer 
         center={[46.5, 2]} 
         zoom={6} 
-        style={{ height: "400px", width: "45%", borderRadius: "8px", overflow: "hidden" }}
+        style={{ height: "400px", width: "100%", borderRadius: "8px", overflow: "hidden" }}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -192,7 +192,7 @@ export default function JobHeatmap() {
       </MapContainer>
 
       <div className="flex justify-center">
-        <Card className="w-1/3">
+        <Card className="w-full">
           <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
             <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
               <CardTitle>Nombre de missions</CardTitle>
