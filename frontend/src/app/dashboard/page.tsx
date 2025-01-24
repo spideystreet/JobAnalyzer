@@ -109,18 +109,28 @@ export default function JobHeatmap() {
   const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>("desktop");
 
   const total = React.useMemo(
-    () => ({
-      desktop: chartDataExample.reduce((acc, curr) => acc + curr.desktop, 0),
-      mobile: chartDataExample.reduce((acc, curr) => acc + curr.mobile, 0),
-    }),
-    [],
+    () => {
+      const regionCounts = chartData.reduce((acc, curr) => {
+        acc[curr.region] = (acc[curr.region] || 0) + 1;
+        return acc;
+      }, {});
+
+      const uniqueRegionCount = Object.keys(regionCounts).length;
+      const totalMissions = chartData.reduce((acc, curr) => acc + curr.count, 0);
+
+      return {
+        desktop: uniqueRegionCount,
+        mobile: totalMissions,
+      };
+    },
+    [chartData],
   );
 
   useEffect(() => {
     const fetchJobData = async () => {
       const { data, error } = await supabase
         .from("job_offers")
-        .select("REGION, DOMAIN, TECHNOS");
+        .select("REGION, DOMAIN, TECHNOS, CREATED_AT");
 
       if (error) {
         console.error("Erreur de récupération:", error);
@@ -141,13 +151,24 @@ export default function JobHeatmap() {
 
       setHeatmapData(heatPoints);
 
-      // Préparer les données pour le graphique
-      const chartDataArray = Object.entries(regionCounts).map(([region, count]) => ({
-        region,
-        count,
-      }));
+      // Compter les occurrences par jour
+      const dateCounts = data.reduce((acc, item) => {
+        const date = new Date(item.CREATED_AT).toISOString().split('T')[0]; // Extraire la date
+        acc[date] = (acc[date] || 0) + 1;
+        return acc;
+      }, {});
 
-      setChartData(chartDataArray);
+      // Préparer les données pour le graphique
+      const chartDataArray = Object.entries(dateCounts)
+        .map(([date, count]) => ({ date, count }))
+        .sort((a, b) => new Date(a.date) - new Date(b.date)); // Trier par date
+
+      // Filtrer pour le dernier mois
+      const oneMonthAgo = new Date();
+      oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+      const filteredChartData = chartDataArray.filter(item => new Date(item.date) >= oneMonthAgo);
+
+      setChartData(filteredChartData);
     };
 
     fetchJobData();
@@ -170,13 +191,13 @@ export default function JobHeatmap() {
         )}
       </MapContainer>
 
-      <div className="flex">
-        <Card className="w-1/2">
+      <div className="flex justify-center">
+        <Card className="w-1/3">
           <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
             <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-              <CardTitle>Top des régions</CardTitle>
+              <CardTitle>Nombre de missions</CardTitle>
               <CardDescription>
-                Le compte des régions ayant le plus d'offres
+                Total au fil du temps, début 20/01/2025
               </CardDescription>
             </div>
             <div className="flex">
@@ -214,7 +235,7 @@ export default function JobHeatmap() {
               >
                 <CartesianGrid vertical={false} />
                 <XAxis
-                  dataKey="region"
+                  dataKey="date"
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
@@ -222,7 +243,8 @@ export default function JobHeatmap() {
                 />
                 <YAxis />
                 <Tooltip content={<ChartTooltipContent />} />
-                <Legend content={<ChartLegendContent />} />
+                {/* Retirer la légende en commentant ou supprimant la ligne suivante */}
+                {/* <Legend content={<ChartLegendContent />} /> */}
                 <Bar dataKey="count" fill={`var(--color-${activeChart})`} />
               </BarChart>
             </ChartContainer>
