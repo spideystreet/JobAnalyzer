@@ -6,8 +6,26 @@ import { createClient } from "@supabase/supabase-js";
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.heat';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+  BarChart,
+  Bar,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+} from "@/components/ui/chart";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -63,9 +81,40 @@ function HeatmapLayer({ data }) {
 
 export default function JobHeatmap() {
   const [heatmapData, setHeatmapData] = useState([]);
-  const [domainData, setDomainData] = useState([]);
-  const [technoData, setTechnoData] = useState([]);
+  const [chartData, setChartData] = useState([]);
   const [selectedDomain, setSelectedDomain] = useState(null);
+
+  // Exemple de données pour le graphique
+  const chartDataExample = [
+    { date: "2024-04-01", desktop: 222, mobile: 150 },
+    { date: "2024-04-02", desktop: 97, mobile: 180 },
+    { date: "2024-06-30", desktop: 446, mobile: 400 },
+  ];
+
+  // Configuration du graphique
+  const chartConfig = {
+    views: {
+      label: "Page Views",
+    },
+    desktop: {
+      label: "Régions",
+      color: "#2563eb",
+    },
+    mobile: {
+      label: "Missions",
+      color: "#60a5fa",
+    },
+  } satisfies ChartConfig;
+
+  const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>("desktop");
+
+  const total = React.useMemo(
+    () => ({
+      desktop: chartDataExample.reduce((acc, curr) => acc + curr.desktop, 0),
+      mobile: chartDataExample.reduce((acc, curr) => acc + curr.mobile, 0),
+    }),
+    [],
+  );
 
   useEffect(() => {
     const fetchJobData = async () => {
@@ -92,60 +141,17 @@ export default function JobHeatmap() {
 
       setHeatmapData(heatPoints);
 
-      // Compter les occurrences par domaine
-      const domainCounts = data.reduce((acc, item) => {
-        acc[item.DOMAIN] = (acc[item.DOMAIN] || 0) + 1;
-        return acc;
-      }, {});
+      // Préparer les données pour le graphique
+      const chartDataArray = Object.entries(regionCounts).map(([region, count]) => ({
+        region,
+        count,
+      }));
 
-      // Trier et sélectionner le top 10
-      const sortedDomainData = Object.entries(domainCounts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 10)
-        .map(([name, value]) => ({ name, value }));
-
-      setDomainData(sortedDomainData);
+      setChartData(chartDataArray);
     };
 
     fetchJobData();
   }, []);
-
-  useEffect(() => {
-    const fetchTechnoData = async () => {
-      const { data, error } = await supabase
-        .from("job_offers")
-        .select("DOMAIN, TECHNOS");
-
-      if (error) {
-        console.error("Erreur de récupération:", error);
-        return;
-      }
-
-      // Compter les occurrences des technologies par domaine
-      const technoCountsByDomain = data.reduce((acc, item) => {
-        const domain = item.DOMAIN;
-        const technos = item.TECHNOS || [];
-        if (!acc[domain]) acc[domain] = {};
-        technos.forEach(tech => {
-          acc[domain][tech] = (acc[domain][tech] || 0) + 1;
-        });
-        return acc;
-      }, {});
-
-      // Mettre à jour les technologies pour le domaine sélectionné
-      if (selectedDomain) {
-        const technoCounts = technoCountsByDomain[selectedDomain] || {};
-        const sortedTechnoData = Object.entries(technoCounts)
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 10)
-          .map(([name, value]) => ({ name, value }));
-
-        setTechnoData(sortedTechnoData);
-      }
-    };
-
-    fetchTechnoData();
-  }, [selectedDomain]);
 
   return (
     <div className="p-8 space-y-8">
@@ -153,7 +159,7 @@ export default function JobHeatmap() {
       <MapContainer 
         center={[46.5, 2]} 
         zoom={6} 
-        style={{ height: "400px", width: "100%", borderRadius: "8px", overflow: "hidden" }}
+        style={{ height: "400px", width: "45%", borderRadius: "8px", overflow: "hidden" }}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -164,50 +170,64 @@ export default function JobHeatmap() {
         )}
       </MapContainer>
 
-      <div className="grid grid-cols-2 gap-8">
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold mb-4 text-center">Top 10 des Types de Postes</h2>
-          <PieChart width={300} height={300}>
-            <Pie
-              data={domainData}
-              cx="50%"
-              cy="50%"
-              outerRadius={100}
-              fill="#8884d8"
-              dataKey="value"
-              label
-              onClick={(data, index) => setSelectedDomain(data.name)}
+      <div className="flex">
+        <Card className="w-1/2">
+          <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
+            <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+              <CardTitle>Top des régions</CardTitle>
+              <CardDescription>
+                Le compte des régions ayant le plus d'offres
+              </CardDescription>
+            </div>
+            <div className="flex">
+              {["desktop", "mobile"].map((key) => {
+                const chart = key as keyof typeof chartConfig;
+                return (
+                  <button
+                    key={chart}
+                    data-active={activeChart === chart}
+                    className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
+                    onClick={() => setActiveChart(chart)}
+                  >
+                    <span className="text-xs text-muted-foreground">
+                      {chartConfig[chart].label}
+                    </span>
+                    <span className="text-lg font-bold leading-none sm:text-3xl">
+                      {total[key as keyof typeof total].toLocaleString()}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </CardHeader>
+          <CardContent className="px-2 sm:p-6">
+            <ChartContainer
+              config={chartConfig}
+              className="aspect-auto h-[150px] w-full"
             >
-              {domainData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={`hsl(0, 0%, ${index * 10 + 30}%)`} />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold mb-4 text-center">Top 10 des Technologies pour {selectedDomain || "Sélectionnez un métier"}</h2>
-          <PieChart width={300} height={300}>
-            <Pie
-              data={technoData}
-              cx="50%"
-              cy="50%"
-              innerRadius={60}
-              outerRadius={100}
-              fill="#82ca9d"
-              dataKey="value"
-              label
-            >
-              {technoData.map((entry, index) => (
-                <Cell key={`cell-tech-${index}`} fill={`hsl(${index * 36}, 70%, 50%)`} />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </div>
+              <BarChart
+                data={chartData}
+                margin={{
+                  left: 12,
+                  right: 12,
+                }}
+              >
+                <CartesianGrid vertical={false} />
+                <XAxis
+                  dataKey="region"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  minTickGap={32}
+                />
+                <YAxis />
+                <Tooltip content={<ChartTooltipContent />} />
+                <Legend content={<ChartLegendContent />} />
+                <Bar dataKey="count" fill={`var(--color-${activeChart})`} />
+              </BarChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
