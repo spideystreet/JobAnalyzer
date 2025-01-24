@@ -7,6 +7,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.heat';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell } from 'recharts';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -62,13 +63,13 @@ function HeatmapLayer({ data }) {
 
 export default function JobHeatmap() {
   const [heatmapData, setHeatmapData] = useState([]);
-  const [regionData, setRegionData] = useState([]);
+  const [domainData, setDomainData] = useState([]);
 
   useEffect(() => {
     const fetchJobData = async () => {
       const { data, error } = await supabase
         .from("job_offers")
-        .select("REGION");
+        .select("REGION, DOMAIN");
 
       if (error) {
         console.error("Erreur de récupération:", error);
@@ -84,36 +85,27 @@ export default function JobHeatmap() {
       // Générer des points de chaleur basés sur le nombre d'offres
       const heatPoints = Object.entries(regionCounts).map(([region, count]) => {
         const coords = REGION_COORDINATES[region];
-        return coords ? [...coords, count * 75] : null; // Multiplier par 10 pour plus de visibilité
+        return coords ? [...coords, count * 75] : null;
       }).filter(point => point !== null);
 
       setHeatmapData(heatPoints);
-    };
 
-    const fetchRegionData = async () => {
-      const { data, error } = await supabase
-        .from("job_offers")
-        .select("REGION");
+      // Compter les occurrences par domaine
+      const domainCounts = data.reduce((acc, item) => {
+        acc[item.DOMAIN] = (acc[item.DOMAIN] || 0) + 1;
+        return acc;
+      }, {});
 
-      if (error) {
-        console.error("Erreur lors de la récupération des données :", error);
-      } else {
-        const counts = data.reduce((acc, row) => {
-          acc[row.REGION] = (acc[row.REGION] || 0) + 1;
-          return acc;
-        }, {});
+      // Trier et sélectionner le top 10
+      const sortedDomainData = Object.entries(domainCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10)
+        .map(([name, value]) => ({ name, value }));
 
-        const formattedData = Object.keys(counts).map(region => ({
-          region,
-          count: counts[region]
-        }));
-
-        setRegionData(formattedData);
-      }
+      setDomainData(sortedDomainData);
     };
 
     fetchJobData();
-    fetchRegionData();
   }, []);
 
   return (
@@ -132,6 +124,25 @@ export default function JobHeatmap() {
           <HeatmapLayer data={heatmapData} />
         )}
       </MapContainer>
+
+      <h2 className="text-xl font-bold mt-8 mb-4">Top 10 des Types de Postes</h2>
+      <PieChart width={400} height={400}>
+        <Pie
+          data={domainData}
+          cx="50%"
+          cy="50%"
+          outerRadius={100}
+          fill="#8884d8"
+          dataKey="value"
+          label
+        >
+          {domainData.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={`hsl(${index * 36}, 70%, 50%)`} />
+          ))}
+        </Pie>
+        <Tooltip />
+        <Legend />
+      </PieChart>
     </div>
   );
 }
