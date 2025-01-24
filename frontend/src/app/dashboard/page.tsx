@@ -7,7 +7,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.heat';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import { PieChart, Pie, Cell } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -64,12 +64,14 @@ function HeatmapLayer({ data }) {
 export default function JobHeatmap() {
   const [heatmapData, setHeatmapData] = useState([]);
   const [domainData, setDomainData] = useState([]);
+  const [technoData, setTechnoData] = useState([]);
+  const [selectedDomain, setSelectedDomain] = useState(null);
 
   useEffect(() => {
     const fetchJobData = async () => {
       const { data, error } = await supabase
         .from("job_offers")
-        .select("REGION, DOMAIN");
+        .select("REGION, DOMAIN, TECHNOS");
 
       if (error) {
         console.error("Erreur de récupération:", error);
@@ -108,13 +110,50 @@ export default function JobHeatmap() {
     fetchJobData();
   }, []);
 
+  useEffect(() => {
+    const fetchTechnoData = async () => {
+      const { data, error } = await supabase
+        .from("job_offers")
+        .select("DOMAIN, TECHNOS");
+
+      if (error) {
+        console.error("Erreur de récupération:", error);
+        return;
+      }
+
+      // Compter les occurrences des technologies par domaine
+      const technoCountsByDomain = data.reduce((acc, item) => {
+        const domain = item.DOMAIN;
+        const technos = item.TECHNOS || [];
+        if (!acc[domain]) acc[domain] = {};
+        technos.forEach(tech => {
+          acc[domain][tech] = (acc[domain][tech] || 0) + 1;
+        });
+        return acc;
+      }, {});
+
+      // Mettre à jour les technologies pour le domaine sélectionné
+      if (selectedDomain) {
+        const technoCounts = technoCountsByDomain[selectedDomain] || {};
+        const sortedTechnoData = Object.entries(technoCounts)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 10)
+          .map(([name, value]) => ({ name, value }));
+
+        setTechnoData(sortedTechnoData);
+      }
+    };
+
+    fetchTechnoData();
+  }, [selectedDomain]);
+
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Carte de Chaleur des Offres d'Emploi</h1>
+    <div className="p-8 space-y-8">
+      <h1 className="text-3xl font-bold mb-6 text-center">Carte de Chaleur des Offres d'Emploi</h1>
       <MapContainer 
         center={[46.5, 2]} 
         zoom={6} 
-        style={{ height: "400px", width: "100%" }}
+        style={{ height: "400px", width: "100%", borderRadius: "8px", overflow: "hidden" }}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -125,24 +164,51 @@ export default function JobHeatmap() {
         )}
       </MapContainer>
 
-      <h2 className="text-xl font-bold mt-8 mb-4">Top 10 des Types de Postes</h2>
-      <PieChart width={400} height={400}>
-        <Pie
-          data={domainData}
-          cx="50%"
-          cy="50%"
-          outerRadius={100}
-          fill="#8884d8"
-          dataKey="value"
-          label
-        >
-          {domainData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={`hsl(${index * 36}, 70%, 50%)`} />
-          ))}
-        </Pie>
-        <Tooltip />
-        <Legend />
-      </PieChart>
+      <div className="grid grid-cols-2 gap-8">
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-bold mb-4 text-center">Top 10 des Types de Postes</h2>
+          <PieChart width={300} height={300}>
+            <Pie
+              data={domainData}
+              cx="50%"
+              cy="50%"
+              outerRadius={100}
+              fill="#8884d8"
+              dataKey="value"
+              label
+              onClick={(data, index) => setSelectedDomain(data.name)}
+            >
+              {domainData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={`hsl(0, 0%, ${index * 10 + 30}%)`} />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend />
+          </PieChart>
+        </div>
+
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-bold mb-4 text-center">Top 10 des Technologies pour {selectedDomain || "Sélectionnez un métier"}</h2>
+          <PieChart width={300} height={300}>
+            <Pie
+              data={technoData}
+              cx="50%"
+              cy="50%"
+              innerRadius={60}
+              outerRadius={100}
+              fill="#82ca9d"
+              dataKey="value"
+              label
+            >
+              {technoData.map((entry, index) => (
+                <Cell key={`cell-tech-${index}`} fill={`hsl(${index * 36}, 70%, 50%)`} />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend />
+          </PieChart>
+        </div>
+      </div>
     </div>
   );
 }

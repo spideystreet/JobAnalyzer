@@ -7,6 +7,8 @@ import { AnimatedTooltip } from "@/components/ui/animated-tooltip"; // Importati
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button"; // Importation du nouveau bouton
 import { GridPattern } from "@/components/ui/grid-pattern"; // Importation du composant GridPattern
 import { cn } from "@/lib/utils"; // Importation de la fonction cn
+import { Button } from "@/components/ui/button"; // Importation du composant Button
+import { RiFacebookFill, RiGithubFill, RiGoogleFill, RiLinkedinBoxFill, RiLinkedinLine, RiTwitterXFill } from "@remixicon/react"; // Importation des icônes
 
 
 export default function Home() {
@@ -73,13 +75,25 @@ export default function Home() {
           "absolute inset-0 w-full h-full [mask-image:radial-gradient(800px_circle_at_center,white,transparent)] skew-y-12"
         )}
       />
-      <div className="flex-center mb-8">
+      <div className="flex-center">
+      <a href="https://www.linkedin.com/in/hicham-djebali-35bb271a2/" target="_blank" rel="noopener noreferrer">
+          <AnimatedTooltip items={tooltipItems} />
+        </a>
         <p className="text-sm md:text-base leading-relaxed tracking-tight text-muted-foreground max-w-xl text-center font-regular">
           Fait gentiment par la petite araignée sympa du quartier 👋
         </p>
-        <a href="https://www.linkedin.com/in/hicham-djebali-35bb271a2/" target="_blank" rel="noopener noreferrer">
-          <AnimatedTooltip items={tooltipItems} />
-        </a>
+        <div className="inline-flex flex-wrap gap-2">
+          <a href="https://www.linkedin.com/in/hicham-djebali-35bb271a2/" target="_blank" rel="noopener noreferrer">
+            <Button variant="outline" aria-label="LinkedIn" size="icon">
+              <RiLinkedinBoxFill size={16} aria-hidden="true" />
+            </Button>
+          </a>
+          <a href="https://github.com/spideystreet" target="_blank" rel="noopener noreferrer">
+            <Button variant="outline" aria-label="GitHub" size="icon">
+              <RiGithubFill size={16} aria-hidden="true" />
+            </Button>
+          </a>
+        </div>
       </div>
       <div className="flex-center mt-16">
         <Hero />
