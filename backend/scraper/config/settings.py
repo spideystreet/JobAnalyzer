@@ -28,8 +28,38 @@ SCRAPING_SOURCES = [
         }
     },
     {
-        'name': 'free-work-data',
-        'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=D%C3%A9veloppeur%C2%B7euse%20data&freshness=less_than_24_hours",
+        'name': 'free-work-data-analyst',
+        'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=Data%20analyst&freshness=less_than_24_hours",
+        'enabled': True,
+        'max_pages': 10,  # Limite à 10 pages pour les tests
+        'selectors': {
+            'job_link': 'a[href*="/job-mission/"]',
+            'next_button': 'button:-soup-contains("Suivant")'
+        }
+    },
+    {
+        'name': 'free-work-data-engineer',
+        'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=Data%20engineer&freshness=less_than_24_hours",
+        'enabled': True,
+        'max_pages': 10,  # Limite à 10 pages pour les tests
+        'selectors': {
+            'job_link': 'a[href*="/job-mission/"]',
+            'next_button': 'button:-soup-contains("Suivant")'
+        }
+    },
+    {
+        'name': 'free-work-web',
+        'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=D%C3%A9veloppeur%C2%B7euse%20front-end%20%28JavaScript,%20Node,%20React,%20Angular,%20Vue...%29&freshness=less_than_24_hours",
+        'enabled': True,
+        'max_pages': 10,  # Limite à 10 pages pour les tests
+        'selectors': {
+            'job_link': 'a[href*="/job-mission/"]',
+            'next_button': 'button:-soup-contains("Suivant")'
+        }
+    },
+    {
+        'name': 'free-work-mobile',
+        'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=D%C3%A9veloppeur%C2%B7euse%20mobile%20iOS%20%28Swift,%20Objective-C...%29&freshness=less_than_24_hours",
         'enabled': True,
         'max_pages': 10,  # Limite à 10 pages pour les tests
         'selectors': {
