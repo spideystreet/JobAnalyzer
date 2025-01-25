@@ -82,6 +82,7 @@ function HeatmapLayer({ data }) {
 export default function JobHeatmap() {
   const [heatmapData, setHeatmapData] = useState([]);
   const [chartData, setChartData] = useState([]);
+  const [technoData, setTechnoData] = useState([]);
   const [selectedDomain, setSelectedDomain] = useState(null);
 
   // Exemple de données pour le graphique
@@ -169,6 +170,24 @@ export default function JobHeatmap() {
       const filteredChartData = chartDataArray.filter(item => new Date(item.date) >= oneMonthAgo);
 
       setChartData(filteredChartData);
+
+      // Compter les occurrences des technos
+      const technoCounts = data.reduce((acc, item) => {
+        if (Array.isArray(item.TECHNOS)) {
+          item.TECHNOS.forEach(tech => {
+            acc[tech] = (acc[tech] || 0) + 1;
+          });
+        }
+        return acc;
+      }, {});
+
+      // Préparer les données pour le camembert
+      const technoChartData = Object.entries(technoCounts)
+        .map(([tech, count]) => ({ name: tech, value: count }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 10); // Top 10 des technos
+
+      setTechnoData(technoChartData);
     };
 
     fetchJobData();
@@ -248,6 +267,38 @@ export default function JobHeatmap() {
                 <Bar dataKey="count" fill={`var(--color-${activeChart})`} />
               </BarChart>
             </ChartContainer>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="flex justify-center mt-8">
+        <Card className="w-full">
+          <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
+            <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+              <CardTitle>Top 10 des Technos</CardTitle>
+              <CardDescription>
+                Répartition des technologies utilisées
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="px-2 sm:p-6">
+            <PieChart width={400} height={400}>
+              <Pie
+                data={technoData}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={150}
+                fill="#8884d8"
+                label
+              >
+                {technoData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={`hsl(${index * 36}, 70%, 50%)`} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
           </CardContent>
         </Card>
       </div>
