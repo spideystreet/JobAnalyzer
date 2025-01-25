@@ -83,6 +83,7 @@ export default function JobHeatmap() {
   const [heatmapData, setHeatmapData] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [technoData, setTechnoData] = useState([]);
+  const [technoDonutData, setTechnoDonutData] = useState([]);
   const [selectedDomain, setSelectedDomain] = useState(null);
 
   // Exemple de données pour le graphique
@@ -171,45 +172,47 @@ export default function JobHeatmap() {
 
       setChartData(filteredChartData);
 
-      // Compter les occurrences des technos
-      const technoCounts = data.reduce((acc, item) => {
-        if (Array.isArray(item.TECHNOS)) {
-          item.TECHNOS.forEach(tech => {
-            acc[tech] = (acc[tech] || 0) + 1;
-          });
+      // Compter les occurrences des métiers (DOMAIN)
+      const domainCounts = data.reduce((acc, item) => {
+        if (item.DOMAIN) {
+          acc[item.DOMAIN] = (acc[item.DOMAIN] || 0) + 1;
         }
         return acc;
       }, {});
 
-      // Préparer les données pour le camembert
-      const technoChartData = Object.entries(technoCounts)
-        .map(([tech, count]) => ({ name: tech, value: count }))
+      // Préparer les données pour le camembert des métiers
+      const domainChartData = Object.entries(domainCounts)
+        .map(([domain, count]) => ({ name: domain, value: count }))
         .sort((a, b) => b.value - a.value)
-        .slice(0, 10); // Top 10 des technos
+        .slice(0, 10); // Top 10 des métiers
 
-      setTechnoData(technoChartData);
+      setTechnoData(domainChartData);
+
+      // Mettre à jour les données du donut en fonction du métier sélectionné
+      if (selectedDomain) {
+        const filteredTechnoCounts = data.reduce((acc, item) => {
+          if (item.DOMAIN === selectedDomain && Array.isArray(item.TECHNOS)) {
+            item.TECHNOS.forEach(tech => {
+              acc[tech] = (acc[tech] || 0) + 1;
+            });
+          }
+          return acc;
+        }, {});
+
+        const filteredTechnoChartData = Object.entries(filteredTechnoCounts)
+          .map(([tech, count]) => ({ name: tech, value: count }))
+          .sort((a, b) => b.value - a.value)
+          .slice(0, 10); // Top 10 des technos pour le métier sélectionné
+
+        setTechnoDonutData(filteredTechnoChartData);
+      }
     };
 
     fetchJobData();
-  }, []);
+  }, [selectedDomain]); // Re-fetch data when selectedDomain changes
 
   return (
     <div className="p-8 space-y-8">
-      <h1 className="text-3xl font-bold mb-6 text-center">Carte de Chaleur des Offres d'Emploi</h1>
-      <MapContainer 
-        center={[46.5, 2]} 
-        zoom={6} 
-        style={{ height: "400px", width: "100%", borderRadius: "8px", overflow: "hidden" }}
-      >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; OpenStreetMap contributors'
-        />
-        {heatmapData.length > 0 && (
-          <HeatmapLayer data={heatmapData} />
-        )}
-      </MapContainer>
-
       <div className="flex justify-center">
         <Card className="w-full">
           <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
@@ -240,7 +243,7 @@ export default function JobHeatmap() {
               })}
             </div>
           </CardHeader>
-          <CardContent className="px-2 sm:p-6">
+          <CardContent className="justify-start px-2 sm:p-6">
             <ChartContainer
               config={chartConfig}
               className="aspect-auto h-[150px] w-full"
@@ -271,27 +274,29 @@ export default function JobHeatmap() {
         </Card>
       </div>
 
-      <div className="flex justify-center mt-8">
-        <Card className="w-full">
+      <div className="flex justify-start mt-8 space-x-4">
+        <Card className="w-1/4">
           <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
             <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-              <CardTitle>Top 10 des Technos</CardTitle>
+              <CardTitle>Top 10 des Métiers</CardTitle>
               <CardDescription>
-                Répartition des technologies utilisées
+                Répartition des métiers
               </CardDescription>
             </div>
           </CardHeader>
           <CardContent className="px-2 sm:p-6">
-            <PieChart width={400} height={400}>
+            <PieChart width={900} height={400}>
               <Pie
                 data={technoData}
                 dataKey="value"
                 nameKey="name"
-                cx="50%"
+                cx="30%"
                 cy="50%"
-                outerRadius={150}
+                outerRadius={110}
                 fill="#8884d8"
-                label
+                label={({ name, value }) => `${name}: ${value}`}
+                labelLine={{ length: 15, length2: 25 }}
+                onClick={(data) => setSelectedDomain(data.name)}
               >
                 {technoData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={`hsl(${index * 36}, 70%, 50%)`} />
@@ -301,7 +306,53 @@ export default function JobHeatmap() {
             </PieChart>
           </CardContent>
         </Card>
+
+        <Card className="w-1/4">
+          <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
+            <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+              <CardTitle>Distribution des Technos</CardTitle>
+              <CardDescription>
+                Visualisation en donut des technologies
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="px-2 sm:p-6">
+            <PieChart width={900} height={400}>
+              <Pie
+                data={technoDonutData}
+                dataKey="value"
+                nameKey="name"
+                cx="30%"
+                cy="50%"
+                innerRadius={70}
+                outerRadius={110}
+                fill="#82ca9d"
+                label={({ name, value }) => `${name}: ${value}`}
+                labelLine={{ length: 15, length2: 25 }}
+              >
+                {technoDonutData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={`hsl(${index * 36}, 70%, 50%)`} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </CardContent>
+        </Card>
       </div>
-    </div>
+            <h1 className="text-3xl font-bold mb-6 text-center">Carte de Chaleur des Offres d'Emploi</h1>
+            <MapContainer 
+              center={[46.5, 2]} 
+              zoom={6} 
+              style={{ height: "400px", width: "100%", borderRadius: "8px", overflow: "hidden" }}
+            >
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; OpenStreetMap contributors'
+              />
+              {heatmapData.length > 0 && (
+                <HeatmapLayer data={heatmapData} />
+              )}
+            </MapContainer>
+            </div>
   );
 }
