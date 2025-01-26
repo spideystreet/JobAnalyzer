@@ -26,9 +26,10 @@ import {
   ChartLegendContent,
 } from "@/components/ui/chart";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { BlurFade } from "@/components/ui/blur-fade";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Coordonnées approximatives des régions françaises
@@ -48,13 +49,12 @@ const REGION_COORDINATES = {
   'Provence-Alpes-Côte d\'Azur': [43.5, 6.5]
 };
 
-function HeatmapLayer({ data }) {
+function HeatmapLayer({ data }: { data: any[] }) {
   const map = useMap();
 
   useEffect(() => {
     if (data.length > 0) {
-      // Supprimer toute heatmap existante avant d'en ajouter une nouvelle
-      const existingHeatLayer = map.eachLayer((layer) => {
+      const existingHeatLayer = map.eachLayer((layer: any) => {
         if (layer instanceof L.HeatLayer) {
           map.removeLayer(layer);
         }
@@ -212,9 +212,21 @@ export default function JobHeatmap() {
   }, [selectedDomain]); // Re-fetch data when selectedDomain changes
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-8 space-y-8 max-w-4xl mx-auto">
+      <section id="header" className="text-center mb-16">
+        <BlurFade delay={0.25} inView>
+          <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+            Hello 👋
+          </h2>
+        </BlurFade>
+        <BlurFade delay={0.25 * 2} inView>
+          <span className="text-xl text-pretty tracking-tighter sm:text-3xl xl:text-4xl/none">
+            Analysez confortablement les offres ici
+          </span>
+        </BlurFade>
+      </section>
       <div className="flex justify-center">
-        <Card className="w-full">
+        <Card className="w-full max-w-2xl">
           <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
             <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
               <CardTitle>Nombre de missions</CardTitle>
@@ -274,8 +286,8 @@ export default function JobHeatmap() {
         </Card>
       </div>
 
-      <div className="flex justify-start mt-8 space-x-4">
-        <Card className="w-1/4">
+      <div className="flex justify-center mt-8 space-x-4">
+        <Card className="w-full">
           <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
             <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
               <CardTitle>Top 10 des Métiers</CardTitle>
@@ -290,7 +302,7 @@ export default function JobHeatmap() {
                 data={technoData}
                 dataKey="value"
                 nameKey="name"
-                cx="30%"
+                cx="40%"
                 cy="50%"
                 outerRadius={110}
                 fill="#8884d8"
@@ -307,7 +319,7 @@ export default function JobHeatmap() {
           </CardContent>
         </Card>
 
-        <Card className="w-1/4">
+        <Card className="w-full">
           <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
             <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
               <CardTitle>Distribution des Technos</CardTitle>
@@ -322,7 +334,7 @@ export default function JobHeatmap() {
                 data={technoDonutData}
                 dataKey="value"
                 nameKey="name"
-                cx="30%"
+                cx="40%"
                 cy="50%"
                 innerRadius={70}
                 outerRadius={110}
@@ -339,20 +351,20 @@ export default function JobHeatmap() {
           </CardContent>
         </Card>
       </div>
-            <h1 className="text-3xl font-bold mb-6 text-center">Carte de Chaleur des Offres d'Emploi</h1>
-            <MapContainer 
-              center={[46.5, 2]} 
-              zoom={6} 
-              style={{ height: "400px", width: "100%", borderRadius: "8px", overflow: "hidden" }}
-            >
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; OpenStreetMap contributors'
-              />
-              {heatmapData.length > 0 && (
-                <HeatmapLayer data={heatmapData} />
-              )}
-            </MapContainer>
-            </div>
+      <h1 className="text-3xl font-bold mb-6 text-center">Carte de Chaleur des Offres d'Emploi</h1>
+      <MapContainer 
+        center={[46.5, 2]} 
+        zoom={6} 
+        style={{ height: "400px", width: "100%", borderRadius: "8px", overflow: "hidden" }}
+      >
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; OpenStreetMap contributors'
+        />
+        {heatmapData.length > 0 && (
+          <HeatmapLayer data={heatmapData} />
+        )}
+      </MapContainer>
+    </div>
   );
 }
