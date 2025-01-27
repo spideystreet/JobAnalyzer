@@ -85,6 +85,7 @@ export default function JobHeatmap() {
   const [technoData, setTechnoData] = useState([]);
   const [technoDonutData, setTechnoDonutData] = useState([]);
   const [selectedDomain, setSelectedDomain] = useState(null);
+  const [xpData, setXpData] = useState<{ xp: string; count: number }[]>([]);
 
   // Exemple de données pour le graphique
   const chartDataExample = [
@@ -132,7 +133,7 @@ export default function JobHeatmap() {
     const fetchJobData = async () => {
       const { data, error } = await supabase
         .from("job_offers")
-        .select("REGION, DOMAIN, TECHNOS, CREATED_AT");
+        .select("REGION, DOMAIN, TECHNOS, CREATED_AT, XP");
 
       if (error) {
         console.error("Erreur de récupération:", error);
@@ -206,6 +207,20 @@ export default function JobHeatmap() {
 
         setTechnoDonutData(filteredTechnoChartData);
       }
+
+      // Compter les occurrences des niveaux d'expérience (XP)
+      const xpCounts = data.reduce<Record<string, number>>((acc, item) => {
+        if (item.XP) {
+          acc[item.XP] = (acc[item.XP] || 0) + 1;
+        }
+        return acc;
+      }, {});
+
+      const xpChartData = Object.entries(xpCounts)
+        .map(([xp, count]) => ({ xp, count }))
+        .sort((a, b) => b.count - a.count);
+
+      setXpData(xpChartData);
     };
 
     fetchJobData();
@@ -225,8 +240,8 @@ export default function JobHeatmap() {
           </span>
         </BlurFade>
       </section>
-      <div className="flex justify-center">
-        <Card className="w-full max-w-2xl">
+      <div className="flex justify-between space-x-4">
+        <Card className="w-full">
           <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
             <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
               <CardTitle>Nombre de missions</CardTitle>
@@ -255,7 +270,7 @@ export default function JobHeatmap() {
               })}
             </div>
           </CardHeader>
-          <CardContent className="justify-start px-2 sm:p-6">
+          <CardContent className="px-2 sm:p-6">
             <ChartContainer
               config={chartConfig}
               className="aspect-auto h-[150px] w-full"
@@ -277,9 +292,44 @@ export default function JobHeatmap() {
                 />
                 <YAxis />
                 <Tooltip content={<ChartTooltipContent />} />
-                {/* Retirer la légende en commentant ou supprimant la ligne suivante */}
-                {/* <Legend content={<ChartLegendContent />} /> */}
-                <Bar dataKey="count" fill={`var(--color-${activeChart})`} />
+                <Bar dataKey="count" fill={`var(--color-${String(activeChart)})`} />
+              </BarChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+
+        <Card className="w-full">
+          <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
+            <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+              <CardTitle>Distribution des Expériences</CardTitle>
+              <CardDescription>
+                SENIOR / CONFIRME / INTERMEDIAIRE / JUNIOR
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="px-2 sm:p-6">
+            <ChartContainer
+              config={chartConfig}
+              className="aspect-auto h-[150px] w-full"
+            >
+              <BarChart
+                data={xpData}
+                margin={{
+                  left: 12,
+                  right: 12,
+                }}
+              >
+                <CartesianGrid vertical={false} />
+                <XAxis
+                  dataKey="xp"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  minTickGap={32}
+                />
+                <YAxis />
+                <Tooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="count" fill="#2563eb" />
               </BarChart>
             </ChartContainer>
           </CardContent>
@@ -351,6 +401,7 @@ export default function JobHeatmap() {
           </CardContent>
         </Card>
       </div>
+
       <h1 className="text-3xl font-bold mb-6 text-center">Carte de Chaleur des Offres d'Emploi</h1>
       <MapContainer 
         center={[46.5, 2]} 
