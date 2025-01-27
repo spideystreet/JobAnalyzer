@@ -243,10 +243,10 @@ export default function JobHeatmap() {
       <div className="flex justify-between space-x-4">
         <Card className="w-full">
           <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
-            <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-4">
+            <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
               <CardTitle>Nombre de missions</CardTitle>
               <CardDescription>
-                Total au fil du temps, début 20/01/2025
+                Total au fil du temps
               </CardDescription>
             </div>
             <div className="flex">
@@ -300,10 +300,10 @@ export default function JobHeatmap() {
 
         <Card className="w-full">
           <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
-            <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-8">
-              <CardTitle>Distribution des Expériences</CardTitle>
+            <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+              <CardTitle>Distribution de l'expérience requise</CardTitle>
               <CardDescription>
-                SENIOR / CONFIRME / INTERMEDIAIRE / JUNIOR
+                Sénior / Confirmé / Intermédiaire / Junior
               </CardDescription>
             </div>
           </CardHeader>
