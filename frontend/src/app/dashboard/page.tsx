@@ -243,7 +243,7 @@ export default function JobHeatmap() {
       <div className="flex justify-between space-x-4">
         <Card className="w-full">
           <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
-            <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+            <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-4">
               <CardTitle>Nombre de missions</CardTitle>
               <CardDescription>
                 Total au fil du temps, début 20/01/2025
@@ -300,7 +300,7 @@ export default function JobHeatmap() {
 
         <Card className="w-full">
           <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
-            <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+            <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-8">
               <CardTitle>Distribution des Expériences</CardTitle>
               <CardDescription>
                 SENIOR / CONFIRME / INTERMEDIAIRE / JUNIOR
@@ -325,11 +325,23 @@ export default function JobHeatmap() {
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
-                  minTickGap={32}
+                  interval={0}
+                  fontSize={12}
+                  angle={0}
+                  textAnchor="middle"
                 />
                 <YAxis />
                 <Tooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="count" fill="#2563eb" />
+                <Bar dataKey="count">
+                  {xpData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={
+                      index === 0 ? "#ef4444" :  // Rouge pour la première barre
+                      index === 1 ? "#1d4ed8" :  // Bleu foncé pour la deuxième
+                      index === 2 ? "#6366f1" :  // Violet pour la troisième
+                      "#fbbf24"                  // Jaune pour la dernière
+                    } />
+                  ))}
+                </Bar>
               </BarChart>
             </ChartContainer>
           </CardContent>
@@ -339,7 +351,7 @@ export default function JobHeatmap() {
       <div className="flex justify-center mt-8 space-x-4">
         <Card className="w-full">
           <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
-            <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+            <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-8">
               <CardTitle>Top 10 des Métiers</CardTitle>
               <CardDescription>
                 Répartition des métiers
@@ -374,7 +386,7 @@ export default function JobHeatmap() {
             <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
               <CardTitle>Distribution des Technos</CardTitle>
               <CardDescription>
-                Visualisation en donut des technologies
+                Cliquez sur un métier pour voir les technos associées
               </CardDescription>
             </div>
           </CardHeader>
