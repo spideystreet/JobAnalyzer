@@ -97,7 +97,9 @@ export default function Home() {
       </div>
       <div className="flex-center mt-16">
         <Hero />
-        <InteractiveHoverButton text="Analyser" />
+        <a href="/dashboard" target="_self">
+          <InteractiveHoverButton text="Analyser" />
+        </a>
       </div>
       <div className="flex items-center justify-center mt-16">
         <IconCloud iconSlugs={iconSlugs} />
