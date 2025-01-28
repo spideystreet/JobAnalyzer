@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/chart";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { BlurFade } from "@/components/ui/blur-fade";
+import dynamic from 'next/dynamic';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -78,6 +79,11 @@ function HeatmapLayer({ data }: { data: any[] }) {
 
   return null;
 }
+
+const MapWithNoSSR = dynamic(() => import('@/components/Map'), {
+  ssr: false,
+  loading: () => <p>Chargement de la carte...</p>
+});
 
 export default function JobHeatmap() {
   const [heatmapData, setHeatmapData] = useState([]);
@@ -415,19 +421,7 @@ export default function JobHeatmap() {
       </div>
 
       <h1 className="text-3xl font-bold mb-6 text-center">Carte de Chaleur des Offres d'Emploi</h1>
-      <MapContainer 
-        center={[46.5, 2]} 
-        zoom={6} 
-        style={{ height: "400px", width: "100%", borderRadius: "8px", overflow: "hidden" }}
-      >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; OpenStreetMap contributors'
-        />
-        {heatmapData.length > 0 && (
-          <HeatmapLayer data={heatmapData} />
-        )}
-      </MapContainer>
+      <MapWithNoSSR heatmapData={heatmapData} />
     </div>
   );
 }
