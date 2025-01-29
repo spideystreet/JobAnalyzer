@@ -1,35 +1,27 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface NavItem {
-  name: string
-  url: string
-  icon: LucideIcon
+  name: string;
+  url: string;
+  icon: LucideIcon;
 }
 
-interface NavBarProps {
-  items: NavItem[]
-  className?: string
+interface TubelightNavbarProps {
+  navItems: NavItem[];
+  className?: string;
 }
 
-export function NavBar({ items, className }: NavBarProps) {
-  const [activeTab, setActiveTab] = useState(items[0].name)
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-
-    handleResize()
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
+export const TubelightNavbar = ({
+  navItems,
+  className = '',
+}: TubelightNavbarProps) => {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   return (
     <div
@@ -39,25 +31,31 @@ export function NavBar({ items, className }: NavBarProps) {
       )}
     >
       <div className="flex items-center gap-3 bg-background/5 border border-border backdrop-blur-lg py-1 px-1 rounded-full shadow-lg">
-        {items.map((item) => {
-          const Icon = item.icon
-          const isActive = activeTab === item.name
+        {navItems.map((item, index) => {
+          const Icon = item.icon;
+          const isActive = activeIndex === index;
 
           return (
-            <Link
+            <motion.li
               key={item.name}
-              href={item.url}
-              onClick={() => setActiveTab(item.name)}
-              className={cn(
-                "relative cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-colors",
-                "text-foreground/80 hover:text-primary",
-                isActive && "bg-muted text-primary",
-              )}
+              onHoverStart={() => setActiveIndex(index)}
+              onHoverEnd={() => setActiveIndex(null)}
+              className="relative list-none"
             >
-              <span className="hidden md:inline">{item.name}</span>
-              <span className="md:hidden">
-                <Icon size={18} strokeWidth={2.5} />
-              </span>
+              <Link
+                href={item.url}
+                onClick={() => setActiveIndex(index)}
+                className={cn(
+                  "relative cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-colors",
+                  "text-foreground/80 hover:text-primary",
+                  isActive && "bg-muted text-primary",
+                )}
+              >
+                <span className="hidden md:inline">{item.name}</span>
+                <span className="md:hidden">
+                  <Icon size={18} strokeWidth={2.5} />
+                </span>
+              </Link>
               {isActive && (
                 <motion.div
                   layoutId="lamp"
@@ -76,10 +74,10 @@ export function NavBar({ items, className }: NavBarProps) {
                   </div>
                 </motion.div>
               )}
-            </Link>
-          )
+            </motion.li>
+          );
         })}
       </div>
     </div>
-  )
-}
+  );
+};
