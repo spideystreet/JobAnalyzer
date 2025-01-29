@@ -6,145 +6,131 @@ Analyseur automatique d'offres d'emploi Freelances avec intelligence artificiell
 
 ## 📋 Description
 
-JobAnalyzer est un outil qui :
-- Scrape automatiquement les nouvelles offres Freelances
-- Nettoie et structure le HTML des offres (96% de réduction)
-- Analyse et catégorise les offres avec l'IA (DeepSeek)
-- Stocke les données de manière structurée dans Redis
-- Fournit des analyses de marché et des tendances
-
-L'avantage de l'IA sera qu'elle peut péréniser les technos
-
-## ⚠️ Avertissements
-
-- Respectez les conditions d'utilisation des sites sources
-- Ne partagez JAMAIS vos clés API (DeepSeek)
-- Utilisez le rate limiting pour ne pas surcharger les sites
-- Les données scrappées doivent être utilisées de manière éthique
+JobAnalyzer est une plateforme complète qui automatise l'analyse du marché freelance :
+- Collecte automatique des offres depuis plusieurs plateformes
+- Analyse intelligente avec IA pour extraire les informations clés
+- Interface moderne et interactive pour explorer les données
+- Insights en temps réel sur les tendances du marché
 
 ## 🏗 Architecture
 
-### Backend (Python)
-- Multi-source scraping (Beautiful Soup)
-  - Free-Work (Implémenté)
-  - Malt (À venir)
-  - Comet (À venir)
-- Analyse IA (DeepSeek)
-- Cache (Redis)
-- Orchestration (Airflow)
+### Frontend (Next.js 14 + Vercel)
+- Application web moderne avec architecture App Router
+- Interface utilisateur réactive et animations fluides
+- Composants UI personnalisés et réutilisables
+- Déploiement continu sur Vercel
+- Mode sombre/clair natif
+- Design responsive mobile-first
 
-### Pipeline de Données
-1. **DAG 01 - Scraping** (`01_JOB_SCRAPING_dag.py`)
-   - Extraction des URLs d'offres
-   - Scraping du HTML détaillé
-   - Mise en cache Redis
+### Backend (Python + Airflow)
+- Architecture microservices containerisée
+- Pipeline de données automatisé avec Airflow
+- Scraping intelligent multi-sources
+- Analyse sémantique par IA
+- Cache distribué avec Redis
 
-2. **DAG 02 - Transformation** (`02_JOB_TRANSFO.py`)
-   - Nettoyage du HTML (96% de réduction)
-   - Analyse IA avec DeepSeek
-   - Stockage structuré
+## 🛠 Technologies & Stack
 
-## 🛠 Technologies
+### Frontend
+- **Framework** : Next.js 14 avec App Router
+- **UI** : Shadcn/UI + Tailwind CSS
+- **Animations** : Framer Motion
+- **Icons** : Remix Icons + Simple Icons
+- **State** : React Hooks
+- **Build** : Turbopack
+- **Déploiement** : Vercel Edge Network
 
-- **Backend** : Python 3.10
-- **Scraping** : Beautiful Soup 4
-- **Cache** : Redis
-- **IA** : DeepSeek
+### Backend
+- **Runtime** : Python 3.10
 - **Orchestration** : Apache Airflow
-- **Conteneurisation** : Docker & Docker Compose
+- **Cache** : Redis
+- **Scraping** : Beautiful Soup 4
+- **IA** : DeepSeek
+- **Containers** : Docker + Docker Compose
 
 ## 📦 Structure du Projet
 
 ```
 JobAnalyzer/
+├── frontend/                 # Application Next.js
+│   ├── src/
+│   │   ├── app/             # Pages et routes
+│   │   │   ├── page.tsx     # Landing page
+│   │   │   └── dashboard/   # Interface d'analyse
+│   │   ├── components/      # Composants React
+│   │   │   └── ui/         # Composants UI réutilisables
+│   │   └── lib/            # Utilitaires et hooks
+│   ├── public/             # Assets statiques
+│   └── tailwind.config.ts  # Configuration Tailwind
 ├── backend/
-│   ├── airflow/           
-│   │   ├── dags/         # DAGs Airflow
-│   │   │   ├── 01_JOB_SCRAPING_dag.py
-│   │   │   └── 02_JOB_TRANSFO.py
-│   │   └── logs/        # Logs applicatifs
-│   ├── scraper/          
-│   │   ├── config/       # Configuration et settings
-│   │   ├── core/         # Composants principaux
-│   │   │   ├── list_scraper.py    # Extraction des URLs
-│   │   │   ├── job_scraper.py     # Scraping détaillé
-│   │   │   ├── job_analyzer.py    # Analyse DeepSeek
-│   │   │   ├── html_cleaner.py    # Nettoyage HTML
-│   │   │   └── cache.py           # Gestion Redis
-│   │   └── tests/        # Tests unitaires
+│   ├── airflow/            # Orchestration des tâches
+│   │   └── dags/          # Pipelines de données
+│   ├── scraper/           # Logique de scraping
+│   │   ├── config/        # Configuration
+│   │   └── core/          # Composants principaux
+│   ├── infrastructure/    # Configuration cloud
 │   └── models/           # Modèles de données
-├── docker/              
-│   └── airflow/         # Configuration Airflow
-└── scripts/             # Scripts utilitaires
+└── docker/               # Configuration Docker
+    └── airflow/         # Setup Airflow
 ```
 
-## 🔒 Sécurité
+## 🔄 Workflow
 
-1. **Variables d'environnement**
-   - Ne JAMAIS commiter le fichier `.env`
-   - Utiliser `.env.example` comme modèle
-   - Stocker les secrets de manière sécurisée
+1. **Collecte des Données**
+   - DAGs Airflow planifiés pour le process ETL
+   - Extraction intelligente des offres
+   - Déduplication et nettoyage
 
-2. **Rate Limiting**
-   - Respecter les limites d'API
-   - Délais configurables entre les requêtes
-   - Gestion des erreurs avec retry
+2. **Traitement & Analyse**
+   - Analyse sémantique par IA
+   - Extraction des compétences et tendances
+   - Enrichissement des données
+
+3. **Présentation**
+   - Interface utilisateur interactive
+   - Visualisations dynamiques
+   - Filtres et recherche avancée
 
 ## 🚀 Installation
 
-1. **Prérequis**
-   - Docker & Docker Compose
-   - Clé API DeepSeek
+### Prérequis
+- Node.js 18+
+- Python 3.10+
+- Docker & Docker Compose
 
-2. **Configuration**
-   ```bash
-   # Copier le fichier d'exemple
-   cp .env.example .env
-   
-   # Configurer dans .env :
-   DEEPSEEK_API_KEY=votre_clé_api
-   ```
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-3. **Lancement**
-   ```bash
-   # Construction et démarrage
-   docker compose up --build
+### Backend
+```bash
+# Configuration
+cp .env.example .env
 
-   # Vérification des services
-   docker compose ps
-   ```
+# Lancement
+docker compose up --build
+```
 
-## 🔄 Pipeline de Données
+## 📊 Fonctionnalités
 
-1. **Scraping (DAG 01)**
-   - Extraction quotidienne des nouvelles offres
-   - Gestion intelligente de la pagination
-   - Mise en cache Redis avec déduplication
+### Interface Utilisateur
+- Landing page animée
+- Dashboard d'analyse interactif
+- Visualisations de données
+- Mode sombre/clair
+- Composants UI personnalisés
+- Design responsive
 
-2. **Transformation (DAG 02)**
-   - Nettoyage HTML optimisé (96% de réduction)
-   - Analyse sémantique par DeepSeek
-   - Logs détaillés de chaque étape
-
-## 📊 Performances Actuelles
-
-- **Scraping** : ~30 offres en 2-3 minutes
-- **Nettoyage HTML** : 96% de réduction de taille
-- **Analyse IA** : ~4 secondes par offre
-- **Pipeline complet** : ~2 minutes pour 29 offres
-
-## 📝 TODO
-
-- [x] Implémentation du scraper Free-Work
-- [x] Intégration DeepSeek
-- [x] Pipeline de transformation
-- [x] Logging avancé
-- [ ] Tests automatisés
-- [ ] Support Malt
-- [ ] Support Comet
-- [ ] API REST
-- [ ] Interface utilisateur
+### Backend & Data
+- Scraping multi-sources
+- Analyse IA des offres
+- Cache intelligent
+- Pipeline automatisé
+- API REST (à venir)
 
 ## 📜 Licence
 
-MIT License - Voir le fichier [LICENSE](LICENSE) pour plus de détails. 
+MIT License

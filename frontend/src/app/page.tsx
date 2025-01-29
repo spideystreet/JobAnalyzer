@@ -1,101 +1,104 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
+import { Hero } from "@/components/ui/animated-hero";
+import { IconCloud } from "@/components/ui/interactive-icon-cloud";
+import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
+import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button";
+import { GridPattern } from "@/components/ui/grid-pattern";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { RiFacebookFill, RiGithubFill, RiGoogleFill, RiLinkedinBoxFill, RiLinkedinLine, RiTwitterXFill } from "@remixicon/react";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [clientId, setClientId] = useState("");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
+  useEffect(() => {
+    setClientId(`canvas-${Math.random().toString(36).substr(2, 9)}`);
+  }, []);
+
+  const iconSlugs = [
+    "typescript",
+    "javascript",
+    "dart",
+    "java",
+    "react",
+    "flutter",
+    "android",
+    "html5",
+    "css3",
+    "nodedotjs",
+    "express",
+    "nextdotjs",
+    "prisma",
+    "amazonaws",
+    "postgresql",
+    "firebase",
+    "nginx",
+    "vercel",
+    "testinglibrary",
+    "jest",
+    "cypress",
+    "docker",
+    "git",
+    "jira",
+    "github",
+    "gitlab",
+    "visualstudiocode",
+    "androidstudio",
+    "sonarqube",
+    "figma",
+  ];
+
+  const tooltipItems = [
+    { id: 1, name: "Hicham", designation: "Développeur / Data analyst", image: "/images/hich.jpg" },
+  ];
+
+  return (
+    <div className="relative min-h-screen flex flex-col items-center justify-start p-8 bg-background">
+      <GridPattern
+        squares={[
+          [4, 4], [5, 4], [6, 4], [7, 4], [8, 4], [9, 4], [10, 4],
+          [4, 5], [5, 5], [6, 5], [7, 5], [8, 5], [9, 5], [10, 5],
+          [4, 6], [5, 6], [6, 6], [7, 6], [8, 6], [9, 6], [10, 6],
+          [4, 7], [5, 7], [6, 7], [7, 7], [8, 7], [9, 7], [10, 7],
+          [4, 8], [5, 8], [6, 8], [7, 8], [8, 8], [9, 8], [10, 8],
+          [4, 9], [5, 9], [6, 9], [7, 9], [8, 9], [9, 9], [10, 9],
+          [4, 10], [5, 10], [6, 10], [7, 10], [8, 10], [9, 10], [10, 10],
+        ]}
+        className={cn(
+          "absolute inset-0 w-full h-full [mask-image:radial-gradient(800px_circle_at_center,white,transparent)] skew-y-12"
+        )}
+      />
+      <div className="flex-center">
+        <a href="https://www.linkedin.com/in/hicham-djebali-35bb271a2/" target="_blank" rel="noopener noreferrer">
+          <AnimatedTooltip items={tooltipItems} />
+        </a>
+        <p className="text-sm md:text-base leading-relaxed tracking-tight text-muted-foreground max-w-xl text-center font-regular">
+          Fait gentiment par la petite araignée sympa du quartier 👋
+        </p>
+        <div className="inline-flex flex-wrap gap-2">
+          <a href="https://www.linkedin.com/in/hicham-djebali-35bb271a2/" target="_blank" rel="noopener noreferrer">
+            <Button variant="outline" aria-label="LinkedIn" size="icon">
+              <RiLinkedinBoxFill size={16} aria-hidden="true" />
+            </Button>
           </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
+          <a href="https://github.com/spideystreet" target="_blank" rel="noopener noreferrer">
+            <Button variant="outline" aria-label="GitHub" size="icon">
+              <RiGithubFill size={16} aria-hidden="true" />
+            </Button>
           </a>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
+      </div>
+      <div className="flex-center mt-16">
+        <Hero />
+        <a href="/dashboard" target="_self">
+          <InteractiveHoverButton text="Analyser" />
         </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+      <div className="flex items-center justify-center mt-16">
+        <IconCloud iconSlugs={iconSlugs} />
+      </div>
     </div>
   );
 }
