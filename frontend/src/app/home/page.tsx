@@ -60,21 +60,21 @@ const LandingPage: React.FC = () => {
 
         <div className="relative z-10 flex flex-col justify-center items-center max-w-[700px] mx-auto px-4">
           <motion.h1
-            className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl text-center flex-col flex whitespace-pre leading-tight font-calendas tracking-tight space-y-1 md:space-y-4"
+            className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl text-center flex flex-col items-center justify-center leading-tight font-helvetica tracking-tight"
             animate={{ opacity: 1, y: 0 }}
             initial={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.2, ease: "easeOut", delay: 0.3 }}
           >
-            <span className="text-center font-helvetica">Make your </span>
+            <span>Make your</span>
             <LayoutGroup>
-              <motion.span layout className="flex flex-row items-center justify-center whitespace-nowrap">
+              <motion.div layout className="flex items-center justify-center">
                 <TextRotate
                   texts={[
-                      "🧑‍💻 Dev full-stack",
-                      "📊 Data analyst",
-                      "🌐 Dev WEB",
-                      "⚙️ Data engineer",
-                      "📱 Dev iOS",
+                    "🧑‍💻 Dev full-stack",
+                    "📊 Data analyst",
+                    "🌐 Dev WEB",
+                    "⚙️ Data engineer",
+                    "📱 Dev iOS",
                   ]}
                   mainClassName="overflow-hidden text-[#0015ff] py-0 rounded-xl text-center"
                   staggerDuration={0.03}
@@ -82,7 +82,7 @@ const LandingPage: React.FC = () => {
                   rotationInterval={3000}
                   transition={{ type: "spring", damping: 30, stiffness: 400 }}
                 />
-              </motion.span>
+              </motion.div>
             </LayoutGroup>
           </motion.h1>
 
