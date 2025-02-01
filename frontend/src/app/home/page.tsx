@@ -19,9 +19,7 @@ const exampleImages = [
 
 const navItems = [
   { name: "Home", url: "#home", icon: Home },
-  { name: "About", url: "#about", icon: User },
-  { name: "Services", url: "#services", icon: Settings },
-  { name: "Contact", url: "#contact", icon: Mail },
+  { name: "Contact", url: "#contact", icon: Mail }
 ]
 
 const teamMembers = [
@@ -105,57 +103,7 @@ const LandingPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <motion.p className="text-xl text-muted-foreground mb-4 text-center">Notre équipe d'experts</motion.p>
-          <AnimatedTooltip items={teamMembers} className="scale-125" />
-        </motion.div>
-      </section>
-
-      <section id="about" className="w-full min-h-screen flex flex-col items-center justify-center relative bg-gradient-to-b from-background to-background/90 p-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-4xl w-full flex flex-col items-center text-center px-4"
-        >
-          <h2 className="text-4xl md:text-5xl font-bold mb-8">À propos</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl">
-            Découvrez notre approche unique pour analyser le marché de l'emploi dans le domaine tech.
-          </p>
-        </motion.div>
-
-        <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <AnimatedTooltip items={teamMembers} className="scale-125" />
-        </motion.div>
-      </section>
-
-      <section id="services" className="w-full min-h-screen flex flex-col items-center justify-center relative bg-gradient-to-b from-background/90 to-background p-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-4xl w-full flex flex-col items-center text-center px-4"
-        >
-          <h2 className="text-4xl md:text-5xl font-bold mb-8">Nos Services</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
-            <div className="p-6 rounded-xl border border-border flex flex-col items-center">
-              <Settings className="w-10 h-10 mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Analyse de données</h3>
-              <p className="text-muted-foreground">Explorez les tendances du marché de l'emploi tech.</p>
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
+          <motion.p className="text-xl text-muted-foreground mb-4 text-center font-regular">Fourni gentillement par l'arraignée sympa des réseaux 👋</motion.p>
           <AnimatedTooltip items={teamMembers} className="scale-125" />
         </motion.div>
       </section>

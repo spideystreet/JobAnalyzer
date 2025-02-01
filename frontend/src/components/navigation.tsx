@@ -5,10 +5,8 @@ import { AnimeNavBar } from "@/components/ui/anime-navbar"
 
 const navItems = [
   { name: "Home", url: "/home", icon: Home },
-  { name: "About", url: "/about", icon: User },
-  { name: "Services", url: "/services", icon: Settings },
-  { name: "Contact", url: "/contact", icon: Mail },
-]
+  { name: "Contact", url: "/contact", icon: Mail }
+]   
 
 export function Navigation() {
   return <AnimeNavBar items={navItems} />
