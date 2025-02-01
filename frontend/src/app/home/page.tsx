@@ -58,7 +58,7 @@ const LandingPage: React.FC = () => {
           </Floating>
         </div>
 
-        <div className="relative z-10 flex flex-col justify-center items-center max-w-[700px] mx-auto px-4">
+        <div className="relative z-10 flex flex-col justify-center items-center px-4">
           <motion.h1
             className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl text-center flex flex-col items-center justify-center leading-tight font-helvetica tracking-tight"
             animate={{ opacity: 1, y: 0 }}
@@ -67,7 +67,7 @@ const LandingPage: React.FC = () => {
           >
             <span>Make your</span>
             <LayoutGroup>
-              <motion.div layout className="flex items-center justify-center">
+              <motion.div layout className="flex items-center justify-center whitespace-nowrap">
                 <TextRotate
                   texts={[
                     "🧑‍💻 Dev full-stack",
@@ -76,7 +76,7 @@ const LandingPage: React.FC = () => {
                     "⚙️ Data engineer",
                     "📱 Dev iOS",
                   ]}
-                  mainClassName="overflow-hidden text-[#0015ff] py-0 rounded-xl text-center"
+                  mainClassName="overflow-hidden text-[#0015ff] py-0 rounded-xl text-center whitespace-nowrap"
                   staggerDuration={0.03}
                   staggerFrom="last"
                   rotationInterval={3000}
