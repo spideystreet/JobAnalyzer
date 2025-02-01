@@ -65,7 +65,7 @@ const LandingPage: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.2, ease: "easeOut", delay: 0.3 }}
           >
-            <span className="text-center">Make your </span>
+            <span className="text-center font-helvetica">Make your </span>
             <LayoutGroup>
               <motion.span layout className="flex flex-row items-center justify-center whitespace-nowrap">
                 <TextRotate
@@ -87,7 +87,7 @@ const LandingPage: React.FC = () => {
           </motion.h1>
 
           <motion.p
-            className="text-sm sm:text-lg md:text-xl lg:text-2xl text-center font-overusedGrotesk pt-4 sm:pt-8 md:pt-10 lg:pt-12 max-w-[90%]"
+            className="text-sm sm:text-lg md:text-xl lg:text-2xl text-center font-overusedGrotesk pt-4 sm:pt-8 md:pt-10 lg:pt-12 max-w-[90%] font-helvetica"
             animate={{ opacity: 1, y: 0 }}
             initial={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.2, ease: "easeOut", delay: 0.5 }}
@@ -103,8 +103,8 @@ const LandingPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <motion.p className="text-xl text-muted-foreground mb-4 text-center font-regular">Fourni gentillement par l'arraignée sympa des réseaux 👋</motion.p>
-          <AnimatedTooltip items={teamMembers} className="scale-125" />
+          <motion.p className="text-sm text-muted-foreground mb-4 text-center font-helvetica">Fourni gentiment par l'arraignée sympa des réseaux 👋</motion.p>
+          <AnimatedTooltip items={teamMembers} className="scale-90" />
         </motion.div>
       </section>
 
