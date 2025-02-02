@@ -11,10 +11,29 @@ import { Home, User, Settings, Mail } from "lucide-react"
 
 const exampleImages = [
     {
-        url: "https://images.unsplash.com/photo-1737894543924-15e1ff7adbdb?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        author: "John Doe",
-        title: "Image 1"
-    }
+        url: "/images/docker.svg",
+        author: "Docker",
+        title: "Docker",
+        className: "top-[12%] left-[16%]"
+    },
+    {
+        url: "/images/python.svg",
+        author: "Python",
+        title: "Python",
+        className: "top-[31%] right-[10%]"
+    },
+    {
+        url: "/images/pbi.png",
+        author: "Power BI",
+        title: "Power BI",
+        className: "bottom-[20%] left-[12%]"
+    },
+    {
+        url: "/images/figma.svg",
+        author: "Figma",
+        title: "Figma",
+        className: "bottom-[20%] right-[21%]"
+    },
 ]
 
 const navItems = [
@@ -36,19 +55,19 @@ const LandingPage: React.FC = () => {
     <div className="w-full min-h-screen bg-background flex flex-col items-center">
       <AnimeNavBar items={navItems} className="w-full flex justify-center" />
       
-      <section id="home" className="w-full h-screen flex flex-col items-center relative">
+      <section id="home" className="w-full h-screen flex flex-col items-center relative overflow-hidden">
         <div className="absolute inset-0">
-          <Floating sensitivity={-0.5} className="h-full">
+          <Floating sensitivity={-0.5} className="h-full w-full">
             {exampleImages.map((image, index) => (
               <FloatingElement
                 key={index}
                 depth={index % 2 === 0 ? 0.5 : 1}
-                className="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2"
+                className={`absolute ${image.className} transform -translate-x-1/2 -translate-y-1/2`}
               >
                 <motion.img
                   src={image.url}
                   alt={image.title}
-                  className="w-40 h-40 object-cover hover:scale-105 duration-200 cursor-pointer transition-transform shadow-2xl rounded-xl"
+                  className="w-32 h-32 object-contain hover:scale-110 duration-200 cursor-pointer transition-transform rounded-xl"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 + index * 0.2 }}
@@ -92,8 +111,8 @@ const LandingPage: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.2, ease: "easeOut", delay: 0.5 }}
           >
-            with a growing library of ready-to-use react components &
-            microinteractions. free & open source.
+            Analysez les tendances du marché Freelance en France.<br />
+            TJM, Technos, ESN et bien d'autres paramètres !
           </motion.p>
         </div>
 
