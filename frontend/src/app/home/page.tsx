@@ -6,6 +6,7 @@ import { TextRotate } from "@/components/ui/text-rotate"
 import Floating, { FloatingElement } from "@/components/ui/parallax-floating"
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip"
 import { Boxes } from "@/components/ui/background-boxes"
+import { MagnetizeButton } from "@/components/ui/magnetize-button"
 
 const exampleImages = [
     {
@@ -90,6 +91,22 @@ const LandingPage: React.FC = () => {
           Analysez les tendances du marché Freelance en France.<br />
           TJM, Technos, ESN et bien d'autres paramètres !
         </motion.p>
+
+        {/* Bouton magnétique */}
+        <motion.div
+          className="mt-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
+          <MagnetizeButton
+            onClick={() => console.log("Clicked!")}
+            className="text-lg font-semibold px-8 py-6"
+            particleCount={15}
+          >
+            Explorer les données
+          </MagnetizeButton>
+        </motion.div>
 
         <motion.div
           className="fixed bottom-8 z-10 flex flex-col items-center justify-center"
