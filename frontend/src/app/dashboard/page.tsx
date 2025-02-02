@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Filters, { FilterState } from './components/Filters'
 import OffersPerDayChart from './components/OffersPerDayChart'
 import TechDistributionChart from './components/TechDistributionChart'
+import ExperienceDistributionChart from './components/ExperienceDistributionChart'
 import { useJobData } from '@/lib/supabase/hooks'
 import { CompanyTypeTop } from './components/CompanyTypeTop'
 import { BackgroundGradientAnimation } from '@/components/ui/background-gradient-animation'
@@ -103,14 +104,14 @@ function DashboardContent() {
 
   return (
     <BackgroundGradientAnimation
-      gradientBackgroundStart="rgb(0, 110, 140)"
-      gradientBackgroundEnd="rgb(0, 65, 82)"
-      firstColor="0, 217, 255"
-      secondColor="0, 196, 255"
-      thirdColor="0, 255, 240"
-      fourthColor="0, 234, 255"
-      fifthColor="0, 175, 216"
-      pointerColor="140, 100, 255"
+      gradientBackgroundStart="rgb(0, 80, 100)"
+      gradientBackgroundEnd="rgb(0, 45, 62)"
+      firstColor="0, 187, 225"
+      secondColor="0, 166, 225"
+      thirdColor="0, 225, 210"
+      fourthColor="0, 204, 225"
+      fifthColor="0, 145, 186"
+      pointerColor="120, 80, 225"
       blendingValue="screen"
       containerClassName="min-h-screen"
     >
@@ -125,7 +126,31 @@ function DashboardContent() {
             <Filters onFilterChange={setFilters} />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div className="bg-black/20 backdrop-blur-xl rounded-lg border border-white/10 p-4">
+              <h3 className="text-xl font-helvetica mb-4 text-white">Distribution des Technologies</h3>
+              {isLoading ? (
+                <LoadingSpinner />
+              ) : !data?.tjmData?.length ? (
+                <NoDataDisplay />
+              ) : (
+                <TechDistributionChart data={data.tjmData} />
+              )}
+            </div>
+
+            <div className="bg-black/20 backdrop-blur-xl rounded-lg border border-white/10 p-4">
+              <h3 className="text-xl font-helvetica mb-4 text-white">Distribution des Niveaux d'Expérience</h3>
+              {isLoading ? (
+                <LoadingSpinner />
+              ) : !data?.rawData?.length ? (
+                <NoDataDisplay />
+              ) : (
+                <ExperienceDistributionChart data={data.rawData} />
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <CompanyTypeTop data={companyTypeStats} />
             
             <div className="bg-black/20 backdrop-blur-xl rounded-lg border border-white/10 p-4">
@@ -136,17 +161,6 @@ function DashboardContent() {
                 <NoDataDisplay />
               ) : (
                 <OffersPerDayChart data={data.rawData} />
-              )}
-            </div>
-            
-            <div className="bg-black/20 backdrop-blur-xl rounded-lg border border-white/10 p-4">
-              <h3 className="text-xl font-helvetica mb-4 text-white">Distribution des Technologies</h3>
-              {isLoading ? (
-                <LoadingSpinner />
-              ) : !data?.tjmData?.length ? (
-                <NoDataDisplay />
-              ) : (
-                <TechDistributionChart data={data.tjmData} />
               )}
             </div>
           </div>

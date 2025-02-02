@@ -1,13 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { TagFilter } from './TagFilter'
 import { Calendar } from '@/components/ui/calendar'
 import { Button } from '@/components/ui/button'
-import { addDays } from 'date-fns'
-import { CalendarDate, parseDate, today, getLocalTimeZone } from '@internationalized/date'
-import { DateValue } from 'react-aria-components'
-import { RangeValue } from '@react-types/shared'
+import { format } from 'date-fns'
+import { fr } from 'date-fns/locale'
+import { CalendarIcon, Check } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 interface FiltersProps {
   onFilterChange: (filters: FilterState) => void
@@ -62,71 +63,206 @@ export default function Filters({ onFilterChange }: FiltersProps) {
     onFilterChange(newFilters)
   }
 
-  const handleDateSelect = (date: Date | undefined) => {
-    if (!date) return
-
-    const [start, end] = filters.dateRange
-    
-    if (!start || (start && end)) {
-      // Premier clic ou nouvelle sélection
-      handleFilterChange('dateRange', [date, null])
-    } else {
-      // Deuxième clic
-      const newEnd = date < start ? start : date
-      const newStart = date < start ? date : start
-      handleFilterChange('dateRange', [newStart, newEnd])
-    }
-  }
-
-  const clearDateRange = () => {
-    handleFilterChange('dateRange', [null, null])
+  const toggleFilter = (key: keyof Omit<FilterState, 'dateRange'>, value: string) => {
+    const currentValues = filters[key]
+    const newValues = currentValues.includes(value)
+      ? currentValues.filter(v => v !== value)
+      : [...currentValues, value]
+    handleFilterChange(key, newValues)
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      <TagFilter
-        label="Technologies"
-        suggestions={TECH_SUGGESTIONS}
-        onTagsChange={(tags) => handleFilterChange('technologies', tags)}
-      />
+    <div className="w-full mb-6">
+      <div className="max-w-[1400px] mx-auto px-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Technologies Filter */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start bg-black/20 backdrop-blur-xl border-white/10"
+              >
+                <span className="text-white/50">
+                  {filters.technologies.length === 0 
+                    ? "Technologies..." 
+                    : `${filters.technologies.length} sélectionnée${filters.technologies.length > 1 ? 's' : ''}`
+                  }
+                </span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[200px] p-0 bg-black/80 backdrop-blur-xl border-white/10" align="start">
+              <div className="p-2">
+                <input
+                  type="text"
+                  placeholder="Rechercher..."
+                  className="w-full p-2 mb-2 bg-transparent border border-white/10 rounded-md text-white text-sm focus:outline-none focus:ring-2 focus:ring-white/20"
+                />
+                <div className="max-h-[200px] overflow-auto">
+                  {TECH_SUGGESTIONS.map((tech) => (
+                    <button
+                      key={tech}
+                      onClick={() => toggleFilter('technologies', tech)}
+                      className={cn(
+                        "w-full text-left px-2 py-1.5 text-sm rounded-md mb-1 flex items-center",
+                        "text-white hover:bg-white/10",
+                        filters.technologies.includes(tech) ? "bg-white/10" : ""
+                      )}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          filters.technologies.includes(tech) ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      {tech}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
 
-      <TagFilter
-        label="Expérience"
-        suggestions={XP_SUGGESTIONS}
-        onTagsChange={(tags) => handleFilterChange('experienceLevel', tags)}
-      />
+          {/* Experience Filter */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start bg-black/20 backdrop-blur-xl border-white/10"
+              >
+                <span className="text-white/50">
+                  {filters.experienceLevel.length === 0 
+                    ? "Expérience..." 
+                    : `${filters.experienceLevel.length} sélectionnée${filters.experienceLevel.length > 1 ? 's' : ''}`
+                  }
+                </span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[200px] p-0 bg-black/80 backdrop-blur-xl border-white/10" align="start">
+              <div className="p-2">
+                <div className="max-h-[200px] overflow-auto">
+                  {XP_SUGGESTIONS.map((xp) => (
+                    <button
+                      key={xp}
+                      onClick={() => toggleFilter('experienceLevel', xp)}
+                      className={cn(
+                        "w-full text-left px-2 py-1.5 text-sm rounded-md mb-1 flex items-center",
+                        "text-white hover:bg-white/10",
+                        filters.experienceLevel.includes(xp) ? "bg-white/10" : ""
+                      )}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          filters.experienceLevel.includes(xp) ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      {xp}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
 
-      <TagFilter
-        label="Région"
-        suggestions={LOCATION_SUGGESTIONS}
-        onTagsChange={(tags) => handleFilterChange('location', tags)}
-      />
+          {/* Location Filter */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start bg-black/20 backdrop-blur-xl border-white/10"
+              >
+                <span className="text-white/50">
+                  {filters.location.length === 0 
+                    ? "Région..." 
+                    : `${filters.location.length} sélectionnée${filters.location.length > 1 ? 's' : ''}`
+                  }
+                </span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[200px] p-0 bg-black/80 backdrop-blur-xl border-white/10" align="start">
+              <div className="p-2">
+                <input
+                  type="text"
+                  placeholder="Rechercher..."
+                  className="w-full p-2 mb-2 bg-transparent border border-white/10 rounded-md text-white text-sm focus:outline-none focus:ring-2 focus:ring-white/20"
+                />
+                <div className="max-h-[200px] overflow-auto">
+                  {LOCATION_SUGGESTIONS.map((location) => (
+                    <button
+                      key={location}
+                      onClick={() => toggleFilter('location', location)}
+                      className={cn(
+                        "w-full text-left px-2 py-1.5 text-sm rounded-md mb-1 flex items-center",
+                        "text-white hover:bg-white/10",
+                        filters.location.includes(location) ? "bg-white/10" : ""
+                      )}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          filters.location.includes(location) ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      {location}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
 
-      <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium">Période</label>
-        <div className="relative">
-          <Calendar
-            mode="range"
-            selected={{
-              from: filters.dateRange[0] || undefined,
-              to: filters.dateRange[1] || undefined
-            }}
-            onSelect={(range: any) => {
-              handleFilterChange('dateRange', [range?.from || null, range?.to || null])
-            }}
-            className="rounded-md border"
-            disabled={{ after: new Date() }}
-          />
-          {(filters.dateRange[0] || filters.dateRange[1]) && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="absolute top-1 right-1"
-              onClick={clearDateRange}
-            >
-              Réinitialiser
-            </Button>
-          )}
+          {/* Date Range Filter */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start bg-black/20 backdrop-blur-xl border-white/10"
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                <span className="text-white/50">
+                  {filters.dateRange[0] ? (
+                    filters.dateRange[1] ? (
+                      <>
+                        {format(filters.dateRange[0], 'P', { locale: fr })} -{' '}
+                        {format(filters.dateRange[1], 'P', { locale: fr })}
+                      </>
+                    ) : (
+                      format(filters.dateRange[0], 'P', { locale: fr })
+                    )
+                  ) : (
+                    "Période..."
+                  )}
+                </span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0 bg-black/80 backdrop-blur-xl border-white/10" align="start">
+              <Calendar
+                mode="range"
+                selected={{
+                  from: filters.dateRange[0] || undefined,
+                  to: filters.dateRange[1] || undefined
+                }}
+                onSelect={(range: any) => {
+                  handleFilterChange('dateRange', [range?.from || null, range?.to || null])
+                }}
+                locale={fr}
+                disabled={{ after: new Date() }}
+                className="rounded-md text-white"
+              />
+              {(filters.dateRange[0] || filters.dateRange[1]) && (
+                <div className="p-3 border-t border-white/10">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full text-white hover:text-white/80"
+                    onClick={() => handleFilterChange('dateRange', [null, null])}
+                  >
+                    Réinitialiser
+                  </Button>
+                </div>
+              )}
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
     </div>

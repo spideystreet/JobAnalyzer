@@ -71,22 +71,22 @@ export default function TechDistributionChart({ data }: TechDistributionChartPro
 
   return (
     <ResponsiveContainer width="100%" height={400}>
-      <PieChart className="font-helvetica">
+      <PieChart>
         <Pie
           data={chartData}
           cx="50%"
           cy="50%"
           labelLine={false}
           label={renderCustomizedLabel}
-          outerRadius={160}
+          outerRadius={120}
           fill="#8884d8"
           dataKey="value"
+          strokeWidth={0}
         >
           {chartData.map((entry, index) => (
             <Cell 
               key={`cell-${index}`} 
               fill={COLORS[index % COLORS.length]}
-              className="stroke-background hover:opacity-80 transition-opacity"
             />
           ))}
         </Pie>
@@ -96,11 +96,15 @@ export default function TechDistributionChart({ data }: TechDistributionChartPro
             'Nombre d\'offres'
           ]}
           contentStyle={{
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: '8px',
+            color: 'white',
             fontFamily: 'Helvetica Neue'
           }}
+          labelStyle={{ color: 'white' }}
+          itemStyle={{ color: 'white' }}
+          wrapperStyle={{ outline: 'none' }}
         />
         <Legend 
           layout="horizontal" 
@@ -109,7 +113,8 @@ export default function TechDistributionChart({ data }: TechDistributionChartPro
           wrapperStyle={{
             paddingTop: '20px',
             fontFamily: 'Helvetica Neue',
-            fontSize: '12px'
+            fontSize: '12px',
+            color: 'white'
           }}
         />
       </PieChart>
