@@ -60,7 +60,7 @@ const LandingPage: React.FC = () => {
 
         <div className="flex-1 relative z-10 flex flex-col justify-center items-center px-4">
           <motion.h1
-            className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl text-center flex flex-col items-center justify-center leading-tight font-helvetica tracking-tight"
+            className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl text-center flex flex-col items-center justify-center leading-[1.9] font-helvetica tracking-tight"
             animate={{ opacity: 1, y: 0 }}
             initial={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.2, ease: "easeOut", delay: 0.3 }}
@@ -76,7 +76,7 @@ const LandingPage: React.FC = () => {
                     "⚙️ Data engineer",
                     "📱 Dev iOS",
                   ]}
-                  mainClassName="overflow-hidden text-[#0015ff] py-0 rounded-xl text-center whitespace-nowrap"
+                  mainClassName="overflow-hidden text-[#0015ff] py-4 rounded-xl text-center whitespace-nowrap h-full"
                   staggerDuration={0.03}
                   staggerFrom="last"
                   rotationInterval={3000}
