@@ -102,38 +102,41 @@ function DashboardContent() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-helvetica mb-8">Dashboard Freelance</h1>
-        
-        <div className="mb-8 p-4 bg-card rounded-lg shadow">
-          <h2 className="text-2xl font-helvetica mb-4">Filtres</h2>
-          <Filters onFilterChange={setFilters} />
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <CompanyTypeTop data={companyTypeStats} />
+    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-400 via-cyan-600 to-cyan-900">
+      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-30 mix-blend-soft-light"></div>
+      <div className="relative">
+        <div className="container mx-auto px-4 py-8">
+          <h1 className="text-4xl font-helvetica mb-8 text-white">Dashboard Freelance</h1>
           
-          <div className="bg-card p-4 rounded-lg shadow">
-            <h3 className="text-xl font-helvetica mb-4">Offres publiées par jour</h3>
-            {isLoading ? (
-              <LoadingSpinner />
-            ) : !data?.rawData?.length ? (
-              <NoDataDisplay />
-            ) : (
-              <OffersPerDayChart data={data.rawData} />
-            )}
+          <div className="mb-8 p-4 bg-black/20 backdrop-blur-xl rounded-lg border border-white/10">
+            <h2 className="text-2xl font-helvetica mb-4 text-white">Filtres</h2>
+            <Filters onFilterChange={setFilters} />
           </div>
-          
-          <div className="bg-card p-4 rounded-lg shadow">
-            <h3 className="text-xl font-helvetica mb-4">Distribution des Technologies</h3>
-            {isLoading ? (
-              <LoadingSpinner />
-            ) : !data?.tjmData?.length ? (
-              <NoDataDisplay />
-            ) : (
-              <TechDistributionChart data={data.tjmData} />
-            )}
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <CompanyTypeTop data={companyTypeStats} />
+            
+            <div className="bg-black/20 backdrop-blur-xl rounded-lg border border-white/10 p-4">
+              <h3 className="text-xl font-helvetica mb-4 text-white">Offres publiées par jour</h3>
+              {isLoading ? (
+                <LoadingSpinner />
+              ) : !data?.rawData?.length ? (
+                <NoDataDisplay />
+              ) : (
+                <OffersPerDayChart data={data.rawData} />
+              )}
+            </div>
+            
+            <div className="bg-black/20 backdrop-blur-xl rounded-lg border border-white/10 p-4">
+              <h3 className="text-xl font-helvetica mb-4 text-white">Distribution des Technologies</h3>
+              {isLoading ? (
+                <LoadingSpinner />
+              ) : !data?.tjmData?.length ? (
+                <NoDataDisplay />
+              ) : (
+                <TechDistributionChart data={data.tjmData} />
+              )}
+            </div>
           </div>
         </div>
       </div>
