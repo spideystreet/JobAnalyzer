@@ -108,11 +108,11 @@ const LandingPage: React.FC = () => {
           transition={{ duration: 0.5, delay: 0.6 }}
         >
           <MagnetizeButton
-            onClick={() => console.log("Clicked!")}
+            onClick={() => window.location.href = '/dashboard'}
             className="text-lg font-semibold px-8 py-6"
             particleCount={15}
           >
-            Explorer les données
+            Découvrir
           </MagnetizeButton>
         </motion.div>
       </div>
