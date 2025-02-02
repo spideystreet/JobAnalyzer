@@ -36,7 +36,7 @@ const LandingPage: React.FC = () => {
     <div className="w-full min-h-screen bg-background flex flex-col items-center">
       <AnimeNavBar items={navItems} className="w-full flex justify-center" />
       
-      <section id="home" className="w-full h-screen flex flex-col items-center justify-center relative">
+      <section id="home" className="w-full h-screen flex flex-col items-center relative">
         <div className="absolute inset-0">
           <Floating sensitivity={-0.5} className="h-full">
             {exampleImages.map((image, index) => (
@@ -58,14 +58,14 @@ const LandingPage: React.FC = () => {
           </Floating>
         </div>
 
-        <div className="relative z-10 flex flex-col justify-center items-center px-4">
+        <div className="flex-1 relative z-10 flex flex-col justify-center items-center px-4">
           <motion.h1
             className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl text-center flex flex-col items-center justify-center leading-tight font-helvetica tracking-tight"
             animate={{ opacity: 1, y: 0 }}
             initial={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.2, ease: "easeOut", delay: 0.3 }}
           >
-            <span>Make your</span>
+            <span>Analysez les</span>
             <LayoutGroup>
               <motion.div layout className="flex items-center justify-center whitespace-nowrap">
                 <TextRotate
@@ -98,7 +98,7 @@ const LandingPage: React.FC = () => {
         </div>
 
         <motion.div
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center justify-center"
+          className="relative z-10 flex flex-col items-center justify-center mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
