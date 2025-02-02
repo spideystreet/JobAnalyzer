@@ -113,7 +113,7 @@ function DashboardContent() {
       fifthColor="0, 145, 186"
       pointerColor="120, 80, 225"
       blendingValue="screen"
-      containerClassName="min-h-screen"
+      containerClassName="min-h-screen overflow-y-auto"
     >
       <div className="relative z-10">
         <div className="container mx-auto px-4 py-8">
@@ -121,13 +121,13 @@ function DashboardContent() {
             Dashboard Freelance
           </h1>
           
-          <div className="mb-8 p-4 bg-black/20 backdrop-blur-xl rounded-lg border border-white/10">
+          <div className="mb-8 p-4 bg-black backdrop-blur-xl rounded-lg border border-white/10">
             <h2 className="text-2xl font-helvetica mb-4 text-white">Filtres</h2>
             <Filters onFilterChange={setFilters} />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <div className="bg-black/20 backdrop-blur-xl rounded-lg border border-white/10 p-4">
+            <div className="bg-black backdrop-blur-xl rounded-lg border border-white/10 p-4">
               <h3 className="text-xl font-helvetica mb-4 text-white">Distribution des Technologies</h3>
               {isLoading ? (
                 <LoadingSpinner />
@@ -138,7 +138,7 @@ function DashboardContent() {
               )}
             </div>
 
-            <div className="bg-black/20 backdrop-blur-xl rounded-lg border border-white/10 p-4">
+            <div className="bg-black backdrop-blur-xl rounded-lg border border-white/10 p-4">
               <h3 className="text-xl font-helvetica mb-4 text-white">Distribution des Niveaux d'Expérience</h3>
               {isLoading ? (
                 <LoadingSpinner />
@@ -151,9 +151,11 @@ function DashboardContent() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <CompanyTypeTop data={companyTypeStats} />
+            <div className="rounded-lg">
+              <CompanyTypeTop data={companyTypeStats} />
+            </div>
             
-            <div className="bg-black/20 backdrop-blur-xl rounded-lg border border-white/10 p-4">
+            <div className="bg-black backdrop-blur-xl rounded-lg border border-white/10 p-4">
               <h3 className="text-xl font-helvetica mb-4 text-white">Offres publiées par jour</h3>
               {isLoading ? (
                 <LoadingSpinner />
