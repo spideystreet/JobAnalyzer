@@ -79,12 +79,12 @@ const LandingPage: React.FC = () => {
 
         <div className="flex-1 relative z-10 flex flex-col justify-center items-center px-4">
           <motion.h1
-            className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl text-center flex flex-col items-center justify-center leading-[1.9] font-helvetica tracking-tight"
+            className="text-7xl text-center flex flex-col items-center justify-center font-helvetica tracking-tight"
             animate={{ opacity: 1, y: 0 }}
             initial={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.2, ease: "easeOut", delay: 0.3 }}
           >
-            <span>Analysez les</span>
+            <span className="mb-4 font-bold font-helvetica">Analysez les</span>
             <LayoutGroup>
               <motion.div layout className="flex items-center justify-center whitespace-nowrap">
                 <TextRotate
@@ -95,7 +95,7 @@ const LandingPage: React.FC = () => {
                     "⚙️ Data engineer",
                     "📱 Dev iOS",
                   ]}
-                  mainClassName="overflow-hidden text-[#0015ff] py-4 rounded-xl text-center whitespace-nowrap h-full"
+                  mainClassName="overflow-hidden text-[#0015ff] py-4 rounded-xl text-center whitespace-nowrap h-full -ml-6"
                   staggerDuration={0.03}
                   staggerFrom="last"
                   rotationInterval={3000}
@@ -106,7 +106,7 @@ const LandingPage: React.FC = () => {
           </motion.h1>
 
           <motion.p
-            className="text-sm sm:text-lg md:text-xl lg:text-2xl text-center font-overusedGrotesk pt-4 sm:pt-8 md:pt-10 lg:pt-12 max-w-[90%] font-helvetica"
+            className="text-xl text-center font-helvetica mt-16 max-w-[600px]"
             animate={{ opacity: 1, y: 0 }}
             initial={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.2, ease: "easeOut", delay: 0.5 }}
@@ -117,13 +117,13 @@ const LandingPage: React.FC = () => {
         </div>
 
         <motion.div
-          className="relative z-10 flex flex-col items-center justify-center mb-8"
+          className="fixed bottom-8 z-10 flex flex-col items-center justify-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
           <motion.p className="text-sm text-muted-foreground mb-4 text-center font-helvetica">Fourni gentiment par l'arraignée sympa des réseaux 👋</motion.p>
-          <AnimatedTooltip items={teamMembers} className="scale-90" />
+          <AnimatedTooltip items={teamMembers} className="mr-4 scale-90" />
         </motion.div>
       </section>
 
