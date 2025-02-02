@@ -17,11 +17,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className="dark">
-      <body className={`${inter.className} bg-background text-foreground`}>
-        <div className="w-full min-h-screen bg-background">
-          <Navigation />
-          {children}
-        </div>
+      <body className={`${inter.className} bg-slate-900`}>
+        <Navigation />
+        {children}
       </body>
     </html>
   );
