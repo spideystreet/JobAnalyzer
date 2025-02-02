@@ -7,6 +7,7 @@ import OffersPerDayChart from './components/OffersPerDayChart'
 import TechDistributionChart from './components/TechDistributionChart'
 import { useJobData } from '@/lib/supabase/hooks'
 import { CompanyTypeTop } from './components/CompanyTypeTop'
+import { BackgroundGradientAnimation } from '@/components/ui/background-gradient-animation'
 
 interface JobOffer {
   id: string
@@ -73,7 +74,6 @@ function DashboardContent() {
 
   const { data, isLoading, error, refetch } = useJobData(filters)
   
-  // Calculer le top 3 des types d'entreprises
   const companyTypeStats = useMemo(() => {
     if (!data?.rawData) return []
     
@@ -93,7 +93,7 @@ function DashboardContent() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen">
         <div className="container mx-auto px-4 py-8">
           <ErrorDisplay error={error} onRetry={refetch} />
         </div>
@@ -102,11 +102,23 @@ function DashboardContent() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-400 via-cyan-600 to-cyan-900">
-      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-30 mix-blend-soft-light"></div>
-      <div className="relative">
+    <BackgroundGradientAnimation
+      gradientBackgroundStart="rgb(0, 110, 140)"
+      gradientBackgroundEnd="rgb(0, 65, 82)"
+      firstColor="0, 217, 255"
+      secondColor="0, 196, 255"
+      thirdColor="0, 255, 240"
+      fourthColor="0, 234, 255"
+      fifthColor="0, 175, 216"
+      pointerColor="140, 100, 255"
+      blendingValue="screen"
+      containerClassName="min-h-screen"
+    >
+      <div className="relative z-10">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-4xl font-helvetica mb-8 text-white">Dashboard Freelance</h1>
+          <h1 className="text-4xl font-helvetica mb-8 text-white drop-shadow-lg">
+            Dashboard Freelance
+          </h1>
           
           <div className="mb-8 p-4 bg-black/20 backdrop-blur-xl rounded-lg border border-white/10">
             <h2 className="text-2xl font-helvetica mb-4 text-white">Filtres</h2>
@@ -140,7 +152,7 @@ function DashboardContent() {
           </div>
         </div>
       </div>
-    </div>
+    </BackgroundGradientAnimation>
   )
 }
 
