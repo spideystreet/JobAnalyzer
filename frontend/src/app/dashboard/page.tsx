@@ -1,17 +1,29 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Filters, { FilterState } from './components/Filters'
 import OffersPerDayChart from './components/OffersPerDayChart'
 import TechDistributionChart from './components/TechDistributionChart'
 import { useJobData } from '@/lib/supabase/hooks'
+import { CompanyTypeTop } from './components/CompanyTypeTop'
+
+interface JobOffer {
+  id: string
+  COMPANY_TYPE: string | null
+  created_at: string
+  // autres propriétés si nécessaire
+}
+
+interface JobData {
+  rawData: JobOffer[]
+  tjmData: any[] // type spécifique pour tjmData si nécessaire
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-      retry: 3,
     },
   },
 })
@@ -60,6 +72,24 @@ function DashboardContent() {
   })
 
   const { data, isLoading, error, refetch } = useJobData(filters)
+  
+  // Calculer le top 3 des types d'entreprises
+  const companyTypeStats = useMemo(() => {
+    if (!data?.rawData) return []
+    
+    const stats = data.rawData.reduce<Record<string, number>>((acc, job) => {
+      const type = job.COMPANY_TYPE || 'Non spécifié'
+      acc[type] = (acc[type] || 0) + 1
+      return acc
+    }, {})
+
+    return Object.entries(stats)
+      .map(([company_type, count]) => ({ 
+        company_type, 
+        count 
+      }))
+      .sort((a, b) => b.count - a.count)
+  }, [data?.rawData])
 
   if (error) {
     return (
@@ -81,7 +111,9 @@ function DashboardContent() {
           <Filters onFilterChange={setFilters} />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <CompanyTypeTop data={companyTypeStats} />
+          
           <div className="bg-card p-4 rounded-lg shadow">
             <h3 className="text-xl font-helvetica mb-4">Offres publiées par jour</h3>
             {isLoading ? (
