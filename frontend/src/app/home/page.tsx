@@ -46,9 +46,9 @@ const teamMembers = [
 
 const LandingPage: React.FC = () => {
   return (
-    <div className="h-screen relative w-full overflow-hidden bg-slate-900 flex flex-col items-center justify-center">
+    <div className="h-screen relative w-full overflow-hidden bg-black flex flex-col items-center justify-center">
       {/* Masque radial pour l'effet de fondu */}
-      <div className="absolute inset-0 w-full h-full bg-slate-900 z-20 [mask-image:radial-gradient(circle_at_center,transparent,white)] pointer-events-none" />
+      <div className="absolute inset-0 w-full h-full bg-black z-20 [mask-image:radial-gradient(circle_at_center,transparent,white)] pointer-events-none" />
       
       {/* Background boxes */}
       <Boxes />
