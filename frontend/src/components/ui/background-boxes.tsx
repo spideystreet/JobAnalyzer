@@ -38,7 +38,7 @@ export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
       {rows.map((_, i) => (
         <motion.div
           key={`row` + i}
-          className="w-16 h-8 border-l border-slate-700 relative"
+          className="w-16 h-8 border-l border-slate-700 bg-black/80 relative"
         >
           {cols.map((_, j) => (
             <motion.div
@@ -46,8 +46,10 @@ export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
                 backgroundColor: getRandomColor(),
                 transition: { duration: 0 },
               }}
+              initial={{ backgroundColor: "rgba(0, 0, 0, 0.8)" }}
               animate={{
-                transition: { duration: 2 },
+                backgroundColor: "rgba(0, 0, 0, 0.8)",
+                transition: { duration: 0.1 },
               }}
               key={`col` + j}
               className="w-16 h-8 border-r border-t border-slate-700 relative"
