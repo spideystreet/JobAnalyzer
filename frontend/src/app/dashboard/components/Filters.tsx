@@ -31,10 +31,10 @@ const TECH_SUGGESTIONS = [
 ]
 
 const XP_SUGGESTIONS = [
-  "Junior (0-2 ans)",
-  "Confirmé (2-5 ans)",
-  "Senior (5-8 ans)",
-  "Expert (8+ ans)"
+  "Junior",
+  "Intermédiaire",
+  "Confirmé",
+  "Sénior"
 ]
 
 const LOCATION_SUGGESTIONS = [

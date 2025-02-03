@@ -16,10 +16,10 @@ interface ExperienceDistributionChartProps {
 }
 
 const XP_LEVELS = [
-  "Junior (0-2 ans)",
-  "Confirmé (2-5 ans)",
-  "Senior (5-8 ans)",
-  "Expert (8+ ans)"
+  "Junior",
+  "Intermédiaire",
+  "Confirmé",
+  "Sénior"
 ]
 
 export default function ExperienceDistributionChart({ data }: ExperienceDistributionChartProps) {
