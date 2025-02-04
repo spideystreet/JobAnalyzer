@@ -104,14 +104,15 @@ function DashboardContent() {
 
   return (
     <BackgroundGradientAnimation
-      gradientBackgroundStart="rgb(0, 80, 100)"
-      gradientBackgroundEnd="rgb(0, 45, 62)"
-      firstColor="0, 187, 225"
-      secondColor="0, 166, 225"
-      thirdColor="0, 225, 210"
-      fourthColor="0, 204, 225"
-      fifthColor="0, 145, 186"
-      pointerColor="120, 80, 225"
+      gradientBackgroundStart="rgb(0, 0, 0)"
+      gradientBackgroundEnd="rgb(0, 20, 30)"
+      firstColor="18, 113, 255"
+      secondColor="46, 182, 255"
+      thirdColor="0, 255, 163"
+      fourthColor="0, 224, 255"
+      fifthColor="0, 133, 255"
+      pointerColor="140, 100, 255"
+      size="100%"
       blendingValue="screen"
       containerClassName="min-h-screen overflow-y-auto"
     >
@@ -121,13 +122,13 @@ function DashboardContent() {
             Dashboard Freelance
           </h1>
           
-          <div className="mb-8 p-4 bg-black backdrop-blur-xl rounded-lg border border-white/10">
+          <div className="mb-8 p-4 bg-black/80 backdrop-blur-xl rounded-lg border border-white/10">
             <h2 className="text-2xl font-helvetica mb-4 text-white">Filtres</h2>
             <Filters onFilterChange={setFilters} />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <div className="bg-black backdrop-blur-xl rounded-lg border border-white/10 p-4">
+            <div className="bg-black/80 backdrop-blur-xl rounded-lg border border-white/10 p-4">
               <h3 className="text-xl font-helvetica mb-4 text-white">Distribution des Technologies</h3>
               {isLoading ? (
                 <LoadingSpinner />
@@ -138,7 +139,7 @@ function DashboardContent() {
               )}
             </div>
 
-            <div className="bg-black backdrop-blur-xl rounded-lg border border-white/10 p-4">
+            <div className="bg-black/80 backdrop-blur-xl rounded-lg border border-white/10 p-4">
               <h3 className="text-xl font-helvetica mb-4 text-white">Distribution des Niveaux d'Expérience</h3>
               {isLoading ? (
                 <LoadingSpinner />
@@ -155,7 +156,7 @@ function DashboardContent() {
               <CompanyTypeTop data={companyTypeStats} />
             </div>
             
-            <div className="bg-black backdrop-blur-xl rounded-lg border border-white/10 p-4">
+            <div className="bg-black/80 backdrop-blur-xl rounded-lg border border-white/10 p-4">
               <h3 className="text-xl font-helvetica mb-4 text-white">Offres publiées par jour</h3>
               {isLoading ? (
                 <LoadingSpinner />
