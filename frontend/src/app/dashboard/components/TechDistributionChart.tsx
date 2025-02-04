@@ -1,59 +1,57 @@
 'use client'
 
+import * as React from "react"
+import { Label, Pie, PieChart, Sector } from "recharts"
+import { PieSectorDataItem } from "recharts/types/polar/Pie"
+
 import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  Legend,
-  ResponsiveContainer
-} from 'recharts'
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { TJMChartData } from '@/lib/supabase/types'
 
 interface TechDistributionChartProps {
   data: TJMChartData[]
 }
 
+type CustomActiveShapeProps = {
+  cx: number
+  cy: number
+  innerRadius: number
+  outerRadius: number
+  startAngle: number
+  endAngle: number
+  fill: string
+  payload: {
+    name: string
+    value: number
+  }
+  value: number
+  percent: number
+}
+
 const COLORS = [
-  '#2DD4BF', // Teal
-  '#0EA5E9', // Sky
-  '#8B5CF6', // Violet
+  '#3B82F6', // Blue
   '#EC4899', // Pink
+  '#10B981', // Green
+  '#F59E0B', // Orange
+  '#8B5CF6', // Purple
+  '#14B8A6', // Teal
   '#F43F5E', // Rose
-  '#F59E0B', // Amber
-  '#10B981', // Emerald
   '#6366F1', // Indigo
   '#84CC16', // Lime
-  '#14B8A6', // Teal
+  '#06B6D4', // Cyan
 ]
-
-const RADIAN = Math.PI / 180
-const renderCustomizedLabel = ({
-  cx,
-  cy,
-  midAngle,
-  innerRadius,
-  outerRadius,
-  percent,
-  name,
-}: any) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5
-  const x = cx + radius * Math.cos(-midAngle * RADIAN)
-  const y = cy + radius * Math.sin(-midAngle * RADIAN)
-
-  return percent * 100 >= 5 ? (
-    <text
-      x={x}
-      y={y}
-      fill="white"
-      textAnchor={x > cx ? 'start' : 'end'}
-      dominantBaseline="central"
-      className="text-xs font-helvetica"
-    >
-      {`${name} (${(percent * 100).toFixed(0)}%)`}
-    </text>
-  ) : null
-}
 
 export default function TechDistributionChart({ data }: TechDistributionChartProps) {
   // Calculer le total des occurrences
@@ -64,60 +62,106 @@ export default function TechDistributionChart({ data }: TechDistributionChartPro
     .map(item => ({
       name: item.technology,
       value: item.count,
-      percentage: (item.count / total) * 100
+      fill: COLORS[data.indexOf(item) % COLORS.length]
     }))
     .sort((a, b) => b.value - a.value)
     .slice(0, 10) // Limiter aux 10 technologies les plus demandées
 
-  return (
-    <ResponsiveContainer width="100%" height={400}>
-      <PieChart>
-        <Pie
-          data={chartData}
-          cx="50%"
-          cy="50%"
-          labelLine={false}
-          label={renderCustomizedLabel}
-          outerRadius={120}
-          fill="#8884d8"
-          dataKey="value"
-          strokeWidth={0}
+  const [activeTech, setActiveTech] = React.useState(chartData[0]?.name)
+  const activeIndex = React.useMemo(
+    () => chartData.findIndex((item) => item.name === activeTech),
+    [activeTech, chartData]
+  )
+
+  const renderActiveShape = React.useCallback((props: unknown) => {
+    const {
+      cx,
+      cy,
+      innerRadius,
+      outerRadius,
+      startAngle,
+      endAngle,
+      fill,
+      payload,
+      percent,
+      value
+    } = props as CustomActiveShapeProps
+
+    return (
+      <g>
+        <text 
+          x={cx} 
+          y={cy} 
+          dy={-10} 
+          textAnchor="middle" 
+          className="text-[16px] fill-white font-medium"
         >
-          {chartData.map((entry, index) => (
-            <Cell 
-              key={`cell-${index}`} 
-              fill={COLORS[index % COLORS.length]}
+          {payload.name}
+        </text>
+        <text 
+          x={cx} 
+          y={cy} 
+          dy={15} 
+          textAnchor="middle" 
+          className="text-[14px] fill-white/60"
+        >
+          {value}
+        </text>
+        <text 
+          x={cx} 
+          y={cy} 
+          dy={35} 
+          textAnchor="middle" 
+          className="text-[12px] fill-white/40"
+        >
+          Offres
+        </text>
+        <Sector
+          cx={cx}
+          cy={cy}
+          innerRadius={innerRadius}
+          outerRadius={outerRadius}
+          startAngle={startAngle}
+          endAngle={endAngle}
+          fill={fill}
+          strokeWidth={0}
+        />
+        <Sector
+          cx={cx}
+          cy={cy}
+          startAngle={startAngle}
+          endAngle={endAngle}
+          innerRadius={outerRadius + 6}
+          outerRadius={outerRadius + 10}
+          fill={fill}
+          strokeWidth={0}
+        />
+      </g>
+    )
+  }, [])
+
+  return (
+    <Card className="w-full bg-black">
+      <CardContent className="p-0">
+        <div className="h-[350px] w-full flex items-center justify-center">
+          <PieChart width={350} height={350}>
+            <Pie
+              activeIndex={activeIndex}
+              activeShape={renderActiveShape}
+              data={chartData}
+              cx={175}
+              cy={175}
+              innerRadius={60}
+              outerRadius={100}
+              dataKey="value"
+              onMouseEnter={(_, index) => {
+                setActiveTech(chartData[index].name)
+              }}
+              strokeWidth={0}
             />
-          ))}
-        </Pie>
-        <Tooltip
-          formatter={(value: number) => [
-            `${value} offres (${((value / total) * 100).toFixed(1)}%)`,
-            'Nombre d\'offres'
-          ]}
-          contentStyle={{
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '8px',
-            color: 'white',
-            fontFamily: 'Helvetica Neue'
-          }}
-          labelStyle={{ color: 'white' }}
-          itemStyle={{ color: 'white' }}
-          wrapperStyle={{ outline: 'none' }}
-        />
-        <Legend 
-          layout="horizontal" 
-          verticalAlign="bottom" 
-          align="center"
-          wrapperStyle={{
-            paddingTop: '20px',
-            fontFamily: 'Helvetica Neue',
-            fontSize: '12px',
-            color: 'white'
-          }}
-        />
-      </PieChart>
-    </ResponsiveContainer>
+          </PieChart>
+        </div>
+      </CardContent>
+    </Card>
   )
 } 

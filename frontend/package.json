@@ -12,6 +12,7 @@
     "@internationalized/date": "^3.7.0",
     "@radix-ui/react-dialog": "^1.1.5",
     "@radix-ui/react-popover": "^1.1.5",
+    "@radix-ui/react-select": "^2.1.5",
     "@radix-ui/react-slot": "^1.1.1",
     "@react-types/shared": "^3.27.0",
     "@supabase/supabase-js": "^2.48.1",
