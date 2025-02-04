@@ -20,16 +20,19 @@ interface TechDistributionChartProps {
 }
 
 export default function TechDistributionChart({ data }: TechDistributionChartProps) {
-  // Trier les données par nombre d'offres décroissant et prendre les 10 premiers
+  // Trier les données par nombre d'offres décroissant
   const chartData = [...data]
     .sort((a, b) => b.count - a.count)
-    .slice(0, 10)
+    .slice(0, 10) // Limiter aux 10 premières technologies
     .map(item => ({
       name: item.technology,
       value: item.count
     }))
 
   const topTech = chartData[0]?.name || "Aucune technologie"
+
+  // Hauteur fixe pour 10 technologies
+  const chartHeight = 400
 
   return (
     <Card className="bg-black/80 backdrop-blur-xl border-white/10">
@@ -38,11 +41,11 @@ export default function TechDistributionChart({ data }: TechDistributionChartPro
         <CardDescription className="text-white/60">Répartition des technologies les plus demandées</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px] w-full">
+        <div style={{ height: `${chartHeight}px` }} className="w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart 
               data={chartData} 
-              margin={{ top: 20, right: 32, bottom: 20, left: 32 }}
+              margin={{ top: 20, right: 32, bottom: 20, left: 150 }}
               layout="vertical"
             >
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
@@ -51,7 +54,8 @@ export default function TechDistributionChart({ data }: TechDistributionChartPro
                 type="category" 
                 dataKey="name" 
                 stroke="rgba(255,255,255,0.5)"
-                width={120}
+                width={140}
+                tick={{ fill: 'rgba(255,255,255,0.8)' }}
               />
               <Tooltip
                 contentStyle={{

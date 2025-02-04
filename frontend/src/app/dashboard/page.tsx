@@ -130,7 +130,6 @@ function DashboardContent() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-black/80 backdrop-blur-xl rounded-lg border border-white/10 p-4">
-              <h3 className="text-xl font-helvetica mb-4 text-white">Distribution des Technologies</h3>
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.tjmData?.length ? (
@@ -141,7 +140,6 @@ function DashboardContent() {
             </div>
 
             <div className="bg-black/80 backdrop-blur-xl rounded-lg border border-white/10 p-4">
-              <h3 className="text-xl font-helvetica mb-4 text-white">Distribution des Niveaux d'Expérience</h3>
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.rawData?.length ? (
