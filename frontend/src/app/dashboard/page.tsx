@@ -7,7 +7,8 @@ import OffersPerDayChart from './components/OffersPerDayChart'
 import TechDistributionChart from './components/TechDistributionChart'
 import ExperienceDistributionChart from './components/ExperienceDistributionChart'
 import { useJobData } from '@/lib/supabase/hooks'
-import { CompanyTypeTop } from './components/CompanyTypeTop'
+import TopCompaniesChart from "./components/TopCompaniesChart"
+import JobOffersChart from "./components/JobOffersChart"
 import { BackgroundGradientAnimation } from '@/components/ui/background-gradient-animation'
 
 interface JobOffer {
@@ -127,7 +128,7 @@ function DashboardContent() {
             <Filters onFilterChange={setFilters} />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-black/80 backdrop-blur-xl rounded-lg border border-white/10 p-4">
               <h3 className="text-xl font-helvetica mb-4 text-white">Distribution des Technologies</h3>
               {isLoading ? (
@@ -149,15 +150,18 @@ function DashboardContent() {
                 <ExperienceDistributionChart data={data.rawData} />
               )}
             </div>
-          </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="rounded-lg">
-              <CompanyTypeTop data={companyTypeStats} />
+            <div className="bg-black/80 backdrop-blur-xl rounded-lg border border-white/10 p-4">
+              {isLoading ? (
+                <LoadingSpinner />
+              ) : !data?.rawData?.length ? (
+                <NoDataDisplay />
+              ) : (
+                <TopCompaniesChart data={data.rawData} />
+              )}
             </div>
             
             <div className="bg-black/80 backdrop-blur-xl rounded-lg border border-white/10 p-4">
-              <h3 className="text-xl font-helvetica mb-4 text-white">Offres publiées par jour</h3>
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.rawData?.length ? (
