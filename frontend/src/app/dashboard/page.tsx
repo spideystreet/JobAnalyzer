@@ -9,6 +9,7 @@ import ExperienceDistributionChart from './components/ExperienceDistributionChar
 import { useJobData } from '@/lib/supabase/hooks'
 import TopCompaniesChart from "./components/TopCompaniesChart"
 import JobOffersChart from "./components/JobOffersChart"
+import DomainDistributionChart from "./components/DomainDistributionChart"
 import { BackgroundGradientAnimation } from '@/components/ui/background-gradient-animation'
 
 interface JobOffer {
@@ -129,6 +130,16 @@ function DashboardContent() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-black/80 backdrop-blur-xl rounded-lg border border-white/10 p-4">
+              {isLoading ? (
+                <LoadingSpinner />
+              ) : !data?.rawData?.length ? (
+                <NoDataDisplay />
+              ) : (
+                <DomainDistributionChart data={data.rawData} />
+              )}
+            </div>
+
             <div className="bg-black/80 backdrop-blur-xl rounded-lg border border-white/10 p-4">
               {isLoading ? (
                 <LoadingSpinner />
