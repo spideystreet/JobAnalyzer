@@ -19,6 +19,8 @@ export interface FilterState {
   experienceLevel: string[]
   location: string[]
   dateRange: [Date | null, Date | null]
+  country: string[]
+  domain: string[]
 }
 
 // Suggestions pour les filtres
@@ -46,12 +48,34 @@ const LOCATION_SUGGESTIONS = [
   "Full Remote"
 ]
 
+const COUNTRY_SUGGESTIONS = [
+  "France",
+  "Belgique",
+  "Suisse",
+  "Luxembourg"
+]
+
+const DOMAIN_SUGGESTIONS = [
+  "Fullstack",
+  "Backend",
+  "Frontend",
+  "DevOps",
+  "Data Engineer",
+  "Data Analyst",
+  "Data Scientist",
+  "Mobile",
+  "Cloud Engineer",
+  "Sécurité"
+]
+
 export default function Filters({ onFilterChange }: FiltersProps) {
   const [filters, setFilters] = useState<FilterState>({
     technologies: [],
     experienceLevel: [],
     location: [],
-    dateRange: [null, null]
+    dateRange: [null, null],
+    country: [],
+    domain: []
   })
 
   const handleFilterChange = (key: keyof FilterState, value: any) => {
@@ -204,6 +228,90 @@ export default function Filters({ onFilterChange }: FiltersProps) {
                         )}
                       />
                       {location}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+
+          {/* Country Filter */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start bg-black/20 backdrop-blur-xl border-white/10"
+              >
+                <span className="text-white/50">
+                  {filters.country.length === 0 
+                    ? "Pays..." 
+                    : `${filters.country.length} sélectionné${filters.country.length > 1 ? 's' : ''}`
+                  }
+                </span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[200px] p-0 bg-black/80 backdrop-blur-xl border-white/10" align="start">
+              <div className="p-2">
+                <div className="max-h-[200px] overflow-auto">
+                  {COUNTRY_SUGGESTIONS.map((country) => (
+                    <button
+                      key={country}
+                      onClick={() => toggleFilter('country', country)}
+                      className={cn(
+                        "w-full text-left px-2 py-1.5 text-sm rounded-md mb-1 flex items-center",
+                        "text-white hover:bg-white/10",
+                        filters.country.includes(country) ? "bg-white/10" : ""
+                      )}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          filters.country.includes(country) ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      {country}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+
+          {/* Domain Filter */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start bg-black/20 backdrop-blur-xl border-white/10"
+              >
+                <span className="text-white/50">
+                  {filters.domain.length === 0 
+                    ? "Métier..." 
+                    : `${filters.domain.length} sélectionné${filters.domain.length > 1 ? 's' : ''}`
+                  }
+                </span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[200px] p-0 bg-black/80 backdrop-blur-xl border-white/10" align="start">
+              <div className="p-2">
+                <div className="max-h-[200px] overflow-auto">
+                  {DOMAIN_SUGGESTIONS.map((domain) => (
+                    <button
+                      key={domain}
+                      onClick={() => toggleFilter('domain', domain)}
+                      className={cn(
+                        "w-full text-left px-2 py-1.5 text-sm rounded-md mb-1 flex items-center",
+                        "text-white hover:bg-white/10",
+                        filters.domain.includes(domain) ? "bg-white/10" : ""
+                      )}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          filters.domain.includes(domain) ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      {domain}
                     </button>
                   ))}
                 </div>

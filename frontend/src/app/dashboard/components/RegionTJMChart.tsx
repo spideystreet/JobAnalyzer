@@ -44,8 +44,26 @@ export default function RegionTJMChart({ data }: RegionTJMChartProps) {
       tjmMax: Math.round(stats.totalTJMMax / stats.count),
       count: stats.count
     }))
+    .filter(item => item.count >= 15) // Filtrer les régions avec moins de 15 offres
     .sort((a, b) => b.tjmMoyen - a.tjmMoyen)
     .slice(0, 3)
+
+  // Si aucune région ne correspond aux critères
+  if (chartData.length === 0) {
+    return (
+      <Card className="bg-black/80 backdrop-blur-xl border-white/10 h-full">
+        <CardHeader className="p-3 pb-0">
+          <CardTitle className="text-white text-base">Top 3 Régions par TJM</CardTitle>
+          <CardDescription className="text-white/60 text-xs">Les régions les plus attractives</CardDescription>
+        </CardHeader>
+        <CardContent className="p-3 flex items-center justify-center">
+          <div className="text-white/60 text-sm">
+            Aucune région avec plus de 15 offres
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <Card className="bg-black/80 backdrop-blur-xl border-white/10 h-full">
