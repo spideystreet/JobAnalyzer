@@ -132,14 +132,26 @@ function DashboardContent() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div>
-              {isLoading ? (
-                <LoadingSpinner />
-              ) : !data?.rawData?.length ? (
-                <NoDataDisplay />
-              ) : (
-                <DomainDistributionChart data={data.rawData} />
-              )}
+            <div className="space-y-6">
+              <div className="h-[180px]">
+                {isLoading ? (
+                  <LoadingSpinner />
+                ) : !data?.rawData?.length ? (
+                  <NoDataDisplay />
+                ) : (
+                  <RegionTJMChart data={data.rawData} />
+                )}
+              </div>
+
+              <div>
+                {isLoading ? (
+                  <LoadingSpinner />
+                ) : !data?.rawData?.length ? (
+                  <NoDataDisplay />
+                ) : (
+                  <DomainDistributionChart data={data.rawData} />
+                )}
+              </div>
             </div>
 
             <div>
@@ -149,26 +161,6 @@ function DashboardContent() {
                 <NoDataDisplay />
               ) : (
                 <TechDistributionChart data={data.tjmData} />
-              )}
-            </div>
-
-            <div className="h-[180px]">
-              {isLoading ? (
-                <LoadingSpinner />
-              ) : !data?.rawData?.length ? (
-                <NoDataDisplay />
-              ) : (
-                <RegionTJMChart data={data.rawData} />
-              )}
-            </div>
-
-            <div className="h-[180px]">
-              {isLoading ? (
-                <LoadingSpinner />
-              ) : !data?.rawData?.length ? (
-                <NoDataDisplay />
-              ) : (
-                <TopCompaniesChart data={data.rawData} />
               )}
             </div>
 
