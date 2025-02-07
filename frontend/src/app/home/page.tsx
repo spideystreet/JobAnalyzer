@@ -74,13 +74,13 @@ const LandingPage: React.FC = () => {
             <motion.div layout className="flex items-center justify-center whitespace-nowrap">
               <TextRotate
                 texts={[
-                  "🧑‍💻 Dev full-stack",
-                  "📊 Data analyst",
-                  "🌐 Dev WEB",
-                  "⚙️ Data engineer",
-                  "📱 Dev iOS",
+                  "Dev full-stack",
+                  "Data analyst",
+                  "Dev WEB",
+                  "Data engineer",
+                  "Dev iOS",
                 ]}
-                mainClassName="overflow-hidden text-[#2DD4BF] py-4 rounded-xl text-center whitespace-nowrap h-full"
+                mainClassName="overflow-hidden text-purple-600 py-4 rounded-xl text-center whitespace-nowrap h-full"
                 staggerDuration={0.03}
                 staggerFrom="last"
                 rotationInterval={3000}

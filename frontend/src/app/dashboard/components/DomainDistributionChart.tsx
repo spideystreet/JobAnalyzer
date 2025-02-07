@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Label, Pie, PieChart, Sector } from "recharts"
+import { Label, Pie, PieChart, Sector, ResponsiveContainer } from "recharts"
 import { PieSectorDataItem } from "recharts/types/polar/Pie"
 import { JobOffer } from "@/lib/supabase/types"
 
@@ -100,14 +100,14 @@ export default function DomainDistributionChart({ data }: DomainDistributionChar
 
   return (
     <Card className="bg-black/80 backdrop-blur-xl border-white/10">
-      <CardHeader className="flex-row items-start space-y-0 pb-0">
+      <CardHeader className="p-4 pb-0 flex flex-row items-center justify-between">
         <div className="grid gap-1">
-          <CardTitle className="text-white">Distribution des Domaines</CardTitle>
+          <CardTitle className="text-white">Distribution des métiers</CardTitle>
           <CardDescription className="text-white/60">Top 10 des domaines les plus représentés</CardDescription>
         </div>
         <Select value={activeDomain} onValueChange={setActiveDomain}>
           <SelectTrigger
-            className="ml-auto h-7 w-[180px] rounded-lg pl-2.5 bg-black/40"
+            className="h-7 w-[180px] rounded-lg pl-2.5 bg-black/40"
             aria-label="Sélectionner un domaine"
           >
             <SelectValue placeholder="Sélectionner un domaine" />
@@ -133,52 +133,54 @@ export default function DomainDistributionChart({ data }: DomainDistributionChar
           </SelectContent>
         </Select>
       </CardHeader>
-      <CardContent className="pt-6">
-        <div className="h-[300px] w-full flex items-center justify-center">
-          <PieChart width={300} height={300}>
-            <Pie
-              activeIndex={activeIndex}
-              activeShape={renderActiveShape}
-              data={chartData}
-              cx={150}
-              cy={150}
-              innerRadius={60}
-              outerRadius={80}
-              dataKey="value"
-              onMouseEnter={(_, index) => setActiveDomain(domains[index])}
-            >
-              <Label
-                content={({ viewBox }) => {
-                  if (!viewBox || !("cx" in viewBox)) return null
-                  return (
-                    <text
-                      x={viewBox.cx}
-                      y={viewBox.cy}
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                    >
-                      <tspan
+      <CardContent className="p-4">
+        <div className="h-[300px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                activeIndex={activeIndex}
+                activeShape={renderActiveShape}
+                data={chartData}
+                cx="50%"
+                cy="50%"
+                innerRadius="40%"
+                outerRadius="60%"
+                dataKey="value"
+                onMouseEnter={(_, index) => setActiveDomain(domains[index])}
+              >
+                <Label
+                  content={({ viewBox }) => {
+                    if (!viewBox || !("cx" in viewBox)) return null
+                    return (
+                      <text
                         x={viewBox.cx}
                         y={viewBox.cy}
-                        dy={-10}
-                        className="fill-white text-2xl font-bold"
+                        textAnchor="middle"
+                        dominantBaseline="middle"
                       >
-                        {chartData[activeIndex]?.value}
-                      </tspan>
-                      <tspan
-                        x={viewBox.cx}
-                        y={viewBox.cy}
-                        dy={15}
-                        className="fill-white/60 text-sm"
-                      >
-                        Offres
-                      </tspan>
-                    </text>
-                  )
-                }}
-              />
-            </Pie>
-          </PieChart>
+                        <tspan
+                          x={viewBox.cx}
+                          y={viewBox.cy}
+                          dy={-8}
+                          className="fill-white text-xl font-bold"
+                        >
+                          {chartData[activeIndex]?.value}
+                        </tspan>
+                        <tspan
+                          x={viewBox.cx}
+                          y={viewBox.cy}
+                          dy={12}
+                          className="fill-white/60 text-sm"
+                        >
+                          Offres
+                        </tspan>
+                      </text>
+                    )
+                  }}
+                />
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
         </div>
       </CardContent>
     </Card>

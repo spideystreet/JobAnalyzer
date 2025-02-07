@@ -10,6 +10,7 @@ import { useJobData } from '@/lib/supabase/hooks'
 import TopCompaniesChart from "./components/TopCompaniesChart"
 import JobOffersChart from "./components/JobOffersChart"
 import DomainDistributionChart from "./components/DomainDistributionChart"
+import RegionTJMChart from "./components/RegionTJMChart"
 import { BackgroundGradientAnimation } from '@/components/ui/background-gradient-animation'
 
 interface JobOffer {
@@ -106,17 +107,18 @@ function DashboardContent() {
 
   return (
     <BackgroundGradientAnimation
-      gradientBackgroundStart="rgb(0, 0, 0)"
-      gradientBackgroundEnd="rgb(0, 20, 30)"
+      gradientBackgroundStart="rgb(108, 0, 162)"
+      gradientBackgroundEnd="rgb(0, 17, 82)"
       firstColor="18, 113, 255"
-      secondColor="46, 182, 255"
-      thirdColor="0, 255, 163"
-      fourthColor="0, 224, 255"
-      fifthColor="0, 133, 255"
+      secondColor="221, 74, 255"
+      thirdColor="100, 220, 255"
+      fourthColor="200, 50, 50"
+      fifthColor="180, 180, 50"
       pointerColor="140, 100, 255"
-      size="100%"
-      blendingValue="screen"
+      size="80%"
+      blendingValue="hard-light"
       containerClassName="min-h-screen overflow-y-auto"
+      interactive={true}
     >
       <div className="relative z-10">
         <div className="container mx-auto px-4 py-8">
@@ -130,7 +132,7 @@ function DashboardContent() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-black/80 backdrop-blur-xl rounded-lg border border-white/10 p-4">
+            <div>
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.rawData?.length ? (
@@ -140,7 +142,7 @@ function DashboardContent() {
               )}
             </div>
 
-            <div className="bg-black/80 backdrop-blur-xl rounded-lg border border-white/10 p-4">
+            <div>
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.tjmData?.length ? (
@@ -150,7 +152,27 @@ function DashboardContent() {
               )}
             </div>
 
-            <div className="bg-black/80 backdrop-blur-xl rounded-lg border border-white/10 p-4">
+            <div className="h-[180px]">
+              {isLoading ? (
+                <LoadingSpinner />
+              ) : !data?.rawData?.length ? (
+                <NoDataDisplay />
+              ) : (
+                <RegionTJMChart data={data.rawData} />
+              )}
+            </div>
+
+            <div className="h-[180px]">
+              {isLoading ? (
+                <LoadingSpinner />
+              ) : !data?.rawData?.length ? (
+                <NoDataDisplay />
+              ) : (
+                <TopCompaniesChart data={data.rawData} />
+              )}
+            </div>
+
+            <div>
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.rawData?.length ? (
@@ -160,7 +182,7 @@ function DashboardContent() {
               )}
             </div>
 
-            <div className="bg-black/80 backdrop-blur-xl rounded-lg border border-white/10 p-4">
+            <div>
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.rawData?.length ? (
@@ -170,7 +192,7 @@ function DashboardContent() {
               )}
             </div>
             
-            <div className="bg-black/80 backdrop-blur-xl rounded-lg border border-white/10 p-4">
+            <div className="lg:col-span-2">
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.rawData?.length ? (
