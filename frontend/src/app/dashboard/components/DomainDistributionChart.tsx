@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Label, Pie, PieChart, Sector, ResponsiveContainer } from "recharts"
+import { Label, Pie, PieChart, Sector, ResponsiveContainer, Cell } from "recharts"
 import { PieSectorDataItem } from "recharts/types/polar/Pie"
 import { JobOffer } from "@/lib/supabase/types"
 
@@ -20,8 +20,13 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+interface DomainStats {
+  name: string
+  value: number
+}
+
 interface DomainDistributionChartProps {
-  data: JobOffer[]
+  data: DomainStats[]
 }
 
 const COLORS = [
@@ -41,6 +46,9 @@ const renderActiveShape = (props: any) => {
     startAngle,
     endAngle,
     fill,
+    payload,
+    percent,
+    value
   } = props
 
   return (
@@ -63,26 +71,35 @@ const renderActiveShape = (props: any) => {
         outerRadius={outerRadius + 10}
         fill={fill}
       />
+      <text 
+        x={cx} 
+        y={cy} 
+        dy={-4} 
+        textAnchor="middle" 
+        fill="white"
+        className="text-[12px]"
+      >
+        {payload.name}
+      </text>
+      <text 
+        x={cx} 
+        y={cy} 
+        dy={14} 
+        textAnchor="middle" 
+        fill="white"
+        className="text-[10px]"
+      >
+        {`${value} (${(percent * 100).toFixed(0)}%)`}
+      </text>
     </g>
   )
 }
 
 export default function DomainDistributionChart({ data }: DomainDistributionChartProps) {
-  // Calculer la distribution des domaines
-  const domainStats = data.reduce((acc, job) => {
-    if (!job) return acc
-    const domain = job.DOMAIN || "Non spécifié"
-    acc[domain] = (acc[domain] || 0) + 1
-    return acc
-  }, {} as Record<string, number>)
-
-  // Convertir en format pour le graphique et trier par nombre d'offres
-  const chartData = Object.entries(domainStats)
-    .sort(([, a], [, b]) => b - a)
-    .slice(0, 10) // Limiter aux 10 premiers domaines
-    .map(([name, value], index) => ({
-      name,
-      value,
+  const chartData = data
+    .slice(0, 10)
+    .map((item, index) => ({
+      ...item,
       fill: COLORS[index % COLORS.length]
     }))
 
@@ -100,40 +117,13 @@ export default function DomainDistributionChart({ data }: DomainDistributionChar
 
   return (
     <Card className="bg-black/80 backdrop-blur-xl border-white/10">
-      <CardHeader className="p-4 pb-0 flex flex-row items-center justify-between">
-        <div className="grid gap-1">
-          <CardTitle className="text-white">Distribution des métiers</CardTitle>
-          <CardDescription className="text-white/60">Top 10 des domaines les plus représentés</CardDescription>
-        </div>
-        <Select value={activeDomain} onValueChange={setActiveDomain}>
-          <SelectTrigger
-            className="h-7 w-[180px] rounded-lg pl-2.5 bg-black/40"
-            aria-label="Sélectionner un domaine"
-          >
-            <SelectValue placeholder="Sélectionner un domaine" />
-          </SelectTrigger>
-          <SelectContent align="end" className="rounded-xl">
-            {domains.map((domain, index) => (
-              <SelectItem
-                key={domain}
-                value={domain}
-                className="rounded-lg [&_span]:flex"
-              >
-                <div className="flex items-center gap-2 text-xs">
-                  <span
-                    className="h-2 w-2 rounded-full"
-                    style={{
-                      backgroundColor: COLORS[index % COLORS.length]
-                    }}
-                  />
-                  {domain}
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <CardHeader>
+        <CardTitle className="text-white">Distribution des Domaines</CardTitle>
+        <CardDescription className="text-white/60">
+          Top 10 des domaines les plus demandés
+        </CardDescription>
       </CardHeader>
-      <CardContent className="p-4">
+      <CardContent>
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -143,44 +133,34 @@ export default function DomainDistributionChart({ data }: DomainDistributionChar
                 data={chartData}
                 cx="50%"
                 cy="50%"
-                innerRadius="40%"
-                outerRadius="60%"
+                innerRadius={50}
+                outerRadius={70}
+                fill="#8884d8"
                 dataKey="value"
                 onMouseEnter={(_, index) => setActiveDomain(domains[index])}
               >
-                <Label
-                  content={({ viewBox }) => {
-                    if (!viewBox || !("cx" in viewBox)) return null
-                    return (
-                      <text
-                        x={viewBox.cx}
-                        y={viewBox.cy}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                      >
-                        <tspan
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          dy={-8}
-                          className="fill-white text-xl font-bold"
-                        >
-                          {chartData[activeIndex]?.value}
-                        </tspan>
-                        <tspan
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          dy={12}
-                          className="fill-white/60 text-sm"
-                        >
-                          Offres
-                        </tspan>
-                      </text>
-                    )
-                  }}
-                />
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.fill} />
+                ))}
               </Pie>
             </PieChart>
           </ResponsiveContainer>
+        </div>
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          {chartData.map((entry, index) => (
+            <div 
+              key={`legend-${index}`} 
+              className="flex items-center gap-2 text-sm cursor-pointer hover:bg-white/5 p-1 rounded"
+              onMouseEnter={() => setActiveDomain(entry.name)}
+            >
+              <div 
+                className="w-3 h-3 rounded-full" 
+                style={{ backgroundColor: entry.fill }}
+              />
+              <span className="text-white/80 truncate">{entry.name}</span>
+              <span className="text-white/60 ml-auto">{entry.value}</span>
+            </div>
+          ))}
         </div>
       </CardContent>
     </Card>

@@ -1,41 +1,33 @@
 'use client'
 
-import { useState, useMemo } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import Filters, { FilterState } from './components/Filters'
+import Filters from './components/Filters'
 import OffersPerDayChart from './components/OffersPerDayChart'
 import TechDistributionChart from './components/TechDistributionChart'
 import ExperienceDistributionChart from './components/ExperienceDistributionChart'
 import { useJobData } from '@/lib/supabase/hooks'
 import TopCompaniesChart from "./components/TopCompaniesChart"
-import JobOffersChart from "./components/JobOffersChart"
 import DomainDistributionChart from "./components/DomainDistributionChart"
 import RegionTJMChart from "./components/RegionTJMChart"
 import { BackgroundGradientAnimation } from '@/components/ui/background-gradient-animation'
-
-interface JobOffer {
-  id: string
-  COMPANY_TYPE: string | null
-  created_at: string
-  // autres propriétés si nécessaire
-}
-
-interface JobData {
-  rawData: JobOffer[]
-  tjmData: any[] // type spécifique pour tjmData si nécessaire
-}
+import { usePersistedFilters } from '@/lib/hooks/usePersistedFilters'
+import { useStats } from '@/lib/hooks/useStats'
+import { Button } from '@/components/ui/button'
+import { RefreshCw, FilterX } from 'lucide-react'
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
+      retry: 3,
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     },
   },
 })
 
 function ErrorDisplay({ error, onRetry }: { error: unknown; onRetry: () => void }) {
   return (
-    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4" role="alert">
       <h2 className="text-lg font-helvetica text-red-800 dark:text-red-200 mb-2">
         Une erreur est survenue lors du chargement des données
       </h2>
@@ -45,7 +37,9 @@ function ErrorDisplay({ error, onRetry }: { error: unknown; onRetry: () => void 
       <button
         onClick={onRetry}
         className="px-4 py-2 bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-100 rounded-md hover:bg-red-200 dark:hover:bg-red-700 transition-colors font-helvetica"
+        aria-label="Réessayer le chargement des données"
       >
+        <RefreshCw className="w-4 h-4 mr-2 inline" />
         Réessayer
       </button>
     </div>
@@ -54,46 +48,24 @@ function ErrorDisplay({ error, onRetry }: { error: unknown; onRetry: () => void 
 
 function LoadingSpinner() {
   return (
-    <div className="flex items-center justify-center h-[400px]">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    <div className="flex items-center justify-center min-h-[300px]" role="status">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" aria-label="Chargement des données"></div>
     </div>
   )
 }
 
 function NoDataDisplay() {
   return (
-    <div className="flex items-center justify-center h-[400px] text-gray-500 font-helvetica">
+    <div className="flex items-center justify-center min-h-[300px] text-gray-500 font-helvetica" role="status">
       Aucune donnée disponible pour les filtres sélectionnés
     </div>
   )
 }
 
 function DashboardContent() {
-  const [filters, setFilters] = useState<FilterState>({
-    technologies: [],
-    experienceLevel: [],
-    location: [],
-    dateRange: [null, null]
-  })
-
+  const { filters, updateFilters, resetFilters } = usePersistedFilters()
   const { data, isLoading, error, refetch } = useJobData(filters)
-  
-  const companyTypeStats = useMemo(() => {
-    if (!data?.rawData) return []
-    
-    const stats = data.rawData.reduce<Record<string, number>>((acc, job) => {
-      const type = job.COMPANY_TYPE || 'Non spécifié'
-      acc[type] = (acc[type] || 0) + 1
-      return acc
-    }, {})
-
-    return Object.entries(stats)
-      .map(([company_type, count]) => ({ 
-        company_type, 
-        count 
-      }))
-      .sort((a, b) => b.count - a.count)
-  }, [data?.rawData])
+  const stats = useStats(data?.rawData)
 
   if (error) {
     return (
@@ -115,25 +87,36 @@ function DashboardContent() {
       fourthColor="200, 50, 50"
       fifthColor="180, 180, 50"
       pointerColor="140, 100, 255"
-      size="80%"
+      size="100%"
       blendingValue="hard-light"
-      containerClassName="min-h-screen overflow-y-auto"
+      containerClassName="fixed inset-0 overflow-y-auto"
       interactive={true}
     >
-      <div className="relative z-10">
-        <div className="container mx-auto px-4 py-8">
-          <h1 className="text-4xl font-helvetica mb-8 text-white drop-shadow-lg">
-            Dashboard Freelance
-          </h1>
+      <div className="relative z-10 min-h-screen">
+        <div className="container mx-auto px-4 py-8 pb-16">
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-4xl font-helvetica text-white drop-shadow-lg">
+              Dashboard Freelance
+            </h1>
+            <Button
+              onClick={resetFilters}
+              variant="ghost"
+              className="text-white hover:text-white/80"
+              aria-label="Réinitialiser tous les filtres"
+            >
+              <FilterX className="w-4 h-4 mr-2" />
+              Réinitialiser les filtres
+            </Button>
+          </div>
           
           <div className="mb-8 p-4 bg-black/80 backdrop-blur-xl rounded-lg border border-white/10">
             <h2 className="text-2xl font-helvetica mb-4 text-white">Filtres</h2>
-            <Filters onFilterChange={setFilters} />
+            <Filters onFilterChange={updateFilters} initialFilters={filters} />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
             <div className="space-y-6">
-              <div className="h-[180px]">
+              <div className="min-h-[300px]">
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : !data?.rawData?.length ? (
@@ -143,28 +126,28 @@ function DashboardContent() {
                 )}
               </div>
 
-              <div>
+              <div className="min-h-[300px]">
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : !data?.rawData?.length ? (
                   <NoDataDisplay />
                 ) : (
-                  <DomainDistributionChart data={data.rawData} />
+                  <DomainDistributionChart data={stats.domainStats} />
                 )}
               </div>
             </div>
 
-            <div>
+            <div className="min-h-[300px]">
               {isLoading ? (
                 <LoadingSpinner />
-              ) : !data?.tjmData?.length ? (
+              ) : !data?.tjmData ? (
                 <NoDataDisplay />
               ) : (
                 <TechDistributionChart data={data.tjmData} />
               )}
             </div>
 
-            <div>
+            <div className="min-h-[300px]">
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.rawData?.length ? (
@@ -174,17 +157,17 @@ function DashboardContent() {
               )}
             </div>
 
-            <div>
+            <div className="min-h-[300px]">
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.rawData?.length ? (
                 <NoDataDisplay />
               ) : (
-                <TopCompaniesChart data={data.rawData} />
+                <TopCompaniesChart data={stats.companyTypeStats} />
               )}
             </div>
             
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 min-h-[300px]">
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.rawData?.length ? (

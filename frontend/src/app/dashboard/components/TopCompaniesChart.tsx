@@ -17,8 +17,13 @@ import {
   ChartContainer,
 } from "@/components/ui/chart"
 
+interface CompanyStats {
+  company_type: string
+  count: number
+}
+
 interface TopCompaniesChartProps {
-  data: JobOffer[]
+  data: CompanyStats[]
 }
 
 const chartConfig = {
@@ -29,19 +34,10 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export default function TopCompaniesChart({ data }: TopCompaniesChartProps) {
-  // Calculer les statistiques des types d'entreprises
-  const companyStats = data.reduce((acc, job) => {
-    if (job.COMPANY_TYPE) {
-      acc[job.COMPANY_TYPE] = (acc[job.COMPANY_TYPE] || 0) + 1
-    }
-    return acc
-  }, {} as Record<string, number>)
-
   // Convertir en format pour le graphique et trier par nombre d'offres
-  const chartData = Object.entries(companyStats)
-    .sort(([, a], [, b]) => b - a)
+  const chartData = data
     .slice(0, 3)
-    .map(([name, value]) => ({ name, value }))
+    .map(({ company_type: name, count: value }) => ({ name, value }))
 
   return (
     <Card className="bg-black/80 backdrop-blur-xl border-white/10">

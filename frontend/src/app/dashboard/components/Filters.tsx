@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Calendar } from '@/components/ui/calendar'
 import { Button } from '@/components/ui/button'
 import { format } from 'date-fns'
@@ -12,6 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 
 interface FiltersProps {
   onFilterChange: (filters: FilterState) => void
+  initialFilters?: FilterState
 }
 
 export interface FilterState {
@@ -68,8 +69,8 @@ const DOMAIN_SUGGESTIONS = [
   "Sécurité"
 ]
 
-export default function Filters({ onFilterChange }: FiltersProps) {
-  const [filters, setFilters] = useState<FilterState>({
+export default function Filters({ onFilterChange, initialFilters }: FiltersProps) {
+  const [filters, setFilters] = useState<FilterState>(initialFilters || {
     technologies: [],
     experienceLevel: [],
     location: [],
@@ -77,6 +78,12 @@ export default function Filters({ onFilterChange }: FiltersProps) {
     country: [],
     domain: []
   })
+
+  useEffect(() => {
+    if (initialFilters) {
+      setFilters(initialFilters)
+    }
+  }, [initialFilters])
 
   const handleFilterChange = (key: keyof FilterState, value: any) => {
     const newFilters = {
