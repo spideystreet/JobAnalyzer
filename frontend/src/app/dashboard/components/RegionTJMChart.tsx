@@ -1,6 +1,6 @@
 "use client"
 
-import { TrendingUp } from "lucide-react"
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis, ResponsiveContainer } from "recharts"
 import { JobOffer } from "@/lib/supabase/types"
 import { cn } from "@/lib/utils"
 

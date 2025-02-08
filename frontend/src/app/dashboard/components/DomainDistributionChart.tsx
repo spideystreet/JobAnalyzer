@@ -1,9 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Label, Pie, PieChart, Sector, ResponsiveContainer, Cell } from "recharts"
-import { PieSectorDataItem } from "recharts/types/polar/Pie"
-import { JobOffer } from "@/lib/supabase/types"
+import { Pie, PieChart, Sector, ResponsiveContainer, Cell, PieSectorDataItem } from "recharts"
 
 import {
   Card,
@@ -22,6 +20,19 @@ interface DomainDistributionChartProps {
   data: DomainStats[]
 }
 
+interface RenderActiveShapeProps {
+  cx: number
+  cy: number
+  innerRadius: number
+  outerRadius: number
+  startAngle: number
+  endAngle: number
+  fill: string
+  payload: DomainStats
+  percent: number
+  value: number
+}
+
 const COLORS = [
   'hsl(220, 70%, 50%)',  // Bleu
   'hsl(340, 75%, 55%)',  // Rose
@@ -30,7 +41,18 @@ const COLORS = [
   'hsl(280, 65%, 60%)',  // Violet
 ]
 
-const renderActiveShape = (props: any) => {
+const renderActiveShape = (props: PieSectorDataItem & { 
+  cx: number
+  cy: number
+  innerRadius: number
+  outerRadius: number
+  startAngle: number
+  endAngle: number
+  fill: string
+  payload: DomainStats
+  percent: number
+  value: number
+}) => {
   const {
     cx,
     cy,
@@ -103,10 +125,6 @@ export default function DomainDistributionChart({ data }: DomainDistributionChar
     () => chartData.findIndex((item) => item.name === activeDomain),
     [activeDomain, chartData]
   )
-
-  const totalValue = React.useMemo(() => {
-    return chartData.reduce((sum, item) => sum + item.value, 0)
-  }, [chartData])
 
   return (
     <Card className="bg-black/80 backdrop-blur-xl border-white/10 h-full">

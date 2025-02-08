@@ -35,8 +35,8 @@ export default function ExperienceDistributionChart({ data }: ExperienceDistribu
   return (
     <Card className="bg-black/80 backdrop-blur-xl border-white/10">
       <CardHeader>
-        <CardTitle className="text-white">Distribution des Niveaux d'Expérience</CardTitle>
-        <CardDescription className="text-white/60">Répartition des offres par niveau d'expérience requis</CardDescription>
+        <CardTitle className="text-white">Distribution des Niveaux d&apos;Expérience</CardTitle>
+        <CardDescription className="text-white/60">Répartition des offres par niveau d&apos;expérience requis</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-[372px]">
@@ -87,11 +87,11 @@ export default function ExperienceDistributionChart({ data }: ExperienceDistribu
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none text-white">
-          {topExperience} est le niveau d'expérience le plus demandé
+          {topExperience} est le niveau d&apos;expérience le plus demandé
           <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-white/60">
-          Basé sur {data.length} offres d'emploi analysées
+          Basé sur {data.length} offres d&apos;emploi analysées
         </div>
       </CardFooter>
     </Card>

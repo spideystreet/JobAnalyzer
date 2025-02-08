@@ -1,5 +1,6 @@
 import React from 'react';
 import { GlowEffect } from '@/components/ui/glow-effect';
+import { CardTitle } from '@/components/ui/card';
 
 interface CompanyTypeTopProps {
   data: Array<{
@@ -17,7 +18,7 @@ export function CompanyTypeTop({ data }: CompanyTypeTopProps) {
         blur="medium"
       />
       <div className="relative w-full h-full rounded-lg bg-black/90 p-6">
-        <h3 className="text-xl font-helvetica mb-6 text-white">Top 3 Types d'Entreprises</h3>
+        <CardTitle className="text-white">Top 3 Types d&apos;Entreprises</CardTitle>
         <div className="space-y-4">
           {data.slice(0, 3).map((item, index) => (
             <div 

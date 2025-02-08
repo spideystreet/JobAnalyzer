@@ -2,7 +2,6 @@
 
 import { TrendingUp } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis, ResponsiveContainer } from "recharts"
-import { JobOffer } from "@/lib/supabase/types"
 
 import {
   Card,
@@ -12,10 +11,6 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card"
-import {
-  ChartConfig,
-  ChartContainer,
-} from "@/components/ui/chart"
 
 interface CompanyStats {
   company_type: string
@@ -26,13 +21,6 @@ interface TopCompaniesChartProps {
   data: CompanyStats[]
 }
 
-const chartConfig = {
-  value: {
-    label: "Offres",
-    color: "hsl(var(--chart-1))",
-  },
-} satisfies ChartConfig
-
 export default function TopCompaniesChart({ data }: TopCompaniesChartProps) {
   // Convertir en format pour le graphique et trier par nombre d'offres
   const chartData = data
@@ -42,8 +30,8 @@ export default function TopCompaniesChart({ data }: TopCompaniesChartProps) {
   return (
     <Card className="bg-black/80 backdrop-blur-xl border-white/10">
       <CardHeader className="pb-2">
-        <CardTitle className="text-white">Top 3 Types d'Entreprises</CardTitle>
-        <CardDescription className="text-white/60">Distribution des types d'entreprises</CardDescription>
+        <CardTitle className="text-white">Top 3 Types d&apos;Entreprises</CardTitle>
+        <CardDescription className="text-white/60">Distribution des types d&apos;entreprises</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-[180px]">
@@ -90,11 +78,11 @@ export default function TopCompaniesChart({ data }: TopCompaniesChartProps) {
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none text-white">
-          {chartData[0]?.name} est le type d'entreprise le plus représenté
+          {chartData[0]?.name} est le type d&apos;entreprise le plus représenté
           <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-white/60">
-          Basé sur {data.length} offres d'emploi analysées
+          Basé sur {data.length} offres d&apos;emploi analysées
         </div>
       </CardFooter>
     </Card>

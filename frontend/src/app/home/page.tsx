@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect, useRef } from "react"
 import { LayoutGroup, motion } from "framer-motion"
 import { TextRotate } from "@/components/ui/text-rotate"
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip"
@@ -97,7 +96,7 @@ const LandingPage: React.FC = () => {
           transition={{ duration: 0.2, ease: "easeOut", delay: 0.5 }}
         >
           Toutes les tendances du marché Freelance en France.<br />
-          TJM, Technos, ESN et bien d'autres paramètres !
+          TJM, Technos, ESN et bien d&apos;autres paramètres !
         </motion.p>
 
         {/* Bouton magnétique */}
@@ -124,7 +123,7 @@ const LandingPage: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.4 }}
       >
         <motion.p className="text-sm text-white/60 mb-4 text-center font-helvetica">
-          Fourni gentiment par l'arraignée sympa des réseaux 👋
+          Fourni gentiment par l&apos;arraignée sympa des réseaux 👋
         </motion.p>
         <AnimatedTooltip items={teamMembers} className="mr-4 scale-90" />
       </motion.div>

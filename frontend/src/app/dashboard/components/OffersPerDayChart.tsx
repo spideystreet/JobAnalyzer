@@ -42,7 +42,7 @@ export default function OffersPerDayChart({ data }: OffersPerDayChartProps) {
     <Card className="bg-black/80 backdrop-blur-xl border-white/10">
       <CardHeader>
         <CardTitle className="text-white">Offres publiées par jour</CardTitle>
-        <CardDescription className="text-white/60">Évolution du nombre d'offres publiées</CardDescription>
+        <CardDescription className="text-white/60">Nombre d&apos;offres publiées par jour</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-[300px] w-full">
@@ -88,7 +88,7 @@ export default function OffersPerDayChart({ data }: OffersPerDayChartProps) {
           <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-white/60">
-          Basé sur {data.length} offres d'emploi analysées
+          Basé sur {data.length} offres d&apos;emploi analysées
         </div>
       </CardFooter>
     </Card>
