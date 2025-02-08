@@ -7,6 +7,14 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Job Analyzer",
   description: "Analysez le marché de l'emploi tech",
+  icons: {
+    icon: [
+      {
+        url: '/icon.png',
+        sizes: 'any',
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
