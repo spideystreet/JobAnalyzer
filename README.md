@@ -1,6 +1,7 @@
 # 🤖 JobAnalyzer
 
 Tableau de bord d'analyse du marché Freelance en France.(IT)
+Mon premier projet lourd fullstack :D
 
 ## 📋 Description
 
