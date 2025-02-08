@@ -1,7 +1,7 @@
 'use client'
 
 import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, LabelList } from "recharts"
 import { JobOffer } from "@/lib/supabase/types"
 
 import {
@@ -39,12 +39,27 @@ export default function ExperienceDistributionChart({ data }: ExperienceDistribu
         <CardDescription className="text-white/60">Répartition des offres par niveau d'expérience requis</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px] w-full">
+        <div className="h-[372px]">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 20, right: 32, bottom: 20, left: 32 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-              <XAxis dataKey="name" stroke="rgba(255,255,255,0.5)" />
-              <YAxis stroke="rgba(255,255,255,0.5)" />
+            <BarChart
+              data={chartData}
+              margin={{
+                top: 20,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
+              <XAxis 
+                dataKey="name" 
+                stroke="rgba(255,255,255,0.5)"
+                tick={{ fill: 'rgba(255,255,255,0.8)' }}
+              />
+              <YAxis 
+                stroke="rgba(255,255,255,0.5)"
+                tick={{ fill: 'rgba(255,255,255,0.8)' }}
+              />
               <Tooltip
                 contentStyle={{
                   backgroundColor: "rgba(0,0,0,0.8)",
@@ -54,7 +69,18 @@ export default function ExperienceDistributionChart({ data }: ExperienceDistribu
                 labelStyle={{ color: "white" }}
                 itemStyle={{ color: "white" }}
               />
-              <Bar dataKey="value" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} />
+              <Bar 
+                dataKey="value" 
+                fill="hsl(340, 75%, 55%)"
+                radius={[4, 4, 0, 0]}
+              >
+                <LabelList
+                  dataKey="value"
+                  position="top"
+                  fill="white"
+                  formatter={(value: number) => `${value} offres`}
+                />
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>

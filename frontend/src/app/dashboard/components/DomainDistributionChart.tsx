@@ -12,13 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 
 interface DomainStats {
   name: string
@@ -116,15 +109,15 @@ export default function DomainDistributionChart({ data }: DomainDistributionChar
   }, [chartData])
 
   return (
-    <Card className="bg-black/80 backdrop-blur-xl border-white/10">
-      <CardHeader>
+    <Card className="bg-black/80 backdrop-blur-xl border-white/10 h-full">
+      <CardHeader className="pb-2">
         <CardTitle className="text-white">Distribution des Domaines</CardTitle>
         <CardDescription className="text-white/60">
           Top 10 des domaines les plus demandés
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="h-[300px] w-full">
+      <CardContent className="grid grid-cols-2 gap-4 h-[400px]">
+        <div className="flex items-center justify-center">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -146,7 +139,7 @@ export default function DomainDistributionChart({ data }: DomainDistributionChar
             </PieChart>
           </ResponsiveContainer>
         </div>
-        <div className="mt-4 grid grid-cols-2 gap-2">
+        <div className="flex flex-col gap-2 overflow-auto py-2">
           {chartData.map((entry, index) => (
             <div 
               key={`legend-${index}`} 
@@ -154,7 +147,7 @@ export default function DomainDistributionChart({ data }: DomainDistributionChar
               onMouseEnter={() => setActiveDomain(entry.name)}
             >
               <div 
-                className="w-3 h-3 rounded-full" 
+                className="w-3 h-3 rounded-full flex-shrink-0" 
                 style={{ backgroundColor: entry.fill }}
               />
               <span className="text-white/80 truncate">{entry.name}</span>

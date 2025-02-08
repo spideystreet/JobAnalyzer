@@ -114,9 +114,9 @@ function DashboardContent() {
             <Filters onFilterChange={updateFilters} initialFilters={filters} />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-            <div className="space-y-6">
-              <div className="min-h-[300px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col">
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : !data?.rawData?.length ? (
@@ -126,28 +126,18 @@ function DashboardContent() {
                 )}
               </div>
 
-              <div className="min-h-[300px]">
+              <div className="flex flex-col">
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : !data?.rawData?.length ? (
                   <NoDataDisplay />
                 ) : (
-                  <DomainDistributionChart data={stats.domainStats} />
+                  <TopCompaniesChart data={stats.companyTypeStats} />
                 )}
               </div>
             </div>
 
-            <div className="min-h-[300px]">
-              {isLoading ? (
-                <LoadingSpinner />
-              ) : !data?.tjmData ? (
-                <NoDataDisplay />
-              ) : (
-                <TechDistributionChart data={data.tjmData} />
-              )}
-            </div>
-
-            <div className="min-h-[300px]">
+            <div className="h-full">
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.rawData?.length ? (
@@ -157,17 +147,27 @@ function DashboardContent() {
               )}
             </div>
 
-            <div className="min-h-[300px]">
+            <div className="h-full">
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.rawData?.length ? (
                 <NoDataDisplay />
               ) : (
-                <TopCompaniesChart data={stats.companyTypeStats} />
+                <DomainDistributionChart data={stats.domainStats} />
+              )}
+            </div>
+
+            <div className="h-full">
+              {isLoading ? (
+                <LoadingSpinner />
+              ) : !data?.tjmData ? (
+                <NoDataDisplay />
+              ) : (
+                <TechDistributionChart data={data.tjmData} />
               )}
             </div>
             
-            <div className="lg:col-span-2 min-h-[300px]">
+            <div className="lg:col-span-2 h-full">
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.rawData?.length ? (

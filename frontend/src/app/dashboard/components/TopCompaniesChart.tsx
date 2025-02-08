@@ -41,33 +41,36 @@ export default function TopCompaniesChart({ data }: TopCompaniesChartProps) {
 
   return (
     <Card className="bg-black/80 backdrop-blur-xl border-white/10">
-      <CardHeader>
+      <CardHeader className="pb-2">
         <CardTitle className="text-white">Top 3 Types d'Entreprises</CardTitle>
         <CardDescription className="text-white/60">Distribution des types d'entreprises</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px] w-full">
+        <div className="h-[180px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}
               layout="vertical"
               margin={{
-                top: 20,
-                right: 32,
-                bottom: 20,
-                left: 32,
+                top: 5,
+                right: 50,
+                bottom: 5,
+                left: 5,
               }}
             >
               <CartesianGrid horizontal={false} stroke="rgba(255,255,255,0.1)" />
               <YAxis
                 dataKey="name"
                 type="category"
-                tickLine={false}
-                tickMargin={10}
                 axisLine={false}
-                hide
+                tickLine={false}
+                tick={{ fill: 'rgba(255,255,255,0.8)', fontSize: 12 }}
+                width={100}
               />
-              <XAxis dataKey="value" type="number" hide />
+              <XAxis 
+                type="number" 
+                hide 
+              />
               <Bar
                 dataKey="value"
                 fill="hsl(var(--chart-1))"
@@ -75,18 +78,9 @@ export default function TopCompaniesChart({ data }: TopCompaniesChartProps) {
                 barSize={20}
               >
                 <LabelList
-                  dataKey="name"
-                  position="insideLeft"
-                  className="fill-white/60"
-                  fontSize={12}
-                  offset={10}
-                />
-                <LabelList
                   dataKey="value"
                   position="right"
-                  offset={10}
-                  className="fill-white"
-                  fontSize={12}
+                  fill="white"
                   formatter={(value: number) => `${value} offres`}
                 />
               </Bar>
