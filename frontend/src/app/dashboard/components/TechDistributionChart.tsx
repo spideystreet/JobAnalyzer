@@ -83,15 +83,15 @@ export default function TechDistributionChart({ data }: TechDistributionChartPro
         <CardHeader>
           <CardTitle className="text-white">Distribution des Technologies</CardTitle>
           <CardDescription className="text-white/60">
-            Répartition des technologies les plus demandées
+            Top 10 des technologies les plus demandées
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-[300px] w-full">
+          <div className="h-[400px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart 
                 data={chartData} 
-                margin={{ top: 20, right: 32, bottom: 20, left: 120 }}
+                margin={{ top: 20, right: 32, bottom: 20, left: 150 }}
                 layout="vertical"
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
@@ -104,8 +104,11 @@ export default function TechDistributionChart({ data }: TechDistributionChartPro
                   type="category" 
                   dataKey="name" 
                   stroke="rgba(255,255,255,0.5)"
-                  width={110}
-                  tick={{ fill: 'rgba(255,255,255,0.8)' }}
+                  width={140}
+                  tick={{ 
+                    fill: 'rgba(255,255,255,0.8)',
+                    fontSize: 12
+                  }}
                 />
                 <Tooltip
                   contentStyle={{
