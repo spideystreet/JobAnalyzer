@@ -1,6 +1,5 @@
 "use client"
 
-import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis, ResponsiveContainer } from "recharts"
 import { JobOffer } from "@/lib/supabase/types"
 import { cn } from "@/lib/utils"
 

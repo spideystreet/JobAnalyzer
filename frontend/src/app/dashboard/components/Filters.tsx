@@ -7,7 +7,6 @@ import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { CalendarIcon, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 interface FiltersProps {
@@ -85,7 +84,7 @@ export default function Filters({ onFilterChange, initialFilters }: FiltersProps
     }
   }, [initialFilters])
 
-  const handleFilterChange = (key: keyof FilterState, value: any) => {
+  const handleFilterChange = (key: keyof FilterState, value: string[] | [Date | null, Date | null]) => {
     const newFilters = {
       ...filters,
       [key]: value

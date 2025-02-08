@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Pie, PieChart, Sector, ResponsiveContainer, Cell, PieSectorDataItem } from "recharts"
+import { Pie, PieChart, Sector, ResponsiveContainer, Cell } from "recharts"
 
 import {
   Card,
@@ -20,7 +20,15 @@ interface DomainDistributionChartProps {
   data: DomainStats[]
 }
 
-interface RenderActiveShapeProps {
+const COLORS = [
+  'hsl(220, 70%, 50%)',  // Bleu
+  'hsl(340, 75%, 55%)',  // Rose
+  'hsl(30, 80%, 55%)',   // Orange
+  'hsl(160, 60%, 45%)',  // Vert
+  'hsl(280, 65%, 60%)',  // Violet
+]
+
+type CustomActiveShapeProps = {
   cx: number
   cy: number
   innerRadius: number
@@ -33,26 +41,7 @@ interface RenderActiveShapeProps {
   value: number
 }
 
-const COLORS = [
-  'hsl(220, 70%, 50%)',  // Bleu
-  'hsl(340, 75%, 55%)',  // Rose
-  'hsl(30, 80%, 55%)',   // Orange
-  'hsl(160, 60%, 45%)',  // Vert
-  'hsl(280, 65%, 60%)',  // Violet
-]
-
-const renderActiveShape = (props: PieSectorDataItem & { 
-  cx: number
-  cy: number
-  innerRadius: number
-  outerRadius: number
-  startAngle: number
-  endAngle: number
-  fill: string
-  payload: DomainStats
-  percent: number
-  value: number
-}) => {
+const renderActiveShape = (props: unknown) => {
   const {
     cx,
     cy,
@@ -64,7 +53,7 @@ const renderActiveShape = (props: PieSectorDataItem & {
     payload,
     percent,
     value
-  } = props
+  } = props as CustomActiveShapeProps
 
   return (
     <g>
