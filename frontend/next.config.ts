@@ -1,9 +1,15 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  env: {
-    SUPABASE_URL: process.env.SUPABASE_URL,
-    SUPABASE_KEY: process.env.SUPABASE_KEY,
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  images: {
+    domains: [
+      'avatars.githubusercontent.com',
+      'images.unsplash.com',
+      'raw.githubusercontent.com'
+    ],
   },
+  reactStrictMode: true,
+  swcMinify: true,
 };
 
-module.exports = nextConfig;
+export default nextConfig;

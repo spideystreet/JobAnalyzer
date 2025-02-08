@@ -8,7 +8,7 @@ import {
   useMotionValue,
   useSpring,
 } from "framer-motion";
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 
 export const AnimatedTooltip = ({
   items,
@@ -42,7 +42,7 @@ export const AnimatedTooltip = ({
     <div className={cn("flex items-center gap-2", className)}>
       {items.map((item) => (
         <div
-          className="relative group"
+          className="-mr-4 relative group"
           key={item.name}
           onMouseEnter={() => setHoveredIndex(item.id)}
           onMouseLeave={() => setHoveredIndex(null)}
@@ -74,7 +74,7 @@ export const AnimatedTooltip = ({
                 <div className="font-bold text-background relative z-30 text-base">
                   {item.name}
                 </div>
-                <div className="text-background text-xs">
+                <div className="text-muted-foreground text-xs">
                   {item.designation}
                 </div>
               </motion.div>

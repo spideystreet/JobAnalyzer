@@ -1,0 +1,6 @@
+src/components/ui/*.tsx
+node_modules/
+.next/
+out/
+build/
+dist/ 
