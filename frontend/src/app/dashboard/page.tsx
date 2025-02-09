@@ -14,6 +14,7 @@ import { usePersistedFilters } from '@/lib/hooks/usePersistedFilters'
 import { useStats } from '@/lib/hooks/useStats'
 import { Button } from '@/components/ui/button'
 import { RefreshCw, FilterX } from 'lucide-react'
+import React from 'react'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -67,6 +68,21 @@ function DashboardContent() {
   const { data, isLoading, error, refetch } = useJobData(filters)
   const stats = useStats(data?.rawData)
 
+  // Calculer les dates min et max à partir des données
+  const { minDate, maxDate } = React.useMemo(() => {
+    if (!data?.rawData?.length) return { minDate: undefined, maxDate: undefined }
+
+    const dates = data.rawData
+      .map(job => job.CREATED_AT ? new Date(job.CREATED_AT) : null)
+      .filter((date): date is Date => date !== null)
+      .sort((a, b) => a.getTime() - b.getTime())
+
+    return {
+      minDate: dates[0],
+      maxDate: dates[dates.length - 1]
+    }
+  }, [data?.rawData])
+
   if (error) {
     return (
       <div className="min-h-screen">
@@ -111,7 +127,12 @@ function DashboardContent() {
           
           <div className="mb-8 p-4 bg-black/80 backdrop-blur-xl rounded-lg border border-white/10">
             <h2 className="text-2xl font-helvetica mb-4 text-white">Filtres</h2>
-            <Filters onFilterChange={updateFilters} initialFilters={filters} />
+            <Filters 
+              onFilterChange={updateFilters} 
+              initialFilters={filters}
+              minDate={minDate}
+              maxDate={maxDate}
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">

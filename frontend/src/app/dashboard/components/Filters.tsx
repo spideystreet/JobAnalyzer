@@ -12,6 +12,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 interface FiltersProps {
   onFilterChange: (filters: FilterState) => void
   initialFilters?: FilterState
+  minDate?: Date
+  maxDate?: Date
 }
 
 export interface FilterState {
@@ -74,7 +76,7 @@ const WORK_MODE_OPTIONS = [
   "Hybride"
 ]
 
-export default function Filters({ onFilterChange, initialFilters }: FiltersProps) {
+export default function Filters({ onFilterChange, initialFilters, minDate, maxDate }: FiltersProps) {
   const defaultFilters: FilterState = {
     technologies: [],
     experienceLevel: [],
@@ -439,7 +441,10 @@ export default function Filters({ onFilterChange, initialFilters }: FiltersProps
                   handleFilterChange('dateRange', [range?.from || null, range?.to || null])
                 }}
                 locale={fr}
-                disabled={{ after: new Date() }}
+                disabled={{ 
+                  before: minDate,
+                  after: maxDate
+                }}
                 className="rounded-md text-white"
               />
               {(filters.dateRange[0] || filters.dateRange[1]) && (
