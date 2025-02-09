@@ -112,7 +112,7 @@ function DashboardContent() {
         <div className="container mx-auto px-4 py-8 pb-16">
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-4xl font-helvetica text-white drop-shadow-lg">
-              Dashboard Freelance
+              Dashboard
             </h1>
             <Button
               onClick={resetFilters}
