@@ -3,6 +3,8 @@
 import { TrendingUp } from "lucide-react"
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts"
 import { JobOffer } from "@/lib/supabase/types"
+import { format, parseISO } from "date-fns"
+import { fr } from "date-fns/locale"
 
 import {
   Card,
@@ -20,17 +22,19 @@ interface OffersPerDayChartProps {
 export default function OffersPerDayChart({ data }: OffersPerDayChartProps) {
   // Grouper les offres par jour
   const offersPerDay = data.reduce((acc, job) => {
-    const date = new Date(job.CREATED_AT).toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'short',
-    })
+    if (!job.CREATED_AT) return acc
+    const date = format(new Date(job.CREATED_AT), 'yyyy-MM-dd')
     acc[date] = (acc[date] || 0) + 1
     return acc
   }, {} as Record<string, number>)
 
   // Convertir en format pour le graphique et trier par date
   const chartData = Object.entries(offersPerDay)
-    .map(([date, value]) => ({ date, value }))
+    .map(([date, value]) => ({ 
+      date,
+      displayDate: format(parseISO(date), 'd MMM', { locale: fr }),
+      value 
+    }))
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
   // Calculer la tendance
@@ -56,11 +60,14 @@ export default function OffersPerDayChart({ data }: OffersPerDayChartProps) {
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
               <XAxis 
-                dataKey="date" 
+                dataKey="displayDate" 
                 stroke="rgba(255,255,255,0.5)"
-                tickFormatter={(value) => value}
+                tick={{ fill: 'rgba(255,255,255,0.8)', fontSize: 12 }}
               />
-              <YAxis stroke="rgba(255,255,255,0.5)" />
+              <YAxis 
+                stroke="rgba(255,255,255,0.5)"
+                tick={{ fill: 'rgba(255,255,255,0.8)', fontSize: 12 }}
+              />
               <Tooltip
                 contentStyle={{
                   backgroundColor: "rgba(0,0,0,0.8)",
@@ -70,6 +77,7 @@ export default function OffersPerDayChart({ data }: OffersPerDayChartProps) {
                 labelStyle={{ color: "white" }}
                 itemStyle={{ color: "white" }}
                 formatter={(value: number) => [`${value} offres`, "Offres"]}
+                labelFormatter={(label) => label}
               />
               <Area
                 type="monotone"

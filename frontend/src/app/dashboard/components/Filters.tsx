@@ -21,6 +21,7 @@ export interface FilterState {
   dateRange: [Date | null, Date | null]
   country: string[]
   domain: string[]
+  workMode: string[]
 }
 
 // Suggestions pour les filtres
@@ -44,8 +45,7 @@ const LOCATION_SUGGESTIONS = [
   "Auvergne-Rhône-Alpes",
   "Provence-Alpes-Côte d'Azur",
   "Occitanie",
-  "Nouvelle-Aquitaine",
-  "Full Remote"
+  "Nouvelle-Aquitaine"
 ]
 
 const COUNTRY_SUGGESTIONS = [
@@ -68,19 +68,54 @@ const DOMAIN_SUGGESTIONS = [
   "Sécurité"
 ]
 
+const WORK_MODE_OPTIONS = [
+  "Oui",
+  "Non",
+  "Hybride"
+]
+
 export default function Filters({ onFilterChange, initialFilters }: FiltersProps) {
-  const [filters, setFilters] = useState<FilterState>(initialFilters || {
+  const defaultFilters: FilterState = {
     technologies: [],
     experienceLevel: [],
     location: [],
     dateRange: [null, null],
     country: [],
-    domain: []
+    domain: [],
+    workMode: []
+  }
+
+  const [filters, setFilters] = useState<FilterState>(() => {
+    // S'assurer que toutes les propriétés sont initialisées
+    return {
+      ...defaultFilters,
+      ...(initialFilters || {}),
+      // S'assurer que les tableaux ne sont jamais undefined
+      technologies: initialFilters?.technologies || [],
+      experienceLevel: initialFilters?.experienceLevel || [],
+      location: initialFilters?.location || [],
+      country: initialFilters?.country || [],
+      domain: initialFilters?.domain || [],
+      workMode: initialFilters?.workMode || [],
+      // S'assurer que dateRange est toujours un tuple valide
+      dateRange: initialFilters?.dateRange || [null, null]
+    }
   })
 
   useEffect(() => {
     if (initialFilters) {
-      setFilters(initialFilters)
+      // Même logique pour les mises à jour
+      setFilters({
+        ...defaultFilters,
+        ...initialFilters,
+        technologies: initialFilters.technologies || [],
+        experienceLevel: initialFilters.experienceLevel || [],
+        location: initialFilters.location || [],
+        country: initialFilters.country || [],
+        domain: initialFilters.domain || [],
+        workMode: initialFilters.workMode || [],
+        dateRange: initialFilters.dateRange || [null, null]
+      })
     }
   }, [initialFilters])
 
@@ -318,6 +353,50 @@ export default function Filters({ onFilterChange, initialFilters }: FiltersProps
                         )}
                       />
                       {domain}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+
+          {/* Work Mode Filter */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start bg-black/20 backdrop-blur-xl border-white/10"
+              >
+                <span className="text-white/50">
+                  {filters.workMode.length === 0 
+                    ? "Mode de travail..." 
+                    : `${filters.workMode.length} sélectionné${filters.workMode.length > 1 ? 's' : ''}`
+                  }
+                </span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[200px] p-0 bg-black/80 backdrop-blur-xl border-white/10" align="start">
+              <div className="p-2">
+                <div className="max-h-[200px] overflow-auto">
+                  {WORK_MODE_OPTIONS.map((mode) => (
+                    <button
+                      key={mode}
+                      onClick={() => toggleFilter('workMode', mode)}
+                      className={cn(
+                        "w-full text-left px-2 py-1.5 text-sm rounded-md mb-1 flex items-center",
+                        "text-white hover:bg-white/10",
+                        filters.workMode.includes(mode) ? "bg-white/10" : ""
+                      )}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          filters.workMode.includes(mode) ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      {mode === "Oui" ? "Full Remote" :
+                       mode === "Non" ? "Présentiel" :
+                       "Hybride"}
                     </button>
                   ))}
                 </div>
