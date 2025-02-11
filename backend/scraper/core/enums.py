@@ -33,7 +33,7 @@ class JobDomain(str, Enum):
     DATA_ENGINEER = "Data Engineer"
     DATA_SCIENTIST = "Data Scientist"
     DATA_ANALYST = "Data Analyst"
-    ML_ENGINEER = "Machine Learning Engineer"
+    ML_ENGINEER = "ML Engineer"
     
     # Infrastructure & Cloud
     DEVOPS = "DevOps"
