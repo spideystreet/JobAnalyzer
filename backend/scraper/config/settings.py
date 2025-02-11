@@ -73,6 +73,10 @@ SCRAPING_SOURCES = [
         'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=Data%20scientist&freshness=less_than_24_hours",
         'enabled': True,
         'max_pages': 10,  # Limite à 10 pages pour les tests
+        'selectors': {
+            'job_link': 'a[href*="/job-mission/"]',
+            'next_button': 'button:-soup-contains("Suivant")'
+        }
     }
 ]
 
