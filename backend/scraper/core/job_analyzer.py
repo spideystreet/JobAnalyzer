@@ -6,6 +6,7 @@ import json
 from typing import Dict, Any, Optional
 from loguru import logger
 from mistralai import Mistral
+from datetime import datetime
 
 from ..config.settings import (
     MISTRAL_API_KEY,
@@ -36,16 +37,24 @@ class JobAnalyzer:
             Dict[str, Any]: Les informations extraites de l'offre avec les clés en majuscules
         """
         try:
+            start_time = datetime.now()
+            logger.info(f"\n🔍 Début de l'analyse de l'offre")
+            if url:
+                logger.info(f"🌐 URL : {url}")
+            
             logger.debug(f"📝 Longueur du contenu HTML à analyser : {len(html_content)} caractères")
             
             # Construction du prompt
+            logger.info("1️⃣ Construction du prompt...")
             prompt = self._construct_prompt(html_content, url)
             logger.debug(f"🔍 Prompt généré de {len(prompt)} caractères")
             
             # Appel à l'API
+            logger.info("2️⃣ Appel à l'API Mistral...")
             response = await self._make_api_call(prompt)
             
             # Validation de la réponse
+            logger.info("3️⃣ Validation de la réponse...")
             if not self._validate_response(response):
                 logger.warning("⚠️ Réponse invalide de Mistral - Champs manquants")
                 logger.debug(f"Champs manquants : {[field for field in REQUIRED_FIELDS if field not in response]}")
@@ -54,6 +63,7 @@ class JobAnalyzer:
             logger.info("✅ Réponse valide reçue de Mistral")
             
             # Transformation des clés en majuscules
+            logger.info("4️⃣ Transformation des données...")
             uppercase_response = {
                 key.upper(): value 
                 for key, value in response.items()
@@ -89,8 +99,18 @@ class JobAnalyzer:
                 uppercase_response['CONTRACT_TYPE'] = []
                 logger.warning("⚠️ Aucun type de contrat trouvé")
             
-            logger.info("✨ Analyse terminée avec succès")
-            logger.debug(f"📊 Résultat final : {json.dumps(uppercase_response, indent=2, ensure_ascii=False)}")
+            # Calcul du temps total
+            total_time = (datetime.now() - start_time).total_seconds()
+            logger.info(f"✨ Analyse terminée en {total_time:.2f} secondes")
+            
+            # Affichage du résumé
+            logger.info("\n📊 Résumé de l'analyse :")
+            logger.info(f"  - Titre : {uppercase_response.get('TITLE', 'Non trouvé')}")
+            logger.info(f"  - Entreprise : {uppercase_response.get('COMPANY', 'Non trouvé')}")
+            logger.info(f"  - Type de contrat : {uppercase_response.get('CONTRACT_TYPE', [])}")
+            logger.info(f"  - Technologies : {uppercase_response.get('TECHNOS', [])}")
+            
+            logger.debug(f"📄 Résultat complet : {json.dumps(uppercase_response, indent=2, ensure_ascii=False)}")
             
             return uppercase_response
             
@@ -128,6 +148,9 @@ class JobAnalyzer:
             logger.info("📤 Envoi de la requête à Mistral AI")
             logger.debug(f"🔧 Configuration : model={self.model}, temperature=0.3, max_tokens=1000")
             
+            # Mesure du temps de réponse
+            start_time = datetime.now()
+            
             chat_response = self.client.chat.complete(
                 model=self.model,
                 messages=[{
@@ -138,7 +161,10 @@ class JobAnalyzer:
                 max_tokens=1000
             )
             
-            logger.info("📥 Réponse reçue de Mistral AI")
+            # Calcul du temps de réponse
+            response_time = (datetime.now() - start_time).total_seconds()
+            logger.info(f"📥 Réponse reçue de Mistral AI en {response_time:.2f} secondes")
+            
             content = chat_response.choices[0].message.content
             logger.debug(f"📄 Contenu brut reçu : {content[:200]}...")
             
@@ -155,6 +181,11 @@ class JobAnalyzer:
             parsed_content = json.loads(content)
             logger.info("✅ Parsing JSON réussi")
             logger.debug(f"🔍 Nombre de champs trouvés : {len(parsed_content)}")
+            
+            # Affichage des champs extraits
+            logger.info("\n📋 Champs extraits :")
+            for field, value in parsed_content.items():
+                logger.info(f"  - {field}: {value}")
             
             return parsed_content
                     
