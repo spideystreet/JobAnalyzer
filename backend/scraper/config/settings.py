@@ -141,6 +141,7 @@ REQUIRED_FIELDS = {
         - Fullstack = Développement frontend ET backend
         - Data Engineer = Ingénierie des données, ETL, Big Data
         - Data Analyst = Analyse de données, BI, Reporting
+        - Data Scientist = Science des données, Machine Learning, IA
         - DevOps = Infrastructure, CI/CD, Cloud
         - Product Manager = Gestion de produit, Product Owner
         - Security = Sécurité informatique, Cybersécurité
