@@ -24,12 +24,13 @@ class JobAnalyzer:
         self.model = MISTRAL_MODEL
         self.timeout = HTTP_TIMEOUT
 
-    async def analyze(self, html_content: str) -> Dict[str, Any]:
+    async def analyze(self, html_content: str, url: str = "") -> Dict[str, Any]:
         """
         Analyse une offre d'emploi avec Mistral AI.
         
         Args:
             html_content: Le contenu HTML nettoyé de l'offre
+            url: L'URL de l'offre
             
         Returns:
             Dict[str, Any]: Les informations extraites de l'offre avec les clés en majuscules
@@ -38,7 +39,7 @@ class JobAnalyzer:
             logger.debug(f"📝 Longueur du contenu HTML à analyser : {len(html_content)} caractères")
             
             # Construction du prompt
-            prompt = self._construct_prompt(html_content)
+            prompt = self._construct_prompt(html_content, url)
             logger.debug(f"🔍 Prompt généré de {len(prompt)} caractères")
             
             # Appel à l'API
@@ -98,13 +99,20 @@ class JobAnalyzer:
             logger.exception("Détails de l'erreur :")
             return self._get_empty_response()
 
-    def _construct_prompt(self, html_content: str) -> str:
+    def _construct_prompt(self, html_content: str, url: str = "") -> str:
         """Construit le prompt pour Mistral."""
         logger.debug("🔨 Construction du prompt")
+        
+        # Formatage des champs requis avec l'URL
+        fields_with_url = {
+            k: v.format(url=url) if isinstance(v, str) and "{url}" in v else v
+            for k, v in REQUIRED_FIELDS.items()
+        }
+        
         prompt = f"""Analyse cette offre d'emploi et extrait les informations suivantes au format JSON.
         
         Format attendu:
-        {json.dumps(REQUIRED_FIELDS, indent=2, ensure_ascii=False)}
+        {json.dumps(fields_with_url, indent=2, ensure_ascii=False)}
         
         Contenu HTML:
         {html_content}

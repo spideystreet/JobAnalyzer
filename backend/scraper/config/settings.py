@@ -81,120 +81,132 @@ MISTRAL_BASE_URL = "https://api.mistral.ai/v1"
 
 # Configuration du prompt
 REQUIRED_FIELDS = {
-    'TITLE': '''Le titre du poste''',
+    'TITLE': '''Le titre exact du poste.
+        URL de l'offre: {url}
+        
+        RÈGLES TRÈS STRICTES:
+        1. TOUJOURS extraire le titre de l'URL ci-dessus (après /job-mission/)
+        2. IGNORER COMPLÈTEMENT le contenu de la page
+        3. Convertir les tirets en espaces
+        4. Appliquer la casse appropriée (majuscules)
+        5. Formater les technologies (js -> .js)
+        
+        ÉTAPES D'EXTRACTION:
+        1. Dans l'URL ci-dessus, prendre la partie après /job-mission/
+        2. Remplacer les tirets par des espaces
+        3. Mettre en majuscule chaque début de mot
+        4. Formater les technologies connues (js -> .js)
+        
+        Exemples:
+        Si URL = /job-mission/developpeur-fullstack-javascript-nodejs-reactjs
+        ✅ "Développeur Fullstack JavaScript Node.js React.js"
+        
+        Si URL = /job-mission/data-engineer-python-aws
+        ✅ "Data Engineer Python AWS"
+        
+        Si URL = /job-mission/lead-tech-java-spring
+        ✅ "Lead Tech Java Spring"
+        
+        IMPORTANT: Utiliser UNIQUEMENT l'URL fournie au début de ce prompt''',
 
-    'COMPANY': '''Le nom de l'entreprise''',
+    'COMPANY': '''Le nom de l'entreprise qui propose le poste''',
 
-    'COMPANY_TYPE': f'''Un parmi: [{", ".join(type.value for type in CompanyType)}]''',
+    'COMPANY_TYPE': f'''Un parmi: [{", ".join(type.value for type in CompanyType)}]
+        RÈGLES:
+        - ESN = SSII, Entreprise de Services Numériques, Société de Conseil
+        - Startup = Jeune entreprise innovante, Scale-up
+        - Grand Compte = Grande entreprise, Groupe international''',
 
     'CONTRACT_TYPE': f'''[Liste EXHAUSTIVE des types de contrat mentionnés dans l'offre]
         IMPORTANT:
-        1. Chercher TOUS les types de contrat mentionnés dans l'offre, ceux mentionnés à l'intérieur des balises <div class="tags relative w-full">
+        1. Chercher TOUS les types de contrat mentionnés dans l'offre
         2. Retourner une liste même s'il n'y a qu'un seul type
-        3. Types possibles: [{", ".join(type.value for type in ContractType)}]''',
+        3. Types possibles: [{", ".join(type.value for type in ContractType)}]
+        4. Ne pas inclure le mode de travail (télétravail, hybride, etc.)''',
 
-    'DOMAIN': f'''Analyse bien le domaine d'expertise qui correspond et choisis un parmi: [{", ".join(type.value for type in JobDomain)}]''',
+    'DOMAIN': f'''Analyse le domaine d'expertise principal et choisis un parmi: [{", ".join(type.value for type in JobDomain)}]
+        RÈGLES STRICTES:
+        - Frontend = Développement web côté client (React, Angular, Vue.js...)
+        - Backend = Développement serveur (Java, Python, Node.js...)
+        - Fullstack = Développement frontend ET backend
+        - Data Engineer = Ingénierie des données, ETL, Big Data
+        - Data Analyst = Analyse de données, BI, Reporting
+        - DevOps = Infrastructure, CI/CD, Cloud
+        - Product Manager = Gestion de produit, Product Owner
+        - Security = Sécurité informatique, Cybersécurité
+        
+        Exemples:
+        ❌ Incorrect                     ✅ Correct
+        "Backend" pour un fullstack     "Fullstack" pour un dev React + Node.js
+        "Data Engineer" pour un BI      "Data Analyst" pour un poste de BI
+        "DevOps" pour un admin sys      "Backend" pour un admin sys''',
 
-    'XP': f'''Le niveau d'experience, choisis un parmi: [{", ".join(type.value for type in ExperienceLevel)}]
+    'XP': f'''Le niveau d'experience requis, choisis un parmi: [{", ".join(type.value for type in ExperienceLevel)}]
         RÈGLES STRICTES :
-        Junior = <2 ans
+        Junior = 0-2 ans
         Intermédiaire = 2-5 ans
         Confirmé = 5-10 ans
         Sénior = >10 ans''',
 
-    'REMOTE': f'''Un parmi: [{", ".join(type.value for type in RemoteType)}]''',
+    'REMOTE': f'''Le mode de travail, un parmi: [{", ".join(type.value for type in RemoteType)}]
+        RÈGLES:
+        - Sur site = 100% présentiel
+        - Hybride = Mix présentiel/télétravail
+        - 100% = Full remote, télétravail total''',
 
-    'COUNTRY': f'''Un parmi: [{", ".join(type.value for type in Country)}]''',
+    'COUNTRY': f'''Le pays où se situe le poste, un parmi: [{", ".join(type.value for type in Country)}]''',
 
-    'REGION': f'''Une région parmi: [{", ".join(get_all_regions())}], selon le pays''',
+    'REGION': f'''La région où se situe le poste, une parmi: [{", ".join(get_all_regions())}]''',
     
-    'TECHNOS': f'''[Liste des technologies requises]
-        RÈGLES STRICTES de normalisation des technos :
-        1. TOUJOURS utiliser la casse officielle de la technologie
-        2. Supprimer les numéros de version
+    'TECHNOS': '''[Liste des 5 technologies PRINCIPALES maximum]
+        RÈGLES STRICTES:
+        1. Maximum 5 technologies les plus importantes
+        2. Uniquement les technologies EXPLICITEMENT mentionnées comme requises
+        3. Pas de soft skills ou d'outils génériques
+        4. Format : ["Techno1", "Techno2", ...]
+        5. Utiliser la casse officielle (React, Node.js, etc.)
         
-        Exemples OBLIGATOIRES à suivre :
-        ❌ Incorrect         ✅ Correct
-        "POWERBI"           "Power BI"
-        "JAVASCRIPT"        "JavaScript"
-        "ReactJS"           "React"
-        "NODEJS"            "Node.js"
-        "VueJS"            "Vue.js"
-        "PYTHON"           "Python"
-        "ANGULAR 14"       "Angular"
-        "azure devops"     "Azure DevOps"
-        "Aws lambda"       "AWS Lambda"
+        Exemples de ce qui est attendu:
+        ✅ Pour un dev fullstack : ["React", "Node.js", "PostgreSQL"]
+        ✅ Pour un data engineer : ["Python", "AWS", "Spark"]
+        ✅ Pour un devops : ["Kubernetes", "AWS", "Terraform"]
         
-        IMPORTANT : 
-        - Exclure les soft skills et compétences non techniques
-        - Ne garder que les technologies, frameworks, outils et langages
-        - Toujours utiliser la nomenclature officielle de la technologie''',
+        Exemples de ce qui n'est PAS attendu:
+        ❌ ["JIRA", "Git", "Agile", "Anglais"]
+        ❌ ["AWS Lambda", "AWS S3", "AWS EC2"] -> utiliser ["AWS"]
+        ❌ Plus de 5 technologies
+        
+        IMPORTANT:
+        - Se concentrer sur les technologies PRINCIPALES uniquement
+        - Ignorer les outils génériques (JIRA, Git, etc.)
+        - Ignorer les soft skills et compétences non techniques
+        - Regrouper les technologies similaires (ex: AWS)''',
 
-    'DURATION_DAYS': '''La durée en jours
-            EXEMPLE 1 (Années):
-            CDI
-            Freelance
-            3 ans                    <-- 1095 jours (3 * 365)
-            37k-45k €/an
-            5 à 10 ans d'expérience
-
-            EXEMPLE 2 (Mois):
-            Freelance
-            6 mois                   <-- 180 jours (6 * 30)
-            37k-45k €/an
-            2 à 5 ans d'expérience
-
-            EXEMPLE 3 (Une année):
-            CDI
-            Freelance
-            1 an                     <-- 365 jours (1 * 365)
-            37k-45k €/an
-            0 à 2 ans d'expérience
-
-            EXEMPLE 4 (Plusieurs mois):
-            Freelance
-            18 mois                  <-- 540 jours (18 * 30)
-            37k-45k €/an
-            2 à 5 ans d'expérience
-
-            EXEMPLE 5 (Deux ans):
-            CDI
-            Freelance
-            2 ans                    <-- 730 jours (2 * 365)
-            37k-45k €/an
-            2 à 5 ans d'expérience
-
-            IMPORTANT: Le nombre que tu cherches apparaît TOUJOURS sur une ligne seule,
-            juste après le type de contrat (CDI/Freelance) et avant le salaire.
-            C'est TOUJOURS à cet endroit dans le texte !
-
-            RAPPEL DES CALCULS:
-            - X ans ou X année(s) = X * 365 jours
-            - X mois = X * 30 jours''',
+    'DURATION_DAYS': '''La durée de la mission en jours (NULL si CDI ou non spécifié)
+        RÈGLES:
+        1. Chercher une mention explicite de durée
+        2. Convertir en jours selon ces règles:
+           - 1 mois = 30 jours
+           - 1 an = 365 jours
+        3. Retourner NULL si:
+           - CDI
+           - Pas de durée mentionnée
+           - Durée indéterminée''',
 
     'TJM_MIN': '''Le TJM minimum en euros (nombre entier uniquement)
-        RÈGLES STRICTES :
-        1. Chercher dans le texte les mentions de tarifs journaliers
-        2. Convertir les tarifs annuels en TJM (diviser par 220 jours)
-        3. Ne garder que le nombre, sans le symbole de monnaie
-        4. Si pas de TJM trouvé, retourner NULL
-        
-        Exemples:
-        "400-600€/jour" -> 400
-        "500€/j" -> 500
-        "entre 600 et 800€/jour" -> 600''',
+        RÈGLES:
+        1. Chercher les mentions de tarifs journaliers
+        2. Pour les salaires annuels: diviser par 220 jours
+        3. Ne garder que le nombre, sans symbole
+        4. NULL si pas de TJM trouvé''',
 
     'TJM_MAX': '''Le TJM maximum en euros (nombre entier uniquement)
-        RÈGLES STRICTES :
-        1. Chercher dans le texte les mentions de tarifs journaliers
-        2. Convertir les tarifs annuels en TJM (diviser par 220 jours)
-        3. Ne garder que le nombre, sans le symbole de monnaie
-        4. Si pas de TJM trouvé, retourner NULL
-        
-        Exemples:
-        "400-600€/jour" -> 600
-        "500€/j" -> 500 (même valeur que min si tarif unique)
-        "entre 600 et 800€/jour" -> 800''',
+        RÈGLES:
+        1. Chercher les mentions de tarifs journaliers
+        2. Pour les salaires annuels: diviser par 220 jours
+        3. Ne garder que le nombre, sans symbole
+        4. NULL si pas de TJM trouvé
+        5. Si tarif unique, même valeur que TJM_MIN'''
 }
 
 # Configuration du nettoyage HTML
