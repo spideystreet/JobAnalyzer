@@ -76,7 +76,7 @@ RETRY_DELAY = 5  # secondes
 
 # Configuration de l'API Mistral
 MISTRAL_API_KEY = os.getenv('MISTRAL_API_KEY')
-MISTRAL_MODEL = "mistral-large-latest"  # Le modèle par défaut
+MISTRAL_MODEL = "ministral-3b-latest"  # Le modèle par défaut
 MISTRAL_BASE_URL = "https://api.mistral.ai/v1"
 
 # Configuration du prompt
