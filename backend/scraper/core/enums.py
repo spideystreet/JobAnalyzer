@@ -7,9 +7,8 @@ from typing import Union, List
 
 class CompanyType(str, Enum):
     """Type d'entreprise."""
-    ESN = "ESN"
     STARTUP = "Startup"
-    GRAND_COMPTE = "Grand Compte"
+    GRAND_COMPTE_ESN = "Grand Compte / ESN"
     CABINET_CONSEIL = "Cabinet de Conseil"
     SCALE_UP = "Scale-up"
     CABINET_RECRUTEMENT = "Cabinet de recrutement"
