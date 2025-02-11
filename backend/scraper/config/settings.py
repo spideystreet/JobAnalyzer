@@ -6,6 +6,7 @@ import os
 from typing import Dict, List
 from dotenv import load_dotenv
 import sys
+from mistralai import Mistral
 
 from ..core.enums import (
     CompanyType, ContractType, JobDomain, RemoteType, Country,
@@ -73,10 +74,10 @@ REQUEST_DELAY = 2  # secondes entre chaque requête
 MAX_RETRIES = 3
 RETRY_DELAY = 5  # secondes
 
-# Configuration DeepSeek
-DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY', '')
-DEEPSEEK_BASE_URL = 'https://api.deepseek.com/v1/chat/completions'
-DEEPSEEK_MODEL = 'deepseek-chat'
+# Configuration de l'API Mistral
+MISTRAL_API_KEY = os.getenv('MISTRAL_API_KEY')
+MISTRAL_MODEL = "mistral-large-latest"  # Le modèle par défaut
+MISTRAL_BASE_URL = "https://api.mistral.ai/v1"
 
 # Configuration du prompt
 REQUIRED_FIELDS = {

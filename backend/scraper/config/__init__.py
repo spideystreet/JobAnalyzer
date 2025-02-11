@@ -3,9 +3,8 @@ Config package contenant les configurations du scraper.
 """
 
 from .settings import (
-    DEEPSEEK_API_KEY,
-    DEEPSEEK_BASE_URL,
-    DEEPSEEK_MODEL,
+    MISTRAL_API_KEY,
+    MISTRAL_MODEL,
     HTTP_TIMEOUT,
     MAX_RETRIES,
     RETRY_DELAY,
@@ -17,9 +16,8 @@ from .settings import (
 )
 
 __all__ = [
-    "DEEPSEEK_API_KEY",
-    "DEEPSEEK_BASE_URL",
-    "DEEPSEEK_MODEL",
+    "MISTRAL_API_KEY",
+    "MISTRAL_MODEL",
     "HTTP_TIMEOUT",
     "MAX_RETRIES",
     "RETRY_DELAY",
