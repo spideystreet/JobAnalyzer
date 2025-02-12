@@ -3,33 +3,43 @@
 import { motion } from "framer-motion"
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip"
 import { Boxes } from "@/components/ui/background-boxes"
-import { ButtonCta } from "@/components/ui/button-shiny"
+import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button"
 import { IconCloud } from "@/components/ui/interactive-icon-cloud"
 import { Badge } from "@/components/ui/badge"
 import DotPattern from "@/components/ui/dot-pattern-1"
 import { useEffect, useMemo, useState } from "react"
 
 const iconSlugs = [
-  "python",
-  "javascript",
   "typescript",
+  "javascript",
+  "dart",
+  "java",
   "react",
-  "nextdotjs",
+  "flutter",
+  "android",
+  "html5",
+  "css3",
   "nodedotjs",
-  "docker",
-  "kubernetes",
+  "express",
+  "nextdotjs",
+  "prisma",
   "amazonaws",
   "postgresql",
-  "mongodb",
-  "redis",
+  "firebase",
+  "nginx",
+  "vercel",
+  "testinglibrary",
+  "jest",
+  "cypress",
+  "docker",
   "git",
+  "jira",
   "github",
+  "gitlab",
   "visualstudiocode",
-  "tailwindcss",
+  "androidstudio",
+  "sonarqube",
   "figma",
-  "powerbi",
-  "microsoftazure",
-  "googlecloud"
 ]
 
 const teamMembers = [
@@ -51,7 +61,7 @@ const LandingPage: React.FC = () => {
       <Boxes />
 
       {/* Nuage d'icônes */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[150px]">
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 w-[200px] h-[80px]">
         <motion.div
           className="w-full h-full"
           initial={{ opacity: 0 }}
@@ -89,7 +99,7 @@ const LandingPage: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                  "Les tendances du
+                  "Les tendances
                 </motion.h1>
               </div>
               <div className="flex gap-1 md:gap-2 lg:gap-3 xl:gap-4">
@@ -99,7 +109,7 @@ const LandingPage: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                  marché Freelance
+                  du marché Freelance
                 </motion.p>
               </div>
               <div className="flex gap-1 md:gap-2 lg:gap-3 xl:gap-4">
@@ -123,32 +133,31 @@ const LandingPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.8 }}
         >
-          <ButtonCta 
-            label="Découvrir"
-            className="w-fit text-sm"
-            onClick={() => window.location.href = '/dashboard'}
-          />
+          <div className="relative justify-center">
+            <InteractiveHoverButton />
+          </div>
+        </motion.div>
+
+        {/* Badge et Tooltip */}
+        <motion.div
+          className="mt-8 flex items-center justify-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <div className="flex items-center">
+            <Badge 
+              variant="secondary" 
+              className="bg-white text-black hover:bg-white/90 font-normal pr-8 flex items-center"
+            >
+              Fourni gentiment par l&apos;arraignée sympa des réseaux 👋
+            </Badge>
+            <div className="-ml-6">
+              <AnimatedTooltip items={teamMembers} className="scale-90 [&_img]:border-0" />
+            </div>
+          </div>
         </motion.div>
       </div>
-
-      <motion.div
-        className="relative z-30 mb-8 flex items-center justify-center"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-      >
-        <div className="flex items-center">
-          <Badge 
-            variant="secondary" 
-            className="bg-white text-black hover:bg-white/90 font-normal pr-8 flex items-center"
-          >
-            Fourni gentiment par l&apos;arraignée sympa des réseaux 👋
-          </Badge>
-          <div className="-ml-6">
-            <AnimatedTooltip items={teamMembers} className="scale-90 [&_img]:border-0" />
-          </div>
-        </div>
-      </motion.div>
     </div>
   );
 }
