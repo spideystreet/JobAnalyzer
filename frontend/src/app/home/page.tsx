@@ -5,6 +5,8 @@ import { AnimatedTooltip } from "@/components/ui/animated-tooltip"
 import { Boxes } from "@/components/ui/background-boxes"
 import { ButtonCta } from "@/components/ui/button-shiny"
 import { IconCloud } from "@/components/ui/interactive-icon-cloud"
+import { Badge } from "@/components/ui/badge"
+import DotPattern from "@/components/ui/dot-pattern-1"
 import { useEffect, useMemo, useState } from "react"
 
 const iconSlugs = [
@@ -40,23 +42,6 @@ const teamMembers = [
 ]
 
 const LandingPage: React.FC = () => {
-  const [titleNumber, setTitleNumber] = useState(0);
-  const titles = useMemo(
-    () => ["Dev full-stack", "Data analyst", "Dev WEB", "Data engineer", "Dev iOS"],
-    []
-  );
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (titleNumber === titles.length - 1) {
-        setTitleNumber(0);
-      } else {
-        setTitleNumber(titleNumber + 1);
-      }
-    }, 2000);
-    return () => clearTimeout(timeoutId);
-  }, [titleNumber, titles]);
-
   return (
     <div className="h-screen relative w-full overflow-hidden bg-black flex flex-col items-center">
       {/* Masque radial pour l'effet de fondu */}
@@ -77,46 +62,58 @@ const LandingPage: React.FC = () => {
         </motion.div>
       </div>
 
-      {/* Contenu principal */}
-      <div className="relative z-30 flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto px-4">
-        <div className="flex gap-4 flex-col">
-          <h1 className="text-5xl md:text-7xl max-w-2xl tracking-tighter text-center font-regular">
-            <span className="text-white font-bold">Analysez les</span>
-            <span className="relative flex w-full justify-center overflow-hidden text-center md:pb-4 md:pt-1">
-              &nbsp;
-              {titles.map((title, index) => (
-                <motion.span
-                  key={index}
-                  className="absolute text-purple-600 font-semibold"
-                  initial={{ opacity: 0, y: "-100" }}
-                  transition={{ type: "spring", stiffness: 50 }}
-                  animate={
-                    titleNumber === index
-                      ? {
-                          y: 0,
-                          opacity: 1,
-                        }
-                      : {
-                          y: titleNumber > index ? -150 : 150,
-                          opacity: 0,
-                        }
-                  }
-                >
-                  {title}
-                </motion.span>
-              ))}
-            </span>
-          </h1>
+      {/* Nouvelle Hero Section */}
+      <div className="relative z-30 flex-1 flex flex-col items-center justify-center max-w-7xl mx-auto px-6 xl:px-0">
+        <div className="relative flex flex-col items-center border border-purple-500">
+          <DotPattern width={5} height={5} className="fill-purple-500/50 md:fill-purple-500/70" />
 
-          <motion.p
-            className="text-lg md:text-xl leading-relaxed tracking-tight text-white/80 max-w-2xl text-center"
-            animate={{ opacity: 1, y: 0 }}
-            initial={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.2, ease: "easeOut", delay: 0.5 }}
-          >
-            Toutes les tendances du marché Freelance en France.<br />
-            TJM, Technos, ESN et bien d&apos;autres paramètres !
-          </motion.p>
+          <div className="absolute -left-1.5 -top-1.5 h-3 w-3 bg-purple-500" />
+          <div className="absolute -bottom-1.5 -left-1.5 h-3 w-3 bg-purple-500" />
+          <div className="absolute -right-1.5 -top-1.5 h-3 w-3 bg-purple-500" />
+          <div className="absolute -bottom-1.5 -right-1.5 h-3 w-3 bg-purple-500" />
+
+          <div className="relative z-20 mx-auto max-w-7xl rounded-[40px] py-6 md:p-10 xl:py-20">
+            <motion.p 
+              className="md:text-md text-xs text-purple-500 lg:text-lg xl:text-2xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              Analysez
+            </motion.p>
+            <div className="text-2xl tracking-tighter text-white md:text-5xl lg:text-7xl xl:text-8xl">
+              <div className="flex gap-1 md:gap-2 lg:gap-3 xl:gap-4">
+                <motion.h1 
+                  className="font-semibold"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                  "Les tendances du
+                </motion.h1>
+              </div>
+              <div className="flex gap-1 md:gap-2 lg:gap-3 xl:gap-4">
+                <motion.p 
+                  className="font-thin"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                >
+                  marché Freelance
+                </motion.p>
+              </div>
+              <div className="flex gap-1 md:gap-2 lg:gap-3 xl:gap-4">
+                <motion.h1 
+                  className="font-semibold"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.6 }}
+                >
+                  en France..."
+                </motion.h1>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Bouton CTA */}
@@ -124,7 +121,7 @@ const LandingPage: React.FC = () => {
           className="mt-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
         >
           <ButtonCta 
             label="Découvrir"
@@ -135,15 +132,22 @@ const LandingPage: React.FC = () => {
       </div>
 
       <motion.div
-        className="relative z-30 mb-8 flex flex-col items-center justify-center"
+        className="relative z-30 mb-8 flex items-center justify-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
-        <motion.p className="text-sm text-white/60 mb-4 text-center font-helvetica">
-          Fourni gentiment par l&apos;arraignée sympa des réseaux 👋
-        </motion.p>
-        <AnimatedTooltip items={teamMembers} className="mr-4 scale-90" />
+        <div className="flex items-center">
+          <Badge 
+            variant="secondary" 
+            className="bg-white text-black hover:bg-white/90 font-normal pr-8 flex items-center"
+          >
+            Fourni gentiment par l&apos;arraignée sympa des réseaux 👋
+          </Badge>
+          <div className="-ml-6">
+            <AnimatedTooltip items={teamMembers} className="scale-90 [&_img]:border-0" />
+          </div>
+        </div>
       </motion.div>
     </div>
   );
