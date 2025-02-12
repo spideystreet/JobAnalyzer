@@ -89,7 +89,7 @@ const LandingPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              Analysez
+              Technos, TJM, Remote, et plus encore...
             </motion.p>
             <div className="text-2xl tracking-tighter text-white md:text-5xl lg:text-7xl xl:text-8xl">
               <div className="flex gap-1 md:gap-2 lg:gap-3 xl:gap-4">
@@ -99,7 +99,7 @@ const LandingPage: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                  "Les tendances
+                  "Toutes les tendances
                 </motion.h1>
               </div>
               <div className="flex gap-1 md:gap-2 lg:gap-3 xl:gap-4">
@@ -109,7 +109,7 @@ const LandingPage: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
                 >
-                  du marché Freelance
+                  du marché de l'emploi
                 </motion.p>
               </div>
               <div className="flex gap-1 md:gap-2 lg:gap-3 xl:gap-4">
@@ -119,7 +119,7 @@ const LandingPage: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.6 }}
                 >
-                  en France..."
+                  dans l'IT..."
                 </motion.h1>
               </div>
             </div>
