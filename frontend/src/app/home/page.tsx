@@ -60,104 +60,106 @@ const LandingPage: React.FC = () => {
       {/* Background boxes */}
       <Boxes />
 
-      {/* Nuage d'icônes */}
-      <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[200px] h-[80px]">
-        <motion.div
-          className="w-full h-full"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <IconCloud iconSlugs={iconSlugs} />
-        </motion.div>
-      </div>
-
-      {/* Nouvelle Hero Section */}
-      <div className="relative z-30 flex-1 flex flex-col items-center justify-center max-w-7xl mx-auto px-6 xl:px-0">
-        <div className="relative flex flex-col items-center border border-purple-500">
-          <DotPattern width={5} height={5} className="fill-purple-500/50 md:fill-purple-500/70" />
-
-          {/* Badge et Tooltip en haut */}
+      <div className="w-full h-full flex flex-col items-center pt-8 md:pt-12">
+        {/* Nuage d'icônes */}
+        <div className="w-[150px] sm:w-[200px] md:w-[300px] h-[50px] sm:h-[60px] md:h-[80px] z-20">
           <motion.div
-            className="absolute -top-7 w-full flex items-center justify-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
+            className="w-full h-full"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <div className="flex items-center justify-center w-auto">
-              <Badge 
-                variant="secondary" 
-                className="bg-white text-black/80 hover:bg-white/90 font-helvetica font-normal pr-8 flex items-center"
-              >
-                Fourni gentiment par l&apos;arraignée sympa des réseaux 👋
-              </Badge>
-              <div className="-ml-6">
-                <AnimatedTooltip items={teamMembers} className="scale-90 [&_img]:border-0" />
-              </div>
-            </div>
+            <IconCloud iconSlugs={iconSlugs} />
           </motion.div>
+        </div>
 
-          <div className="absolute -left-1.5 -top-1.5 h-3 w-3 bg-purple-500" />
-          <div className="absolute -bottom-1.5 -left-1.5 h-3 w-3 bg-purple-500" />
-          <div className="absolute -right-1.5 -top-1.5 h-3 w-3 bg-purple-500" />
-          <div className="absolute -bottom-1.5 -right-1.5 h-3 w-3 bg-purple-500" />
+        {/* Nouvelle Hero Section */}
+        <div className="relative z-30 flex-1 flex flex-col items-center justify-center max-w-7xl w-full mx-auto px-6 xl:px-0">
+          <div className="relative flex flex-col items-center border border-purple-500 w-full">
+            <DotPattern width={5} height={5} className="fill-purple-500/50 md:fill-purple-500/70" />
 
-          <div className="relative z-20 mx-auto max-w-7xl rounded-[40px] py-6 md:p-10 xl:py-20">
-            <motion.p 
-              className="md:text-md text-xs text-purple-500 lg:text-lg xl:text-2xl font-helvetica"
+            {/* Badge et Tooltip en haut */}
+            <motion.div
+              className="absolute -top-7 w-full flex items-center justify-center"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
             >
-              TJM, Technos, Remote et plus encore...
-            </motion.p>
-            <div className="text-2xl tracking-tighter text-white md:text-5xl lg:text-7xl xl:text-8xl">
-              <div className="flex gap-1 md:gap-2 lg:gap-3 xl:gap-4">
-                <motion.h1 
-                  className="font-semibold"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
+              <div className="flex items-center justify-center w-auto">
+                <Badge 
+                  variant="secondary" 
+                  className="bg-white text-black/80 hover:bg-white/90 font-helvetica font-normal pr-8 flex items-center"
                 >
-                  "Toutes les tendances
-                </motion.h1>
+                  Fourni gentiment par l&apos;arraignée sympa des réseaux 👋
+                </Badge>
+                <div className="-ml-6">
+                  <AnimatedTooltip items={teamMembers} className="scale-90 [&_img]:border-0" />
+                </div>
               </div>
-              <div className="flex gap-1 md:gap-2 lg:gap-3 xl:gap-4">
-                <motion.p 
-                  className="font-thin"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
-                >
-                  du marché de l'emploi
-                </motion.p>
-              </div>
-              <div className="flex gap-1 md:gap-2 lg:gap-3 xl:gap-4">
-                <motion.h1 
-                  className="font-semibold"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.6 }}
-                >
-                  dans l'IT..."
-                </motion.h1>
-              </div>
-            </div>
-          </div>
+            </motion.div>
 
-          {/* Bouton CTA en bas */}
-          <motion.div
-            className="absolute -bottom-5"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.8 }}
-          >
-            <div className="relative justify-center">
-              <InteractiveHoverButton 
-                onClick={() => window.location.href = '/dashboard'}
-              />
+            <div className="absolute -left-1.5 -top-1.5 h-3 w-3 bg-purple-500" />
+            <div className="absolute -bottom-1.5 -left-1.5 h-3 w-3 bg-purple-500" />
+            <div className="absolute -right-1.5 -top-1.5 h-3 w-3 bg-purple-500" />
+            <div className="absolute -bottom-1.5 -right-1.5 h-3 w-3 bg-purple-500" />
+
+            <div className="relative z-20 mx-auto max-w-7xl rounded-[40px] py-6 md:p-10 xl:py-20">
+              <motion.p 
+                className="md:text-md text-xs text-purple-500 lg:text-lg xl:text-2xl font-helvetica"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                TJM, Technos, Remote et plus encore...
+              </motion.p>
+              <div className="text-2xl tracking-tighter text-white md:text-5xl lg:text-7xl xl:text-8xl">
+                <div className="flex gap-1 md:gap-2 lg:gap-3 xl:gap-4">
+                  <motion.h1 
+                    className="font-semibold"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                  >
+                    "Toutes les tendances
+                  </motion.h1>
+                </div>
+                <div className="flex gap-1 md:gap-2 lg:gap-3 xl:gap-4">
+                  <motion.p 
+                    className="font-thin"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                  >
+                    du marché de l'emploi
+                  </motion.p>
+                </div>
+                <div className="flex gap-1 md:gap-2 lg:gap-3 xl:gap-4">
+                  <motion.h1 
+                    className="font-semibold"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.6 }}
+                  >
+                    dans l'IT..."
+                  </motion.h1>
+                </div>
+              </div>
             </div>
-          </motion.div>
+
+            {/* Bouton CTA en bas */}
+            <motion.div
+              className="absolute -bottom-5"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.8 }}
+            >
+              <div className="relative justify-center">
+                <InteractiveHoverButton 
+                  onClick={() => window.location.href = '/dashboard'}
+                />
+              </div>
+            </motion.div>
+          </div>
         </div>
       </div>
     </div>
