@@ -61,7 +61,7 @@ const LandingPage: React.FC = () => {
       <Boxes />
 
       {/* Nuage d'icônes */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 w-[200px] h-[80px]">
+      <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[200px] h-[80px]">
         <motion.div
           className="w-full h-full"
           initial={{ opacity: 0 }}
