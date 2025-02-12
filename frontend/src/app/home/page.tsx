@@ -77,6 +77,26 @@ const LandingPage: React.FC = () => {
         <div className="relative flex flex-col items-center border border-purple-500">
           <DotPattern width={5} height={5} className="fill-purple-500/50 md:fill-purple-500/70" />
 
+          {/* Badge et Tooltip en haut */}
+          <motion.div
+            className="absolute -top-7 w-full flex items-center justify-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <div className="flex items-center justify-center w-auto">
+              <Badge 
+                variant="secondary" 
+                className="bg-white text-black/80 hover:bg-white/90 font-helvetica font-normal pr-8 flex items-center"
+              >
+                Fourni gentiment par l&apos;arraignée sympa des réseaux 👋
+              </Badge>
+              <div className="-ml-6">
+                <AnimatedTooltip items={teamMembers} className="scale-90 [&_img]:border-0" />
+              </div>
+            </div>
+          </motion.div>
+
           <div className="absolute -left-1.5 -top-1.5 h-3 w-3 bg-purple-500" />
           <div className="absolute -bottom-1.5 -left-1.5 h-3 w-3 bg-purple-500" />
           <div className="absolute -right-1.5 -top-1.5 h-3 w-3 bg-purple-500" />
@@ -124,41 +144,21 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Bouton CTA */}
-        <motion.div
-          className="mt-12"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
-        >
-          <div className="relative justify-center">
-            <InteractiveHoverButton 
-              onClick={() => window.location.href = '/dashboard'}
-            />
-          </div>
-        </motion.div>
-
-        {/* Badge et Tooltip */}
-        <motion.div
-          className="mt-8 flex items-center justify-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-        >
-          <div className="flex items-center">
-            <Badge 
-              variant="secondary" 
-              className="bg-white text-black/80 hover:bg-white/90 font-helvetica font-normal pr-8 flex items-center"
-            >
-              Fourni gentiment par l&apos;arraignée sympa des réseaux 👋
-            </Badge>
-            <div className="-ml-6">
-              <AnimatedTooltip items={teamMembers} className="scale-90 [&_img]:border-0" />
+          {/* Bouton CTA en bas */}
+          <motion.div
+            className="absolute -bottom-5"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.8 }}
+          >
+            <div className="relative justify-center">
+              <InteractiveHoverButton 
+                onClick={() => window.location.href = '/dashboard'}
+              />
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
     </div>
   );
