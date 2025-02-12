@@ -7,6 +7,7 @@ from loguru import logger
 from supabase import create_client, Client
 import os
 from dotenv import load_dotenv
+from ..core.enums import ExperienceLevel
 
 # Chargement des variables d'environnement
 load_dotenv()
@@ -63,6 +64,41 @@ class JobStorage:
         
         return converted
 
+    def _validate_and_fix_data(self, analysis: Dict) -> Dict:
+        """
+        Valide et corrige les données avant le stockage.
+        
+        1. Vérifie que XP correspond aux valeurs de l'énumération
+        2. Gère les TJM pour les CDI
+        """
+        validated = analysis.copy()
+        
+        # 1. Validation de l'expérience avec l'énumération
+        if 'XP' in validated:
+            xp_value = validated['XP']
+            valid_xp_values = {e.value: e.value for e in ExperienceLevel}
+            if xp_value not in valid_xp_values:
+                logger.error(f"❌ Valeur XP invalide trouvée : {xp_value}")
+                logger.error(f"Les valeurs autorisées sont : {list(valid_xp_values.keys())}")
+                validated['XP'] = None
+        
+        # 2. Gestion des TJM pour les CDI
+        contract_types = validated.get('CONTRACT_TYPE', [])
+        if isinstance(contract_types, str):
+            contract_types = [contract_types]
+            
+        if 'CDI' in contract_types:
+            # Si c'est un CDI, on vérifie si l'un des TJM semble être un salaire
+            tjm_min = validated.get('TJM_MIN')
+            tjm_max = validated.get('TJM_MAX')
+            
+            if (tjm_min and tjm_min > 2000) or (tjm_max and tjm_max > 2000):
+                logger.info(f"💡 TJM suspects pour un CDI (MIN: {tjm_min}€, MAX: {tjm_max}€) - Mise à NULL des deux valeurs")
+                validated['TJM_MIN'] = None
+                validated['TJM_MAX'] = None
+        
+        return validated
+
     async def store_job_analysis(self, analysis: Dict) -> bool:
         """
         Stocke une analyse d'offre d'emploi dans Supabase.
@@ -74,8 +110,11 @@ class JobStorage:
             bool: True si succès, False sinon
         """
         try:
+            # Validation et correction des données
+            validated_analysis = self._validate_and_fix_data(analysis)
+            
             # Conversion des tableaux au format PostgreSQL
-            postgres_analysis = self._convert_arrays_to_postgres(analysis)
+            postgres_analysis = self._convert_arrays_to_postgres(validated_analysis)
             
             # Insertion dans la table job_offers
             data = self.supabase.table('job_offers').insert(postgres_analysis).execute()

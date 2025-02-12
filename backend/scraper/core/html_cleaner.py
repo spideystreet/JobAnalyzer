@@ -7,6 +7,7 @@ from typing import Dict, Any, List, Optional
 from loguru import logger
 
 from ..config.settings import ALLOWED_TAGS, RELEVANT_CLASSES
+from ..core.enums import CompanyType
 
 class HTMLCleaner:
     """Nettoie et extrait les sections pertinentes du HTML."""
@@ -26,13 +27,41 @@ class HTMLCleaner:
             'original_size': 0,
             'cleaned_size': 0,
             'scripts_removed': 0,
-            'styles_removed': 0
+            'styles_removed': 0,
+            'company_type': None
         }
 
     @property
     def stats(self) -> Dict[str, int]:
         """Retourne les statistiques du dernier nettoyage."""
         return self._stats
+
+    def extract_company_type(self, soup: BeautifulSoup) -> Optional[str]:
+        """
+        Extrait le type d'entreprise depuis le HTML brut.
+        Utilise les valeurs exactes de l'énumération CompanyType.
+        """
+        try:
+            # Cherche dans les tags avec la classe 'tag'
+            tags = soup.find_all(class_='tag')
+            
+            # Dictionnaire des valeurs de l'énumération
+            valid_types = {type.value: type.value for type in CompanyType}
+            
+            # Cherche une correspondance exacte
+            for tag in tags:
+                text = tag.get_text(strip=True)
+                if text in valid_types:
+                    logger.info(f"✅ Type d'entreprise trouvé dans le HTML : {text}")
+                    self._stats['company_type'] = text
+                    return text
+                    
+            logger.debug("ℹ️ Aucun type d'entreprise trouvé dans les tags")
+            return None
+            
+        except Exception as e:
+            logger.error(f"❌ Erreur lors de l'extraction du type d'entreprise : {str(e)}")
+            return None
 
     def clean(self, html_content: str) -> str:
         """
@@ -50,16 +79,22 @@ class HTMLCleaner:
             if not soup:
                 return ''
                 
-            # 2. Supprime les éléments non désirés
-            self._remove_unwanted_elements(soup)
+            # 2. Extrait le type d'entreprise AVANT le nettoyage
+            self._stats['company_type'] = self.extract_company_type(soup)
             
-            # 3. Extrait les sections pertinentes
-            clean_soup = self._extract_relevant_sections(soup)
+            # 3. Crée une copie du soup pour le nettoyage
+            soup_for_cleaning = BeautifulSoup(str(soup), 'lxml')
             
-            # 4. Crée le document final
+            # 4. Supprime les éléments non désirés
+            self._remove_unwanted_elements(soup_for_cleaning)
+            
+            # 5. Extrait les sections pertinentes
+            clean_soup = self._extract_relevant_sections(soup_for_cleaning)
+            
+            # 6. Crée le document final
             cleaned_html = str(clean_soup)
             
-            # 5. Met à jour les stats
+            # 7. Met à jour les stats
             self._update_stats(len(html_content), len(cleaned_html))
             
             logger.success(f"✅ Nettoyage terminé : {len(cleaned_html):,} caractères (réduction de {self._get_reduction_percent():.1f}%)")

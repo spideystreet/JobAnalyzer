@@ -25,13 +25,14 @@ class JobAnalyzer:
         self.model = MISTRAL_MODEL
         self.timeout = HTTP_TIMEOUT
 
-    async def analyze(self, html_content: str, url: str = "") -> Dict[str, Any]:
+    async def analyze(self, html_content: str, url: str = "", extracted_company_type: Optional[str] = None) -> Dict[str, Any]:
         """
         Analyse une offre d'emploi avec Mistral AI.
         
         Args:
             html_content: Le contenu HTML nettoyé de l'offre
             url: L'URL de l'offre
+            extracted_company_type: Le type d'entreprise extrait du HTML brut
             
         Returns:
             Dict[str, Any]: Les informations extraites de l'offre avec les clés en majuscules
@@ -41,12 +42,14 @@ class JobAnalyzer:
             logger.info(f"\n🔍 Début de l'analyse de l'offre")
             if url:
                 logger.info(f"🌐 URL : {url}")
+            if extracted_company_type:
+                logger.info(f"🏢 Type d'entreprise extrait : {extracted_company_type}")
             
             logger.debug(f"📝 Longueur du contenu HTML à analyser : {len(html_content)} caractères")
             
             # Construction du prompt
             logger.info("1️⃣ Construction du prompt...")
-            prompt = self._construct_prompt(html_content, url)
+            prompt = self._construct_prompt(html_content, url, extracted_company_type)
             logger.debug(f"🔍 Prompt généré de {len(prompt)} caractères")
             
             # Appel à l'API
@@ -59,6 +62,10 @@ class JobAnalyzer:
                 logger.warning("⚠️ Réponse invalide de Mistral - Champs manquants")
                 logger.debug(f"Champs manquants : {[field for field in REQUIRED_FIELDS if field not in response]}")
                 return self._get_empty_response()
+            
+            # On ajoute le type d'entreprise extrait à la réponse
+            if extracted_company_type:
+                response['COMPANY_TYPE'] = extracted_company_type
             
             logger.info("✅ Réponse valide reçue de Mistral")
             
@@ -119,7 +126,7 @@ class JobAnalyzer:
             logger.exception("Détails de l'erreur :")
             return self._get_empty_response()
 
-    def _construct_prompt(self, html_content: str, url: str = "") -> str:
+    def _construct_prompt(self, html_content: str, url: str = "", extracted_company_type: Optional[str] = None) -> str:
         """Construit le prompt pour Mistral."""
         logger.debug("🔨 Construction du prompt")
         
@@ -129,15 +136,27 @@ class JobAnalyzer:
             for k, v in REQUIRED_FIELDS.items()
         }
         
-        prompt = f"""Analyse cette offre d'emploi et extrait les informations suivantes au format JSON.
+        # Construction du prompt partie par partie
+        prompt_parts = [
+            "Analyse cette offre d'emploi et extrait les informations suivantes au format JSON.\n"
+        ]
         
-        Format attendu:
-        {json.dumps(fields_with_url, indent=2, ensure_ascii=False)}
+        # Ajout des métadonnées si présentes
+        if extracted_company_type:
+            metadata = {'company_type': extracted_company_type}
+            prompt_parts.append(f"Metadonnees extraites :\n{json.dumps(metadata, indent=2, ensure_ascii=False)}\n")
         
-        Contenu HTML:
-        {html_content}
+        # Ajout du format attendu
+        prompt_parts.append(f"Format attendu:\n{json.dumps(fields_with_url, indent=2, ensure_ascii=False)}\n")
         
-        Réponds UNIQUEMENT avec un objet JSON valide."""
+        # Ajout du contenu HTML
+        prompt_parts.append(f"Contenu HTML:\n{html_content}\n")
+        
+        # Ajout de l'instruction finale
+        prompt_parts.append("Reponds uniquement avec un objet JSON valide.")
+        
+        # Assemblage du prompt final
+        prompt = "\n".join(prompt_parts)
         
         logger.debug(f"📝 Prompt construit ({len(prompt)} caractères)")
         return prompt
