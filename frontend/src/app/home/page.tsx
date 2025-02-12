@@ -1,11 +1,11 @@
 "use client"
 
-import { LayoutGroup, motion } from "framer-motion"
-import { TextRotate } from "@/components/ui/text-rotate"
+import { motion } from "framer-motion"
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip"
 import { Boxes } from "@/components/ui/background-boxes"
 import { ButtonCta } from "@/components/ui/button-shiny"
 import { IconCloud } from "@/components/ui/interactive-icon-cloud"
+import { useEffect, useMemo, useState } from "react"
 
 const iconSlugs = [
   "python",
@@ -40,6 +40,23 @@ const teamMembers = [
 ]
 
 const LandingPage: React.FC = () => {
+  const [titleNumber, setTitleNumber] = useState(0);
+  const titles = useMemo(
+    () => ["Dev full-stack", "Data analyst", "Dev WEB", "Data engineer", "Dev iOS"],
+    []
+  );
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (titleNumber === titles.length - 1) {
+        setTitleNumber(0);
+      } else {
+        setTitleNumber(titleNumber + 1);
+      }
+    }, 2000);
+    return () => clearTimeout(timeoutId);
+  }, [titleNumber, titles]);
+
   return (
     <div className="h-screen relative w-full overflow-hidden bg-black flex flex-col items-center">
       {/* Masque radial pour l'effet de fondu */}
@@ -62,42 +79,45 @@ const LandingPage: React.FC = () => {
 
       {/* Contenu principal */}
       <div className="relative z-30 flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto px-4">
-        <motion.h1
-          className="text-7xl text-center flex flex-col items-center justify-center font-helvetica tracking-tight space-y-6"
-          animate={{ opacity: 1, y: 0 }}
-          initial={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.2, ease: "easeOut", delay: 0.3 }}
-        >
-          <span className="font-bold font-helvetica text-white">Analysez les</span>
-          <LayoutGroup>
-            <motion.div layout className="flex items-center justify-center whitespace-nowrap">
-              <TextRotate
-                texts={[
-                  "Dev full-stack",
-                  "Data analyst",
-                  "Dev WEB",
-                  "Data engineer",
-                  "Dev iOS",
-                ]}
-                mainClassName="overflow-hidden text-purple-600 py-4 rounded-xl text-center whitespace-nowrap h-full"
-                staggerDuration={0.03}
-                staggerFrom="last"
-                rotationInterval={3000}
-                transition={{ type: "spring", damping: 30, stiffness: 400 }}
-              />
-            </motion.div>
-          </LayoutGroup>
-        </motion.h1>
+        <div className="flex gap-4 flex-col">
+          <h1 className="text-5xl md:text-7xl max-w-2xl tracking-tighter text-center font-regular">
+            <span className="text-white font-bold">Analysez les</span>
+            <span className="relative flex w-full justify-center overflow-hidden text-center md:pb-4 md:pt-1">
+              &nbsp;
+              {titles.map((title, index) => (
+                <motion.span
+                  key={index}
+                  className="absolute text-purple-600 font-semibold"
+                  initial={{ opacity: 0, y: "-100" }}
+                  transition={{ type: "spring", stiffness: 50 }}
+                  animate={
+                    titleNumber === index
+                      ? {
+                          y: 0,
+                          opacity: 1,
+                        }
+                      : {
+                          y: titleNumber > index ? -150 : 150,
+                          opacity: 0,
+                        }
+                  }
+                >
+                  {title}
+                </motion.span>
+              ))}
+            </span>
+          </h1>
 
-        <motion.p
-          className="text-xl text-center font-helvetica mt-8 max-w-2xl text-white/80"
-          animate={{ opacity: 1, y: 0 }}
-          initial={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.2, ease: "easeOut", delay: 0.5 }}
-        >
-          Toutes les tendances du marché Freelance en France.<br />
-          TJM, Technos, ESN et bien d&apos;autres paramètres !
-        </motion.p>
+          <motion.p
+            className="text-lg md:text-xl leading-relaxed tracking-tight text-white/80 max-w-2xl text-center"
+            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.2, ease: "easeOut", delay: 0.5 }}
+          >
+            Toutes les tendances du marché Freelance en France.<br />
+            TJM, Technos, ESN et bien d&apos;autres paramètres !
+          </motion.p>
+        </div>
 
         {/* Bouton CTA */}
         <motion.div
