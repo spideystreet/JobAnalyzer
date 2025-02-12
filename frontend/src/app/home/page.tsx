@@ -1,33 +1,45 @@
 "use client"
 
-import { LayoutGroup, motion } from "framer-motion"
-import { TextRotate } from "@/components/ui/text-rotate"
+import { motion } from "framer-motion"
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip"
 import { Boxes } from "@/components/ui/background-boxes"
-import { MagnetizeButton } from "@/components/ui/magnetize-button"
+import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button"
 import { IconCloud } from "@/components/ui/interactive-icon-cloud"
+import { Badge } from "@/components/ui/badge"
+import DotPattern from "@/components/ui/dot-pattern-1"
+import { useEffect, useMemo, useState } from "react"
 
 const iconSlugs = [
-  "python",
-  "javascript",
   "typescript",
+  "javascript",
+  "dart",
+  "java",
   "react",
-  "nextdotjs",
+  "flutter",
+  "android",
+  "html5",
+  "css3",
   "nodedotjs",
-  "docker",
-  "kubernetes",
+  "express",
+  "nextdotjs",
+  "prisma",
   "amazonaws",
   "postgresql",
-  "mongodb",
-  "redis",
+  "firebase",
+  "nginx",
+  "vercel",
+  "testinglibrary",
+  "jest",
+  "cypress",
+  "docker",
   "git",
+  "jira",
   "github",
+  "gitlab",
   "visualstudiocode",
-  "tailwindcss",
+  "androidstudio",
+  "sonarqube",
   "figma",
-  "powerbi",
-  "microsoftazure",
-  "googlecloud"
 ]
 
 const teamMembers = [
@@ -48,85 +60,108 @@ const LandingPage: React.FC = () => {
       {/* Background boxes */}
       <Boxes />
 
-      {/* Nuage d'icônes */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[150px]">
-        <motion.div
-          className="w-full h-full"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <IconCloud iconSlugs={iconSlugs} />
-        </motion.div>
-      </div>
-
-      {/* Contenu principal */}
-      <div className="relative z-30 flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto px-4">
-        <motion.h1
-          className="text-7xl text-center flex flex-col items-center justify-center font-helvetica tracking-tight space-y-6"
-          animate={{ opacity: 1, y: 0 }}
-          initial={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.2, ease: "easeOut", delay: 0.3 }}
-        >
-          <span className="font-bold font-helvetica text-white">Analysez les</span>
-          <LayoutGroup>
-            <motion.div layout className="flex items-center justify-center whitespace-nowrap">
-              <TextRotate
-                texts={[
-                  "Dev full-stack",
-                  "Data analyst",
-                  "Dev WEB",
-                  "Data engineer",
-                  "Dev iOS",
-                ]}
-                mainClassName="overflow-hidden text-purple-600 py-4 rounded-xl text-center whitespace-nowrap h-full"
-                staggerDuration={0.03}
-                staggerFrom="last"
-                rotationInterval={3000}
-                transition={{ type: "spring", damping: 30, stiffness: 400 }}
-              />
-            </motion.div>
-          </LayoutGroup>
-        </motion.h1>
-
-        <motion.p
-          className="text-xl text-center font-helvetica mt-8 max-w-2xl text-white/80"
-          animate={{ opacity: 1, y: 0 }}
-          initial={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.2, ease: "easeOut", delay: 0.5 }}
-        >
-          Toutes les tendances du marché Freelance en France.<br />
-          TJM, Technos, ESN et bien d&apos;autres paramètres !
-        </motion.p>
-
-        {/* Bouton magnétique */}
-        <motion.div
-          className="mt-12"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-        >
-          <MagnetizeButton
-            onClick={() => window.location.href = '/dashboard'}
-            className="text-lg font-semibold px-8 py-6"
-            particleCount={15}
+      <div className="w-full h-full flex flex-col items-center pt-8 md:pt-12">
+        {/* Nuage d'icônes */}
+        <div className="w-[150px] sm:w-[200px] md:w-[300px] h-[50px] sm:h-[60px] md:h-[80px] z-20">
+          <motion.div
+            className="w-full h-full"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Découvrir
-          </MagnetizeButton>
-        </motion.div>
-      </div>
+            <IconCloud iconSlugs={iconSlugs} />
+          </motion.div>
+        </div>
 
-      <motion.div
-        className="relative z-30 mb-8 flex flex-col items-center justify-center"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-      >
-        <motion.p className="text-sm text-white/60 mb-4 text-center font-helvetica">
-          Fourni gentiment par l&apos;arraignée sympa des réseaux 👋
-        </motion.p>
-        <AnimatedTooltip items={teamMembers} className="mr-4 scale-90" />
-      </motion.div>
+        {/* Nouvelle Hero Section */}
+        <div className="relative z-30 flex-1 flex flex-col items-center justify-center max-w-7xl w-full mx-auto px-6 xl:px-0">
+          <div className="relative flex flex-col items-center border border-purple-500 w-full">
+            <DotPattern width={5} height={5} className="fill-purple-500/50 md:fill-purple-500/70" />
+
+            {/* Badge et Tooltip en haut */}
+            <motion.div
+              className="absolute -top-7 w-full flex items-center justify-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <div className="flex items-center justify-center w-auto">
+                <Badge 
+                  variant="secondary" 
+                  className="bg-white text-black/80 hover:bg-white/90 font-helvetica font-normal pr-8 flex items-center"
+                >
+                  Fourni gentiment par l&apos;arraignée sympa des réseaux 👋
+                </Badge>
+                <div className="-ml-6">
+                  <AnimatedTooltip items={teamMembers} className="scale-90 [&_img]:border-0" />
+                </div>
+              </div>
+            </motion.div>
+
+            <div className="absolute -left-1.5 -top-1.5 h-3 w-3 bg-purple-500" />
+            <div className="absolute -bottom-1.5 -left-1.5 h-3 w-3 bg-purple-500" />
+            <div className="absolute -right-1.5 -top-1.5 h-3 w-3 bg-purple-500" />
+            <div className="absolute -bottom-1.5 -right-1.5 h-3 w-3 bg-purple-500" />
+
+            <div className="relative z-20 mx-auto max-w-7xl rounded-[40px] py-6 md:p-10 xl:py-20">
+              <motion.p 
+                className="md:text-md text-xs text-purple-500 lg:text-lg xl:text-2xl font-helvetica"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                TJM, Technos, Remote et plus encore...
+              </motion.p>
+              <div className="text-2xl tracking-tighter text-white md:text-5xl lg:text-7xl xl:text-8xl">
+                <div className="flex gap-1 md:gap-2 lg:gap-3 xl:gap-4">
+                  <motion.h1 
+                    className="font-semibold"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                  >
+                    "Toutes les tendances
+                  </motion.h1>
+                </div>
+                <div className="flex gap-1 md:gap-2 lg:gap-3 xl:gap-4">
+                  <motion.p 
+                    className="font-thin"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                  >
+                    du marché de l'emploi
+                  </motion.p>
+                </div>
+                <div className="flex gap-1 md:gap-2 lg:gap-3 xl:gap-4">
+                  <motion.h1 
+                    className="font-semibold"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.6 }}
+                  >
+                    dans l'IT..."
+                  </motion.h1>
+                </div>
+              </div>
+            </div>
+
+            {/* Bouton CTA en bas */}
+            <motion.div
+              className="absolute -bottom-5"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.8 }}
+            >
+              <div className="relative justify-center">
+                <InteractiveHoverButton 
+                  onClick={() => window.location.href = '/dashboard'}
+                />
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

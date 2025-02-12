@@ -14,6 +14,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.utils.log.logging_mixin import LoggingMixin
 from loguru import logger
+from bs4 import BeautifulSoup
 
 # Configuration avancée du logger
 logger.remove()  # Retire les handlers par défaut
@@ -144,7 +145,12 @@ async def transform_and_analyze():
                     cleaning_failed += 1
                     continue
                 
+                # Nettoyage du HTML et extraction du type d'entreprise
                 cleaned_html = cleaner.clean(html_content)
+                company_type = cleaner.stats.get('company_type')
+                if company_type:
+                    airflow_logger.info(f"🏢 Type d'entreprise extrait : {company_type}")
+                
                 await cache.store_cleaned_html(key, cleaned_html)
                 cleaned += 1
                 airflow_logger.info(f"✅ Nettoyage réussi: {key}")
@@ -169,7 +175,17 @@ async def transform_and_analyze():
                     analysis_failed += 1
                     continue
                 
-                analysis = await analyzer.analyze(cleaned_html)
+                # Récupération du HTML brut pour extraire le type d'entreprise
+                raw_html = await cache.get_raw_html(key)
+                company_type = None
+                if raw_html:
+                    cleaner = HTMLCleaner()
+                    company_type = cleaner.extract_company_type(BeautifulSoup(raw_html, 'lxml'))
+                    if company_type:
+                        airflow_logger.info(f"🏢 Type d'entreprise extrait : {company_type}")
+                
+                # Analyse avec le type d'entreprise extrait
+                analysis = await analyzer.analyze(cleaned_html, key, company_type)
                 
                 if analysis:
                     await cache.store_analysis(key, analysis)

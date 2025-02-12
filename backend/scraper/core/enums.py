@@ -7,8 +7,8 @@ from typing import Union, List
 
 class CompanyType(str, Enum):
     """Type d'entreprise."""
-    ESN = "ESN"
     STARTUP = "Startup"
+    ESN = "ESN"
     GRAND_COMPTE = "Grand Compte"
     CABINET_CONSEIL = "Cabinet de Conseil"
     SCALE_UP = "Scale-up"
@@ -33,7 +33,7 @@ class JobDomain(str, Enum):
     DATA_ENGINEER = "Data Engineer"
     DATA_SCIENTIST = "Data Scientist"
     DATA_ANALYST = "Data Analyst"
-    ML_ENGINEER = "Machine Learning Engineer"
+    ML_ENGINEER = "ML Engineer"
     
     # Infrastructure & Cloud
     DEVOPS = "DevOps"

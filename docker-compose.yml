@@ -18,8 +18,7 @@ x-airflow-common: &airflow-common
     # Variables d'environnement du projet
     PYTHONPATH: /opt/airflow:/opt/airflow/backend
     USER: airflow
-    DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY}
-    DEEPSEEK_BASE_URL: ${DEEPSEEK_BASE_URL}
+    MISTRAL_API_KEY: ${MISTRAL_API_KEY}
     SUPABASE_URL: ${SUPABASE_URL}
     SUPABASE_KEY: ${SUPABASE_KEY}
   volumes:

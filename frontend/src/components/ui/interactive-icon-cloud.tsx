@@ -18,45 +18,42 @@ export const cloudProps: Omit<ICloud, "children"> = {
       alignItems: "center",
       width: "100%",
       height: "100%",
-      padding: 0,
-      margin: 0,
+      padding: 10,
     },
   },
   options: {
     reverse: true,
-    depth: 0.5,
+    depth: 1,
     wheelZoom: false,
-    imageScale: 1.0,
+    imageScale: 1.5,
     activeCursor: "default",
     tooltip: "native",
     initial: [0.1, -0.1],
     clickToFront: 500,
     tooltipDelay: 0,
     outlineColour: "#0000",
-    maxSpeed: 0.02,
-    minSpeed: 0.02,
-    radiusX: 0.5,
-    radiusY: 0.5,
-    radiusZ: 0.5,
+    maxSpeed: 0.01,
+    minSpeed: 0.01,
   },
 }
 
 export const renderCustomIcon = (icon: SimpleIcon, theme: string) => {
   const bgHex = theme === "light" ? "#f3f2ef" : "#080510"
   const fallbackHex = theme === "light" ? "#6e6e73" : "#ffffff"
-  const minContrastRatio = theme === "dark" ? 2 : 1.2
+  const minContrastRatio = theme === "dark" ? 1.2 : 1.2
 
   return renderSimpleIcon({
     icon,
     bgHex,
     fallbackHex,
     minContrastRatio,
-    size: 42,
+    size: 38,
     aProps: {
       href: undefined,
       target: undefined,
       rel: undefined,
       onClick: (e: any) => e.preventDefault(),
+      style: { opacity: 0.5 }
     },
   })
 }
