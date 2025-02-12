@@ -4,7 +4,7 @@ import { LayoutGroup, motion } from "framer-motion"
 import { TextRotate } from "@/components/ui/text-rotate"
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip"
 import { Boxes } from "@/components/ui/background-boxes"
-import { MagnetizeButton } from "@/components/ui/magnetize-button"
+import { ButtonCta } from "@/components/ui/button-shiny"
 import { IconCloud } from "@/components/ui/interactive-icon-cloud"
 
 const iconSlugs = [
@@ -99,20 +99,18 @@ const LandingPage: React.FC = () => {
           TJM, Technos, ESN et bien d&apos;autres paramètres !
         </motion.p>
 
-        {/* Bouton magnétique */}
+        {/* Bouton CTA */}
         <motion.div
           className="mt-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.6 }}
         >
-          <MagnetizeButton
+          <ButtonCta 
+            label="Découvrir"
+            className="w-fit text-sm"
             onClick={() => window.location.href = '/dashboard'}
-            className="text-lg font-semibold px-8 py-6"
-            particleCount={15}
-          >
-            Découvrir
-          </MagnetizeButton>
+          />
         </motion.div>
       </div>
 
