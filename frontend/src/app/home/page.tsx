@@ -134,7 +134,9 @@ const LandingPage: React.FC = () => {
           transition={{ duration: 0.5, delay: 0.8 }}
         >
           <div className="relative justify-center">
-            <InteractiveHoverButton />
+            <InteractiveHoverButton 
+              onClick={() => window.location.href = '/dashboard'}
+            />
           </div>
         </motion.div>
 

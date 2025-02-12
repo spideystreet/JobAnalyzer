@@ -13,7 +13,7 @@ import { BackgroundGradientAnimation } from '@/components/ui/background-gradient
 import { usePersistedFilters } from '@/lib/hooks/usePersistedFilters'
 import { useStats } from '@/lib/hooks/useStats'
 import { Button } from '@/components/ui/button'
-import { RefreshCw, FilterX } from 'lucide-react'
+import { RefreshCw, FilterX, ArrowLeft } from 'lucide-react'
 import React from 'react'
 
 const queryClient = new QueryClient({
@@ -111,12 +111,23 @@ function DashboardContent() {
       <div className="relative z-10 min-h-screen">
         <div className="container mx-auto px-4 py-8 pb-16">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-4xl font-helvetica text-white drop-shadow-lg">
-              Dashboard
-            </h1>
+            <div className="flex items-center gap-4">
+              <Button
+                onClick={() => window.location.href = '/'}
+                variant="ghost"
+                className="text-white hover:text-white/80"
+                aria-label="Retour à l'accueil"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Retour
+              </Button>
+              <h1 className="text-4xl font-helvetica text-white drop-shadow-lg">
+                Dashboard
+              </h1>
+            </div>
             <Button
               onClick={resetFilters}
-              variant="ghost"
+              variant="ghost" 
               className="text-white hover:text-white/80"
               aria-label="Réinitialiser tous les filtres"
             >
