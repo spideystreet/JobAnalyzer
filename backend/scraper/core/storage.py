@@ -2,12 +2,16 @@
 Module de gestion du stockage des données dans Supabase.
 """
 
-from typing import Dict, List
+from typing import Dict, List, Optional
 from loguru import logger
 from supabase import create_client, Client
 import os
 from dotenv import load_dotenv
-from ..core.enums import ExperienceLevel
+from ..core.enums import (
+    ExperienceLevel, Country, get_regions_by_country, get_all_regions,
+    CompanyType, ContractType, JobDomain, RemoteType,
+    FranceRegion, BelgiqueRegion, SuisseRegion, LuxembourgRegion
+)
 
 # Chargement des variables d'environnement
 load_dotenv()
@@ -15,6 +19,43 @@ load_dotenv()
 # Récupération des informations de connexion Supabase
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+# Mapping des villes vers les régions de France
+CITY_TO_REGION_MAPPING = {
+    # Île-de-France
+    "Paris": FranceRegion.ILE_DE_FRANCE.value,
+    "Versailles": FranceRegion.ILE_DE_FRANCE.value,
+    "Boulogne-Billancourt": FranceRegion.ILE_DE_FRANCE.value,
+    
+    # Auvergne-Rhône-Alpes
+    "Lyon": FranceRegion.AUVERGNE_RHONE_ALPES.value,
+    "Grenoble": FranceRegion.AUVERGNE_RHONE_ALPES.value,
+    "Clermont-Ferrand": FranceRegion.AUVERGNE_RHONE_ALPES.value,
+    
+    # Provence-Alpes-Côte d'Azur
+    "Marseille": FranceRegion.PROVENCE_ALPES_COTE_AZUR.value,
+    "Nice": FranceRegion.PROVENCE_ALPES_COTE_AZUR.value,
+    "Aix-en-Provence": FranceRegion.PROVENCE_ALPES_COTE_AZUR.value,
+    
+    # Occitanie
+    "Toulouse": FranceRegion.OCCITANIE.value,
+    "Montpellier": FranceRegion.OCCITANIE.value,
+    
+    # Nouvelle-Aquitaine
+    "Bordeaux": FranceRegion.NOUVELLE_AQUITAINE.value,
+    
+    # Pays de la Loire
+    "Nantes": FranceRegion.PAYS_DE_LA_LOIRE.value,
+    
+    # Hauts-de-France
+    "Lille": FranceRegion.HAUTS_DE_FRANCE.value,
+    
+    # Grand Est
+    "Strasbourg": FranceRegion.GRAND_EST.value,
+    
+    # Bretagne
+    "Rennes": FranceRegion.BRETAGNE.value,
+}
 
 class JobStorage:
     """
@@ -32,37 +73,88 @@ class JobStorage:
             logger.error(f"❌ Erreur lors de la connexion à Supabase : {str(e)}")
             raise
     
-    def _convert_arrays_to_postgres(self, analysis: Dict) -> Dict:
-        """
-        Convertit les tableaux Python en format PostgreSQL.
-        """
-        converted = analysis.copy()
+    def _clean_and_validate_region(self, region: Optional[str], country: Optional[str]) -> Optional[str]:
+        """Nettoie et valide une région."""
+        if not region:
+            return None
+
+        # Nettoyage basique
+        region = region.strip()
         
-        # Conversion des tableaux connus
-        array_fields = ['CONTRACT_TYPE', 'TECHNOS']
-        for field in array_fields:
-            if field in converted and converted[field]:
-                values = []
-                
-                # Si c'est déjà une chaîne
-                if isinstance(converted[field], str):
-                    # On extrait les valeurs entre les accolades
-                    raw_values = converted[field].strip('{}').split(',')
-                    values = [v.strip() for v in raw_values if v.strip()]
-                
-                # Si c'est une liste
-                elif isinstance(converted[field], list):
-                    values = [str(v).strip() for v in converted[field]]
-                
-                # Si c'est une autre valeur
-                else:
-                    values = [str(converted[field]).strip()]
-                
-                # On s'assure que toutes les valeurs sont entre guillemets
-                quoted_values = [f'"{v}"' for v in values]
-                converted[field] = '{' + ','.join(quoted_values) + '}'
-        
-        return converted
+        # Vérification dans le mapping des villes
+        if region in CITY_TO_REGION_MAPPING:
+            logger.info(f"🔄 Conversion ville -> région : {region} -> {CITY_TO_REGION_MAPPING[region]}")
+            region = CITY_TO_REGION_MAPPING[region]
+
+        # Validation selon le pays
+        if country:
+            try:
+                valid_regions = get_regions_by_country(Country(country))
+                if region in valid_regions:
+                    return region
+                logger.error(f"❌ Région '{region}' invalide pour {country}")
+                logger.debug(f"Régions valides pour {country}: {valid_regions}")
+                return None
+            except ValueError:
+                logger.error(f"❌ Pays invalide : {country}")
+                return None
+        else:
+            # Si pas de pays spécifié, on vérifie dans toutes les régions
+            all_regions = get_all_regions()
+            if region in all_regions:
+                return region
+            logger.error(f"❌ Région '{region}' non trouvée dans la liste des régions valides")
+            return None
+
+    def _validate_company_type(self, company_type: Optional[str]) -> Optional[str]:
+        """Valide le type d'entreprise."""
+        if not company_type:
+            return None
+            
+        try:
+            return CompanyType(company_type).value
+        except ValueError:
+            logger.error(f"❌ Type d'entreprise invalide : {company_type}")
+            logger.debug(f"Types valides : {[t.value for t in CompanyType]}")
+            return None
+
+    def _validate_contract_types(self, contract_types: List[str]) -> List[str]:
+        """Valide les types de contrat."""
+        if not contract_types:
+            return []
+            
+        valid_types = []
+        for contract_type in contract_types:
+            try:
+                valid_types.append(ContractType(contract_type).value)
+            except ValueError:
+                logger.error(f"❌ Type de contrat invalide : {contract_type}")
+                logger.debug(f"Types valides : {[t.value for t in ContractType]}")
+        return valid_types
+
+    def _validate_job_domain(self, domain: Optional[str]) -> Optional[str]:
+        """Valide le domaine du poste."""
+        if not domain:
+            return None
+            
+        try:
+            return JobDomain(domain).value
+        except ValueError:
+            logger.error(f"❌ Domaine invalide : {domain}")
+            logger.debug(f"Domaines valides : {[d.value for d in JobDomain]}")
+            return None
+
+    def _validate_remote_type(self, remote: Optional[str]) -> Optional[str]:
+        """Valide le type de travail à distance."""
+        if not remote:
+            return None
+            
+        try:
+            return RemoteType(remote).value
+        except ValueError:
+            logger.error(f"❌ Type de remote invalide : {remote}")
+            logger.debug(f"Types valides : {[r.value for r in RemoteType]}")
+            return None
 
     def _validate_and_fix_data(self, analysis: Dict) -> Dict:
         """
@@ -70,16 +162,18 @@ class JobStorage:
         
         1. Vérifie que XP correspond aux valeurs de l'énumération
         2. Gère les TJM pour les CDI
+        3. Valide et corrige la région
         """
         validated = analysis.copy()
         
         # 1. Validation de l'expérience avec l'énumération
         if 'XP' in validated:
             xp_value = validated['XP']
-            valid_xp_values = {e.value: e.value for e in ExperienceLevel}
-            if xp_value not in valid_xp_values:
-                logger.error(f"❌ Valeur XP invalide trouvée : {xp_value}")
-                logger.error(f"Les valeurs autorisées sont : {list(valid_xp_values.keys())}")
+            try:
+                validated['XP'] = ExperienceLevel(xp_value).value
+            except ValueError:
+                logger.error(f"❌ Valeur XP invalide : {xp_value}")
+                logger.debug(f"Valeurs autorisées : {[e.value for e in ExperienceLevel]}")
                 validated['XP'] = None
         
         # 2. Gestion des TJM pour les CDI
@@ -96,6 +190,32 @@ class JobStorage:
                 logger.info(f"💡 TJM suspects pour un CDI (MIN: {tjm_min}€, MAX: {tjm_max}€) - Mise à NULL des deux valeurs")
                 validated['TJM_MIN'] = None
                 validated['TJM_MAX'] = None
+
+        # 3. Validation et correction de la région
+        if 'REGION' in validated:
+            validated['REGION'] = self._clean_and_validate_region(
+                validated['REGION'],
+                validated.get('COUNTRY')
+            )
+        
+        # Validation du type d'entreprise
+        if 'COMPANY_TYPE' in validated:
+            validated['COMPANY_TYPE'] = self._validate_company_type(validated['COMPANY_TYPE'])
+        
+        # Validation des types de contrat
+        if 'CONTRACT_TYPE' in validated:
+            contract_types = validated['CONTRACT_TYPE']
+            if isinstance(contract_types, str):
+                contract_types = [contract_types]
+            validated['CONTRACT_TYPE'] = self._validate_contract_types(contract_types)
+        
+        # Validation du domaine
+        if 'DOMAIN' in validated:
+            validated['DOMAIN'] = self._validate_job_domain(validated['DOMAIN'])
+        
+        # Validation du type de remote
+        if 'REMOTE' in validated:
+            validated['REMOTE'] = self._validate_remote_type(validated['REMOTE'])
         
         return validated
 
@@ -113,11 +233,8 @@ class JobStorage:
             # Validation et correction des données
             validated_analysis = self._validate_and_fix_data(analysis)
             
-            # Conversion des tableaux au format PostgreSQL
-            postgres_analysis = self._convert_arrays_to_postgres(validated_analysis)
-            
             # Insertion dans la table job_offers
-            data = self.supabase.table('job_offers').insert(postgres_analysis).execute()
+            data = self.supabase.table('job_offers').insert(validated_analysis).execute()
             logger.info(f"✅ Analyse stockée dans Supabase : {analysis.get('URL', 'URL inconnue')}")
             return True
         except Exception as e:

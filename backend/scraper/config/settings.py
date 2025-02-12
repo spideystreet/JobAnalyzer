@@ -19,56 +19,56 @@ load_dotenv()
 # Configuration du scraping de liste
 SCRAPING_SOURCES = [
      {
-          'name': 'free-work-fullstack',
-          'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=D%C3%A9veloppeur%C2%B7euse%20fullstack&freshness=less_than_24_hours",
-          'enabled': True,
-          'max_pages': 10,  # Limite à 10 pages pour les tests
-          'selectors': {
-              'job_link': 'a[href*="/job-mission/"]',
-              'next_button': 'button:-soup-contains("Suivant")'
-          }
-      },
+         'name': 'free-work-fullstack',
+         'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=D%C3%A9veloppeur%C2%B7euse%20fullstack&freshness=less_than_24_hours",
+         'enabled': True,
+         'max_pages': 10,  # Limite à 10 pages pour les tests
+         'selectors': {
+             'job_link': 'a[href*="/job-mission/"]',
+             'next_button': 'button:-soup-contains("Suivant")'
+         }
+     },
      {
-          'name': 'free-work-data-analyst',
-          'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=Data%20analyst&freshness=less_than_24_hours",
-          'enabled': True,
-          'max_pages': 10,  # Limite à 10 pages pour les tests
-          'selectors': {
-              'job_link': 'a[href*="/job-mission/"]',
-              'next_button': 'button:-soup-contains("Suivant")'
-          }
-      },
+         'name': 'free-work-data-analyst',
+         'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=Data%20analyst&freshness=less_than_24_hours",
+         'enabled': True,
+         'max_pages': 10,  # Limite à 10 pages pour les tests
+         'selectors': {
+             'job_link': 'a[href*="/job-mission/"]',
+             'next_button': 'button:-soup-contains("Suivant")'
+         }
+     },
      {
-          'name': 'free-work-data-engineer',
-          'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=Data%20engineer&freshness=less_than_24_hours",
-          'enabled': True,
-          'max_pages': 10,  # Limite à 10 pages pour les tests
-          'selectors': {
-              'job_link': 'a[href*="/job-mission/"]',
-              'next_button': 'button:-soup-contains("Suivant")'
-          }
-      },
+         'name': 'free-work-data-engineer',
+         'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=Data%20engineer&freshness=less_than_24_hours",
+         'enabled': True,
+         'max_pages': 10,  # Limite à 10 pages pour les tests
+         'selectors': {
+             'job_link': 'a[href*="/job-mission/"]',
+             'next_button': 'button:-soup-contains("Suivant")'
+         }
+     },
      {
-          'name': 'free-work-web',
-          'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=D%C3%A9veloppeur%C2%B7euse%20front-end%20%28JavaScript,%20Node,%20React,%20Angular,%20Vue...%29&freshness=less_than_24_hours",
-          'enabled': True,
-          'max_pages': 10,  # Limite à 10 pages pour les tests
-          'selectors': {
-              'job_link': 'a[href*="/job-mission/"]',
-              'next_button': 'button:-soup-contains("Suivant")'
-          }
-      },
+         'name': 'free-work-web',
+         'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=D%C3%A9veloppeur%C2%B7euse%20front-end%20%28JavaScript,%20Node,%20React,%20Angular,%20Vue...%29&freshness=less_than_24_hours",
+         'enabled': True,
+         'max_pages': 10,  # Limite à 10 pages pour les tests
+         'selectors': {
+             'job_link': 'a[href*="/job-mission/"]',
+             'next_button': 'button:-soup-contains("Suivant")'
+         }
+     },
      {
-          'name': 'free-work-mobile',
-          'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=D%C3%A9veloppeur%C2%B7euse%20mobile%20iOS%20%28Swift,%20Objective-C...%29&freshness=less_than_24_hours",
-          'enabled': True,
-          'max_pages': 10,  # Limite à 10 pages pour les tests
-          'selectors': {
-              'job_link': 'a[href*="/job-mission/"]',
-              'next_button': 'button:-soup-contains("Suivant")'
-          }
-      },
-     {
+         'name': 'free-work-mobile',
+         'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=D%C3%A9veloppeur%C2%B7euse%20mobile%20iOS%20%28Swift,%20Objective-C...%29&freshness=less_than_24_hours",
+         'enabled': True,
+         'max_pages': 10,  # Limite à 10 pages pour les tests
+         'selectors': {
+             'job_link': 'a[href*="/job-mission/"]',
+             'next_button': 'button:-soup-contains("Suivant")'
+         }
+     },
+    {
         'name': 'free-work-data-scientist',
         'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=Data%20scientist&freshness=less_than_24_hours",
         'enabled': True,
@@ -77,7 +77,7 @@ SCRAPING_SOURCES = [
             'job_link': 'a[href*="/job-mission/"]',
             'next_button': 'button:-soup-contains("Suivant")'
         }
-    }
+     }
 ]
 
 REQUEST_DELAY = 2  # secondes entre chaque requête
@@ -91,136 +91,124 @@ MISTRAL_BASE_URL = "https://api.mistral.ai/v1"
 
 # Configuration du prompt
 REQUIRED_FIELDS = {
-    'TITLE': '''Le titre exact du poste.
-        URL de l'offre: {url}
-        
-        RÈGLES TRÈS STRICTES:
-        1. TOUJOURS extraire le titre de l'URL ci-dessus (après /job-mission/)
-        2. IGNORER COMPLÈTEMENT le contenu de la page
-        3. Convertir les tirets en espaces
-        4. Appliquer la casse appropriée (majuscules)
-        5. Formater les technologies (js -> .js)
-        
-        ÉTAPES D'EXTRACTION:
-        1. Dans l'URL ci-dessus, prendre la partie après /job-mission/
+    'TITLE': '''EXTRAIRE LE TITRE DEPUIS L'URL: {url}
+
+        ÉTAPES:
+        1. Prendre UNIQUEMENT la partie après /job-mission/
         2. Remplacer les tirets par des espaces
-        3. Mettre en majuscule chaque début de mot
-        4. Formater les technologies connues (js -> .js)
-        
-        Exemples:
-        Si URL = /job-mission/developpeur-fullstack-javascript-nodejs-reactjs
-        ✅ "Développeur Fullstack JavaScript Node.js React.js"
-        
-        Si URL = /job-mission/data-engineer-python-aws
-        ✅ "Data Engineer Python AWS"
-        
-        Si URL = /job-mission/lead-tech-java-spring
-        ✅ "Lead Tech Java Spring"
-        
-        IMPORTANT: Utiliser UNIQUEMENT l'URL fournie au début de ce prompt''',
+        3. Majuscule à chaque début de mot
+        4. js -> .js, nodejs -> Node.js, reactjs -> React.js
 
-    'COMPANY': '''Le nom de l'entreprise qui propose le poste''',
+        EXEMPLES:
+        /job-mission/developpeur-fullstack-nodejs ➡️ "Développeur Fullstack Node.js"
+        /job-mission/data-engineer-aws ➡️ "Data Engineer AWS"''',
 
-    'COMPANY_TYPE': f'''Un parmi: [{", ".join(type.value for type in CompanyType)}]
-        IMPORTANT: Si le type d'entreprise a déjà été extrait du HTML, il sera fourni dans les métadonnées.
-        Dans ce cas, ne pas chercher à le déduire et utiliser la valeur fournie.
+    'COMPANY': '''EXTRAIRE LE NOM DE L'ENTREPRISE
         
-        RÈGLES (uniquement si pas de valeur dans les métadonnées):
-        - ESN = SSII, Entreprise de Services Numériques, Société de Conseil
-        - Startup = Jeune entreprise innovante, Scale-up
-        - Grand Compte = Grande entreprise, Groupe international''',
+        FORMAT: Nom exact sans autre information''',
 
-    'CONTRACT_TYPE': f'''[Liste EXHAUSTIVE des types de contrat mentionnés dans l'offre]
-        IMPORTANT:
-        1. Chercher TOUS les types de contrat mentionnés dans l'offre
-        2. Retourner une liste même s'il n'y a qu'un seul type
-        3. Types possibles: [{", ".join(type.value for type in ContractType)}]
-        4. Ne pas inclure le mode de travail (télétravail, hybride, etc.)''',
-
-    'DOMAIN': f'''Analyse le domaine d'expertise principal et choisis un parmi: [{", ".join(type.value for type in JobDomain)}]
-        RÈGLES STRICTES:
-        - Frontend = Développement web côté client (React, Angular, Vue.js...)
-        - Backend = Développement serveur (Java, Python, Node.js...)
-        - Fullstack = Développement frontend ET backend
-        - Data Engineer = Ingénierie des données, ETL, Big Data
-        - Data Analyst = Analyse de données, BI, Reporting
-        - Data Scientist = Science des données, Machine Learning, IA
-        - DevOps = Infrastructure, CI/CD, Cloud
-        - Product Manager = Gestion de produit, Product Owner
-        - Security = Sécurité informatique, Cybersécurité
+    'COMPANY_TYPE': f'''CHOISIR UN SEUL TYPE: [{", ".join(type.value for type in CompanyType)}]
         
-        Exemples:
-        ❌ Incorrect                     ✅ Correct
-        "Backend" pour un fullstack     "Fullstack" pour un dev React + Node.js
-        "Data Engineer" pour un BI      "Data Analyst" pour un poste de BI
-        "DevOps" pour un admin sys      "Backend" pour un admin sys''',
+        SI PAS SÛR ➡️ NULL''',
 
-    'XP': f'''Le niveau d'experience requis, choisis un parmi: [{", ".join(type.value for type in ExperienceLevel)}]
-        RÈGLES STRICTES :
-        Junior = 0-2 ans
-        Intermédiaire = 2-5 ans
-        Confirmé = 5-10 ans
-        Sénior = >10 ans''',
+    'CONTRACT_TYPE': f'''RETOURNER UNE LISTE PARMI: [{", ".join(type.value for type in ContractType)}]
+        
+        FORMAT: ["Type1"] ou ["Type1", "Type2"]
+        SI PAS SÛR ➡️ []''',
 
-    'REMOTE': f'''Le mode de travail, un parmi: [{", ".join(type.value for type in RemoteType)}]
+    'DOMAIN': f'''CHOISIR UN SEUL DOMAINE: [{", ".join(type.value for type in JobDomain)}]
+        
+        SI PAS SÛR ➡️ NULL''',
+
+    'XP': f'''CHOISIR UN SEUL NIVEAU: [{", ".join(type.value for type in ExperienceLevel)}]
+        
+        SI PAS SÛR ➡️ NULL''',
+
+    'REMOTE': f'''CHOISIR UN SEUL MODE: [{", ".join(type.value for type in RemoteType)}]
+        
+        SI PAS SÛR ➡️ NULL''',
+
+    'COUNTRY': f'''CHOISIR UN SEUL PAYS: [{", ".join(type.value for type in Country)}]
+        
+        SI VILLE FRANÇAISE CITÉE ➡️ "France"
+        SI PAS SÛR ➡️ NULL''',
+
+    'REGION': f'''CHOISIR UNE SEULE RÉGION: [{", ".join(get_all_regions())}]
+
+        CONVERSION OBLIGATOIRE:
+        Paris ➡️ Île-de-France
+        Lyon ➡️ Auvergne-Rhône-Alpes
+        Marseille ➡️ Provence-Alpes-Côte d'Azur
+        Bordeaux ➡️ Nouvelle-Aquitaine
+        Toulouse ➡️ Occitanie
+        Nantes ➡️ Pays de la Loire
+        Lille ➡️ Hauts-de-France
+        Strasbourg ➡️ Grand Est
+
+        SI PAS DANS LA LISTE ➡️ NULL''',
+
+    'TECHNOS': '''EXTRAIRE MAX 5 TECHNOLOGIES PRINCIPALES
+
+        FORMAT: ["Tech1", "Tech2", "Tech3"]
+
         RÈGLES:
-        - Sur site = 100% présentiel
-        - Hybride = Mix présentiel/télétravail
-        - 100% = Full remote, télétravail total''',
+        - Uniquement technologies EXPLICITES
+        - Pas de JIRA/Git/Agile/etc.
+        - Regrouper AWS/GCP/Azure
+        - Casse exacte: React, Node.js, Vue.js
 
-    'COUNTRY': f'''Le pays où se situe le poste, un parmi: [{", ".join(type.value for type in Country)}]''',
+        SI PAS SÛR ➡️ []''',
 
-    'REGION': f'''La région où se situe le poste, une parmi: [{", ".join(get_all_regions())}]''',
-    
-    'TECHNOS': '''[Liste des 5 technologies PRINCIPALES maximum]
-        RÈGLES STRICTES:
-        1. Maximum 5 technologies les plus importantes
-        2. Uniquement les technologies EXPLICITEMENT mentionnées comme requises
-        3. Pas de soft skills ou d'outils génériques
-        4. Format : ["Techno1", "Techno2", ...]
-        5. Utiliser la casse officielle (React, Node.js, etc.)
-        
-        Exemples de ce qui est attendu:
-        ✅ Pour un dev fullstack : ["React", "Node.js", "PostgreSQL"]
-        ✅ Pour un data engineer : ["Python", "AWS", "Spark"]
-        ✅ Pour un devops : ["Kubernetes", "AWS", "Terraform"]
-        
-        Exemples de ce qui n'est PAS attendu:
-        ❌ ["JIRA", "Git", "Agile", "Anglais"]
-        ❌ ["AWS Lambda", "AWS S3", "AWS EC2"] -> utiliser ["AWS"]
-        ❌ Plus de 5 technologies
-        
-        IMPORTANT:
-        - Se concentrer sur les technologies PRINCIPALES uniquement
-        - Ignorer les outils génériques (JIRA, Git, etc.)
-        - Ignorer les soft skills et compétences non techniques
-        - Regrouper les technologies similaires (ex: AWS)''',
+    'DURATION_DAYS': '''EXTRAIRE LA DURÉE EN JOURS
 
-    'DURATION_DAYS': '''La durée de la mission en jours (NULL si CDI ou non spécifié)
-        RÈGLES:
-        1. Chercher une mention explicite de durée
-        2. Convertir en jours selon ces règles:
-           - 1 mois = 30 jours
-           - 1 an = 365 jours
-        3. Retourner NULL si:
-           - CDI
-           - Pas de durée mentionnée
-           - Durée indéterminée''',
+        RÈGLES IMPORTANTES:
+        1. TOUJOURS chercher l'expression COMPLÈTE de la durée (nombre + unité)
+        2. NE JAMAIS s'arrêter au nombre seul
+        3. TOUJOURS identifier l'unité (mois, années, semaines)
+        4. Ensuite, après la conversion seulement, on gardera le nombre entier
 
-    'TJM_MIN': '''Le TJM minimum en euros (nombre entier uniquement)
-        RÈGLES:
-        1. Chercher les mentions de tarifs journaliers
-        2. Pour les salaires annuels: diviser par 220 jours
-        3. Ne garder que le nombre, sans symbole
-        4. NULL si pas de TJM trouvé''',
+        EXEMPLES D'EXPRESSIONS COMPLÈTES:
+        "12 mois" ➡️ 365 jours (pas juste "12")
+        "1 an" ➡️ 365 jours (pas juste "1")
+        "6 mois" ➡️ 180 jours (pas juste "6")
+        "3 semaines" ➡️ 21 jours (pas juste "3")
 
-    'TJM_MAX': '''Le TJM maximum en euros (nombre entier uniquement)
-        RÈGLES:
-        1. Chercher les mentions de tarifs journaliers
-        2. Pour les salaires annuels: diviser par 220 jours
-        3. Ne garder que le nombre, sans symbole
-        4. NULL si pas de TJM trouvé
-        5. Si tarif unique, même valeur que TJM_MIN'''
+        FORMULES DE CONVERSION:
+        1 semaine = 7 jours
+        1 mois = 30 jours
+        12 mois = 365 jours (ATTENTION: cas spécial!)
+        1 an = 365 jours
+        18 mois = 540 jours (cas spécial)
+        24 mois = 730 jours (cas spécial)
+
+        EXEMPLES DÉTAILLÉS:
+        ✅ "Mission de 12 mois" ➡️ 365
+        ✅ "Durée : 6 mois" ➡️ 180
+        ✅ "18 mois de mission" ➡️ 540
+        ✅ "3 semaines" ➡️ 21
+        ✅ "1 an" ➡️ 365
+        ✅ "2 ans" ➡️ 730
+
+        ❌ "12" seul ➡️ NULL (pas d'unité!)
+        ❌ "Mission longue durée" ➡️ NULL
+        ❌ "CDI" ➡️ NULL
+        ❌ "Pas de durée spécifiée" ➡️ NULL
+
+        FORMAT: Nombre entier uniquement
+        SI PAS D'UNITÉ OU PAS DE DURÉE PRÉCISE ➡️ NULL''',
+
+    'TJM_MIN': '''EXTRAIRE LE TJM MINIMUM EN EUROS
+
+        FORMAT: Nombre entier sans symbole
+        SI PAS DE TJM ➡️ NULL
+        SI CDI ➡️ NULL''',
+
+    'TJM_MAX': '''EXTRAIRE LE TJM MAXIMUM EN EUROS
+
+        FORMAT: Nombre entier sans symbole
+        SI UN SEUL TJM ➡️ Même valeur que TJM_MIN
+        SI PAS DE TJM ➡️ NULL
+        SI CDI ➡️ NULL''',
 }
 
 # Configuration du nettoyage HTML
