@@ -84,12 +84,12 @@ const LandingPage: React.FC = () => {
 
           <div className="relative z-20 mx-auto max-w-7xl rounded-[40px] py-6 md:p-10 xl:py-20">
             <motion.p 
-              className="md:text-md text-xs text-purple-500 lg:text-lg xl:text-2xl"
+              className="md:text-md text-xs text-purple-500 lg:text-lg xl:text-2xl font-helvetica"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              Technos, TJM, Remote, et plus encore...
+              TJM, Technos, Remote et plus encore...
             </motion.p>
             <div className="text-2xl tracking-tighter text-white md:text-5xl lg:text-7xl xl:text-8xl">
               <div className="flex gap-1 md:gap-2 lg:gap-3 xl:gap-4">
@@ -150,7 +150,7 @@ const LandingPage: React.FC = () => {
           <div className="flex items-center">
             <Badge 
               variant="secondary" 
-              className="bg-white text-black hover:bg-white/90 font-normal pr-8 flex items-center"
+              className="bg-white text-black/80 hover:bg-white/90 font-helvetica font-normal pr-8 flex items-center"
             >
               Fourni gentiment par l&apos;arraignée sympa des réseaux 👋
             </Badge>
