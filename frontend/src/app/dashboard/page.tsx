@@ -105,10 +105,10 @@ function DashboardContent() {
       pointerColor="140, 100, 255"
       size="100%"
       blendingValue="hard-light"
-      containerClassName="fixed inset-0 overflow-y-auto"
+      containerClassName="fixed inset-0"
       interactive={true}
     >
-      <div className="relative z-10 min-h-screen">
+      <div className="relative z-10 h-screen overflow-auto">
         <div className="container mx-auto px-4 py-8 pb-16">
           <div className="flex justify-between items-center mb-8">
             <div className="flex items-center gap-4">
