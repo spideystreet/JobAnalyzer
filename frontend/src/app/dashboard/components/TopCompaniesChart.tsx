@@ -70,9 +70,10 @@ export default function TopCompaniesChart({ data }: TopCompaniesChartProps) {
               >
                 <LabelList
                   dataKey="value"
-                  position="right"
+                  position="insideRight"
                   fill="white"
                   formatter={(value: number) => `${value} offres`}
+                  style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}
                 />
               </Bar>
             </BarChart>
