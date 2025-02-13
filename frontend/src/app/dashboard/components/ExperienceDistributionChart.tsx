@@ -35,11 +35,11 @@ export default function ExperienceDistributionChart({ data }: ExperienceDistribu
   return (
     <Card className="bg-black/80 backdrop-blur-xl border-white/10">
       <CardHeader>
-        <CardTitle className="text-white">Distribution des Niveaux d&apos;Expérience</CardTitle>
+        <CardTitle className="text-white">Distribution des niveaux d&apos;expérience</CardTitle>
         <CardDescription className="text-white/60">Répartition des offres par niveau d&apos;expérience requis</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[372px]">
+        <div className="h-[392px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}

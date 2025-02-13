@@ -27,11 +27,14 @@ export default function TopCompaniesChart({ data }: TopCompaniesChartProps) {
     .slice(0, 3)
     .map(({ company_type: name, count: value }) => ({ name, value }))
 
+  // Calculer le nombre total d'offres
+  const totalOffers = data.reduce((sum, item) => sum + item.count, 0)
+
   return (
     <Card className="bg-black/80 backdrop-blur-xl border-white/10">
       <CardHeader className="pb-2">
-        <CardTitle className="text-white">Top 3 Types d&apos;Entreprises</CardTitle>
-        <CardDescription className="text-white/60">Distribution des types d&apos;entreprises</CardDescription>
+        <CardTitle className="text-white">Top 3 types d&apos;entreprises</CardTitle>
+        <CardDescription className="text-white/60">Nuance (exemple) : si une ESN recrute pour un Grand Compte, elle sera comptabilisée comme Grand Compte</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-[180px]">
@@ -67,9 +70,10 @@ export default function TopCompaniesChart({ data }: TopCompaniesChartProps) {
               >
                 <LabelList
                   dataKey="value"
-                  position="right"
+                  position="insideRight"
                   fill="white"
                   formatter={(value: number) => `${value} offres`}
+                  style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}
                 />
               </Bar>
             </BarChart>
@@ -82,7 +86,7 @@ export default function TopCompaniesChart({ data }: TopCompaniesChartProps) {
           <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-white/60">
-          Basé sur {data.length} offres d&apos;emploi analysées
+          Basé sur {totalOffers} offres d&apos;emploi analysées
         </div>
       </CardFooter>
     </Card>

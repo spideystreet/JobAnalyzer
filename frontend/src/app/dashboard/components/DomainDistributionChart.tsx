@@ -118,7 +118,7 @@ export default function DomainDistributionChart({ data }: DomainDistributionChar
   return (
     <Card className="bg-black/80 backdrop-blur-xl border-white/10 h-full">
       <CardHeader className="pb-2">
-        <CardTitle className="text-white">Distribution des Domaines</CardTitle>
+        <CardTitle className="text-white">Distribution des domaines d'expertise</CardTitle>
         <CardDescription className="text-white/60">
           Top 10 des domaines les plus demandés
         </CardDescription>

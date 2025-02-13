@@ -11,8 +11,10 @@ class CompanyType(str, Enum):
     ESN = "ESN"
     GRAND_COMPTE = "Grand Compte"
     CABINET_CONSEIL = "Cabinet de Conseil"
-    SCALE_UP = "Scale-up"
     CABINET_RECRUTEMENT = "Cabinet de recrutement"
+    SOURCING_HUNTER = "Sourcing / chasseur de têtes"
+    DSI_FINAL_CLIENT = "DSI / Client final"
+    SOFTWARE_EDITOR = "Editeur de logiciels"
 
 class ContractType(str, Enum):
     """Type de contrat."""

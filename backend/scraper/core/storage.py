@@ -230,12 +230,25 @@ class JobStorage:
             bool: True si succès, False sinon
         """
         try:
+            # Vérification si l'URL existe déjà
+            url = analysis.get('URL')
+            if url:
+                existing = self.supabase.table('job_offers').select("URL").eq("URL", url).execute()
+                if existing.data:
+                    logger.info(f"⏭️ URL déjà existante dans Supabase, ignorée : {url}")
+                    return True
+
             # Validation et correction des données
             validated_analysis = self._validate_and_fix_data(analysis)
             
+            # Vérification du nom de l'entreprise
+            if validated_analysis.get('COMPANY') == 'Free-Work':
+                logger.info("🔄 Correction : Free-Work détecté comme entreprise, mise à NULL")
+                validated_analysis['COMPANY'] = None
+            
             # Insertion dans la table job_offers
             data = self.supabase.table('job_offers').insert(validated_analysis).execute()
-            logger.info(f"✅ Analyse stockée dans Supabase : {analysis.get('URL', 'URL inconnue')}")
+            logger.info(f"✅ Analyse stockée dans Supabase : {url}")
             return True
         except Exception as e:
             logger.error(f"❌ Erreur lors du stockage dans Supabase : {str(e)}")
