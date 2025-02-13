@@ -27,6 +27,9 @@ export default function TopCompaniesChart({ data }: TopCompaniesChartProps) {
     .slice(0, 3)
     .map(({ company_type: name, count: value }) => ({ name, value }))
 
+  // Calculer le nombre total d'offres
+  const totalOffers = data.reduce((sum, item) => sum + item.count, 0)
+
   return (
     <Card className="bg-black/80 backdrop-blur-xl border-white/10">
       <CardHeader className="pb-2">
@@ -82,7 +85,7 @@ export default function TopCompaniesChart({ data }: TopCompaniesChartProps) {
           <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-white/60">
-          Basé sur {data.length} offres d&apos;emploi analysées
+          Basé sur {totalOffers} offres d&apos;emploi analysées
         </div>
       </CardFooter>
     </Card>
