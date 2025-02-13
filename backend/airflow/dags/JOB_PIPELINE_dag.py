@@ -145,11 +145,8 @@ async def transform_and_analyze():
                     cleaning_failed += 1
                     continue
                 
-                # Nettoyage du HTML et extraction du type d'entreprise
+                # Nettoyage du HTML
                 cleaned_html = cleaner.clean(html_content)
-                company_type = cleaner.stats.get('company_type')
-                if company_type:
-                    airflow_logger.info(f"🏢 Type d'entreprise extrait : {company_type}")
                 
                 await cache.store_cleaned_html(key, cleaned_html)
                 cleaned += 1
@@ -175,20 +172,8 @@ async def transform_and_analyze():
                     analysis_failed += 1
                     continue
                 
-                # Récupération du HTML brut pour extraire le type d'entreprise
-                raw_html = await cache.get_raw_html(key)
-                company_type = None
-                company_name = None
-                if raw_html:
-                    cleaner = HTMLCleaner()
-                    company_type, company_name = cleaner.extract_company_info(BeautifulSoup(raw_html, 'lxml'))
-                    if company_type:
-                        airflow_logger.info(f"🏢 Type d'entreprise extrait : {company_type}")
-                    if company_name:
-                        airflow_logger.info(f"🏢 Nom d'entreprise extrait : {company_name}")
-                
-                # Analyse avec les informations extraites
-                analysis = await analyzer.analyze(cleaned_html, key, company_type, company_name)
+                # Analyse simplifiée
+                analysis = await analyzer.analyze(cleaned_html, key)
                 
                 if analysis:
                     await cache.store_analysis(key, analysis)
@@ -240,22 +225,20 @@ async def load_to_supabase():
                     failure_count += 1
                     continue
                 
-                try:
-                    url = key.split("analysis:", 1)[1]
-                    if not url:
-                        airflow_logger.error(f"❌ URL non trouvée dans la clé: {key}")
-                        failure_count += 1
-                        continue
-                    airflow_logger.debug(f"🔗 URL extraite: {url}")
-                    analysis['URL'] = url
-                except Exception as e:
-                    airflow_logger.error(f"❌ Erreur lors de l'extraction de l'URL depuis {key}: {str(e)}")
+                # Extraction de l'URL depuis la clé
+                url = key.split("analysis:", 1)[1] if "analysis:" in key else None
+                if not url:
+                    airflow_logger.error(f"❌ URL non trouvée dans la clé: {key}")
                     failure_count += 1
                     continue
                 
+                analysis['URL'] = url
+                
+                # Nettoyage des valeurs None
                 if analysis.get('DURATION_DAYS') == "None":
                     analysis['DURATION_DAYS'] = None
                 
+                # Assurer que CONTRACT_TYPE est une liste
                 contract_type = analysis.get('CONTRACT_TYPE')
                 if contract_type:
                     if isinstance(contract_type, str):
@@ -265,6 +248,7 @@ async def load_to_supabase():
                 else:
                     analysis['CONTRACT_TYPE'] = []
                 
+                # Stockage dans Supabase
                 success = await storage.store_job_analysis(analysis)
                 if success:
                     success_count += 1
@@ -277,6 +261,7 @@ async def load_to_supabase():
             except Exception as e:
                 failure_count += 1
                 airflow_logger.error(f"❌ Erreur lors du chargement de {key}: {str(e)}")
+                airflow_logger.exception("Détails de l'erreur:")
         
         airflow_logger.info(
             "📊 Bilan du chargement:\n"

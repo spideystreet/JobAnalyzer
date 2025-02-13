@@ -8,9 +8,9 @@ import json
 import aiohttp
 from typing import List, Dict, Any
 
-from backend.scraper.core.job_analyzer import JobAnalyzer
-from backend.scraper.core.html_cleaner import HTMLCleaner
-from backend.scraper.config.settings import ANALYSIS_LOG_FORMAT
+from scraper.core.job_analyzer import JobAnalyzer
+from scraper.core.html_cleaner import HTMLCleaner
+from scraper.config.settings import ANALYSIS_LOG_FORMAT
 
 # Liste des offres à tester
 TEST_OFFERS = [

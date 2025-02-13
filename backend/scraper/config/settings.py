@@ -104,11 +104,31 @@ Examples:
 """,
 
     "COMPANY": """EXTRACT THE EXACT COMPANY NAME.
-Return only the name, without any additional information.
+Rules:
+1. Return only the company name, without any additional information.
+2. Never return "Free-Work" as a company name.
+3. If no company name found or if only "Free-Work" is found, return NULL.
+
+Example:
+"Offre publiée par Free-Work pour VISIAN" ➡ "VISIAN"
+"Free-Work" ➡ NULL
 """,
 
-    "COMPANY_TYPE": f"""SELECT A SINGLE COMPANY TYPE: [{", ".join(type.value for type in CompanyType)}]
-If unsure, return NULL.
+    "COMPANY_TYPE": f"""FIND AN EXACT MATCH FOR COMPANY TYPE from this list: [{", ".join(type.value for type in CompanyType)}]
+
+Rules:
+1. Search for an EXACT match in the text (case-insensitive).
+2. Do not interpret or try to guess the type.
+3. Return NULL if no EXACT match is found.
+
+Examples:
+- If text contains "ESN" ➡ "ESN"
+- If text contains "Cabinet de Conseil" ➡ "Cabinet de Conseil"
+- If text contains "Startup" ➡ "Startup"
+- If no exact match found ➡ NULL
+
+IMPORTANT: Only return a value from the list above if it appears EXACTLY in the text.
+If unsure or no exact match, return NULL.
 """,
 
     "CONTRACT_TYPE": f"""RETURN A LIST OF CONTRACT TYPES from: [{", ".join(type.value for type in ContractType)}]
