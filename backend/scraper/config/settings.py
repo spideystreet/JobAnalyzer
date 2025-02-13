@@ -91,125 +91,173 @@ MISTRAL_BASE_URL = "https://api.mistral.ai/v1"
 
 # Configuration du prompt
 REQUIRED_FIELDS = {
-    'TITLE': '''EXTRAIRE LE TITRE DEPUIS L'URL: {url}
+    "TITLE": """EXTRACT THE TITLE FROM THE URL: {url}
 
-        ÉTAPES:
-        1. Prendre UNIQUEMENT la partie après /job-mission/
-        2. Remplacer les tirets par des espaces
-        3. Majuscule à chaque début de mot
-        4. js -> .js, nodejs -> Node.js, reactjs -> React.js
+1. Extract only the part after "/job-mission/".
+2. Replace all hyphens with spaces.
+3. Capitalize the first letter of each word.
+4. Convert: "js" → ".js", "nodejs" → "Node.js", "reactjs" → "React.js".
 
-        EXEMPLES:
-        /job-mission/developpeur-fullstack-nodejs ➡️ "Développeur Fullstack Node.js"
-        /job-mission/data-engineer-aws ➡️ "Data Engineer AWS"''',
+Examples:
+- /job-mission/developpeur-fullstack-nodejs ➡ "Développeur Fullstack Node.js"
+- /job-mission/data-engineer-aws ➡ "Data Engineer AWS"
+""",
 
-    'COMPANY': '''EXTRAIRE LE NOM DE L'ENTREPRISE
-        
-        FORMAT: Nom exact sans autre information''',
+    "COMPANY": """EXTRACT THE EXACT COMPANY NAME.
+Return only the name, without any additional information.
+""",
 
-    'COMPANY_TYPE': f'''CHOISIR UN SEUL TYPE: [{", ".join(type.value for type in CompanyType)}]
-        
-        SI PAS SÛR ➡️ NULL''',
+    "COMPANY_TYPE": f"""SELECT A SINGLE COMPANY TYPE: [{", ".join(type.value for type in CompanyType)}]
+If unsure, return NULL.
+""",
 
-    'CONTRACT_TYPE': f'''RETOURNER UNE LISTE PARMI: [{", ".join(type.value for type in ContractType)}]
-        
-        FORMAT: ["Type1"] ou ["Type1", "Type2"]
-        SI PAS SÛR ➡️ []''',
+    "CONTRACT_TYPE": f"""RETURN A LIST OF CONTRACT TYPES from: [{", ".join(type.value for type in ContractType)}]
+Format: ["Type1"] or ["Type1", "Type2"].
+If unsure, return [].
+""",
 
-    'DOMAIN': f'''CHOISIR UN SEUL DOMAINE: [{", ".join(type.value for type in JobDomain)}]
-        
-        SI PAS SÛR ➡️ NULL''',
+    "DOMAIN": f"""SELECT A SINGLE DOMAIN: [{", ".join(type.value for type in JobDomain)}]
+If unsure, return NULL.
+""",
 
-    'XP': f'''CHOISIR UN SEUL NIVEAU: [{", ".join(type.value for type in ExperienceLevel)}]
-        
-        SI PAS SÛR ➡️ NULL''',
+    "XP": f"""SELECT A SINGLE EXPERIENCE LEVEL: [{", ".join(type.value for type in ExperienceLevel)}]
+If unsure, return NULL.
+""",
 
-    'REMOTE': f'''CHOISIR UN SEUL MODE: [{", ".join(type.value for type in RemoteType)}]
-        
-        SI PAS SÛR ➡️ NULL''',
+    "REMOTE": f"""SELECT A SINGLE REMOTE MODE: [{", ".join(type.value for type in RemoteType)}]
+If unsure, return NULL.
+""",
 
-    'COUNTRY': f'''CHOISIR UN SEUL PAYS: [{", ".join(type.value for type in Country)}]
-        
-        SI VILLE FRANÇAISE CITÉE ➡️ "France"
-        SI PAS SÛR ➡️ NULL''',
+    "COUNTRY": f"""SELECT A SINGLE COUNTRY: [{", ".join(type.value for type in Country)}]
+If a French city is mentioned, return "France".
+If unsure, return NULL.
+""",
 
-    'REGION': f'''CHOISIR UNE SEULE RÉGION: [{", ".join(get_all_regions())}]
+    "REGION": f"""SELECT A SINGLE REGION: [{", ".join(get_all_regions())}]
+Rules:
+1. If a major city is mentioned, apply the following conversion:
+   - Paris ➡ Île-de-France
+   - Lyon ➡ Auvergne-Rhône-Alpes
+   - Marseille ➡ Provence-Alpes-Côte d'Azur
+   - Bordeaux ➡ Nouvelle-Aquitaine
+   - Toulouse ➡ Occitanie
+   - Nantes ➡ Pays de la Loire
+   - Lille ➡ Hauts-de-France
+   - Strasbourg ➡ Grand Est
+2. For any other French city, determine its region from the list.
+3. If no city or region is mentioned, return NULL.
+4. If the region is not in the list, return NULL.
 
-        CONVERSION OBLIGATOIRE:
-        Paris ➡️ Île-de-France
-        Lyon ➡️ Auvergne-Rhône-Alpes
-        Marseille ➡️ Provence-Alpes-Côte d'Azur
-        Bordeaux ➡️ Nouvelle-Aquitaine
-        Toulouse ➡️ Occitanie
-        Nantes ➡️ Pays de la Loire
-        Lille ➡️ Hauts-de-France
-        Strasbourg ➡️ Grand Est
+Examples:
+- "The position is based in Paris" ➡ "Île-de-France"
+- "Job in Occitanie" ➡ "Occitanie"
+- "Based in Nice" ➡ "Provence-Alpes-Côte d'Azur"
+""",
 
-        SI PAS DANS LA LISTE ➡️ NULL''',
+    "TECHNOS": """EXTRACT UP TO 5 MAIN TECHNOLOGIES (explicitly mentioned)
+Format: ["Tech1", "Tech2", "Tech3"]
+Rules:
+1. Only include technologies explicitly specified.
+2. Ignore generic tools (e.g., JIRA, Git, Agile, etc.).
+3. Select a maximum of 5 most important technologies.
+4. Always use the standardized names below:
 
-    'TECHNOS': '''EXTRAIRE MAX 5 TECHNOLOGIES PRINCIPALES
+   CLOUD:
+     • AWS: AWS, Amazon Web Services
+     • GCP: GCP, Google Cloud
+     • Azure: Azure, Microsoft Azure
 
-        FORMAT: ["Tech1", "Tech2", "Tech3"]
+   JAVASCRIPT:
+     • React: React, ReactJS, React.js
+     • Vue: Vue, VueJS, Vue.js
+     • Angular: Angular, AngularJS
+     • Node: Node, NodeJS, Node.js
+     • Next: Next, NextJS, Next.js
+     • Express: Express, ExpressJS
+     • NestJS: NestJS, Nest
 
-        RÈGLES:
-        - Uniquement technologies EXPLICITES
-        - Pas de JIRA/Git/Agile/etc.
-        - Regrouper AWS/GCP/Azure
-        - Casse exacte: React, Node.js, Vue.js
+   DATABASES:
+     • PostgreSQL: PostgreSQL, Postgres
+     • MongoDB: MongoDB, Mongo
+     • Elasticsearch: Elasticsearch, ES
+     • MySQL: MySQL, MariaDB
 
-        SI PAS SÛR ➡️ []''',
+   DEVOPS:
+     • Kubernetes: Kubernetes, K8s
+     • Docker: Docker
+     • Jenkins: Jenkins
+     • Terraform: Terraform, TF
+     • Ansible: Ansible
 
-    'DURATION_DAYS': '''EXTRAIRE LA DURÉE EN JOURS
+   LANGUAGES:
+     • JavaScript: JavaScript, JS
+     • TypeScript: TypeScript, TS
+     • Python: Python
+     • Java: Java
+     • Go: Go, Golang
+     • PHP: PHP
+     • .NET: .NET, dotnet
+     • C#: C#, Csharp
+     • C++: C++, Cplusplus
 
-        RÈGLES IMPORTANTES:
-        1. TOUJOURS chercher l'expression COMPLÈTE de la durée (nombre + unité)
-        2. NE JAMAIS s'arrêter au nombre seul
-        3. TOUJOURS identifier l'unité (mois, années, semaines)
-        4. Ensuite, après la conversion seulement, on gardera le nombre entier
+   FRAMEWORKS:
+     • Django: Django, DRF
+     • Flask: Flask
+     • FastAPI: FastAPI
+     • Laravel: Laravel
+     • Spring: Spring, Spring Boot
+     • Symfony: Symfony
 
-        EXEMPLES D'EXPRESSIONS COMPLÈTES:
-        "12 mois" ➡️ 365 jours (pas juste "12")
-        "1 an" ➡️ 365 jours (pas juste "1")
-        "6 mois" ➡️ 180 jours (pas juste "6")
-        "3 semaines" ➡️ 21 jours (pas juste "3")
+   DATA:
+     • TensorFlow: TensorFlow, TF
+     • PyTorch: PyTorch
+     • Pandas: Pandas
+     • Spark: Spark, PySpark
+     • Kafka: Kafka
+     • Airflow: Airflow
 
-        FORMULES DE CONVERSION:
-        1 semaine = 7 jours
-        1 mois = 30 jours
-        12 mois = 365 jours (ATTENTION: cas spécial!)
-        1 an = 365 jours
-        18 mois = 540 jours (cas spécial)
-        24 mois = 730 jours (cas spécial)
+Example:
+"Nous recherchons un développeur maîtrisant React.js, Node.js et MongoDB"
+➡ ["React", "Node", "MongoDB"]
+If unsure, return [].
+""",
 
-        EXEMPLES DÉTAILLÉS:
-        ✅ "Mission de 12 mois" ➡️ 365
-        ✅ "Durée : 6 mois" ➡️ 180
-        ✅ "18 mois de mission" ➡️ 540
-        ✅ "3 semaines" ➡️ 21
-        ✅ "1 an" ➡️ 365
-        ✅ "2 ans" ➡️ 730
+    "DURATION_DAYS": """EXTRACT THE DURATION IN DAYS
+Rules:
+1. Identify the full duration expression (number + unit, e.g., "12 months", "1 year", "3 weeks").
+2. Do not extract the number alone.
+3. Identify the unit (months, years, weeks).
+4. Convert using:
+   - 1 week = 7 days
+   - 1 month = 30 days
+   - 12 months = 365 days (special case)
+   - 1 year = 365 days
+   - 18 months = 540 days (special case)
+   - 24 months = 730 days (special case)
+5. Return only the integer part.
 
-        ❌ "12" seul ➡️ NULL (pas d'unité!)
-        ❌ "Mission longue durée" ➡️ NULL
-        ❌ "CDI" ➡️ NULL
-        ❌ "Pas de durée spécifiée" ➡️ NULL
+Examples:
+- "Mission of 12 months" ➡ 365
+- "Duration: 6 months" ➡ 180
+- "18 months mission" ➡ 540
+- "3 weeks" ➡ 21
+- "1 year" ➡ 365
+- "2 years" ➡ 730
+If the full expression is absent, return NULL.
+""",
 
-        FORMAT: Nombre entier uniquement
-        SI PAS D'UNITÉ OU PAS DE DURÉE PRÉCISE ➡️ NULL''',
+    "TJM_MIN": """EXTRACT THE MINIMUM DAILY RATE (TJM) IN EUROS
+Format: Integer without any symbol.
+Return NULL if the TJM is missing or for permanent contracts (CDI).
+""",
 
-    'TJM_MIN': '''EXTRAIRE LE TJM MINIMUM EN EUROS
-
-        FORMAT: Nombre entier sans symbole
-        SI PAS DE TJM ➡️ NULL
-        SI CDI ➡️ NULL''',
-
-    'TJM_MAX': '''EXTRAIRE LE TJM MAXIMUM EN EUROS
-
-        FORMAT: Nombre entier sans symbole
-        SI UN SEUL TJM ➡️ Même valeur que TJM_MIN
-        SI PAS DE TJM ➡️ NULL
-        SI CDI ➡️ NULL''',
+    "TJM_MAX": """EXTRACT THE MAXIMUM DAILY RATE (TJM) IN EUROS
+Format: Integer without any symbol.
+If only one rate is provided, return the same value as TJM_MIN.
+Return NULL if the TJM is missing or for permanent contracts (CDI).
+"""
 }
+
 
 # Configuration du nettoyage HTML
 ALLOWED_TAGS = [
