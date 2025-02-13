@@ -54,7 +54,7 @@ export default function RegionTJMChart({ data }: RegionTJMChartProps) {
       <Card className="bg-black/80 backdrop-blur-xl border-white/10 h-full">
         <CardHeader className="p-3 pb-0">
           <CardTitle className="text-white text-base">Top 3 Régions par TJM</CardTitle>
-          <CardDescription className="text-white/60 text-xs">Les régions les plus attractives</CardDescription>
+          <CardDescription className="text-white/60 text-xs">Les régions les plus attractives, avec plus de 15 offres</CardDescription>
         </CardHeader>
         <CardContent className="p-3 flex items-center justify-center">
           <div className="text-white/60 text-sm">

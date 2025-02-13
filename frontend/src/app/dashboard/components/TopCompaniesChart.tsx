@@ -33,8 +33,8 @@ export default function TopCompaniesChart({ data }: TopCompaniesChartProps) {
   return (
     <Card className="bg-black/80 backdrop-blur-xl border-white/10">
       <CardHeader className="pb-2">
-        <CardTitle className="text-white">Top 3 Types d&apos;Entreprises</CardTitle>
-        <CardDescription className="text-white/60">Distribution des types d&apos;entreprises</CardDescription>
+        <CardTitle className="text-white">Top 3 types d&apos;entreprises</CardTitle>
+        <CardDescription className="text-white/60">Nuance (exemple) : si une ESN recrute pour un Grand Compte, elle sera comptabilisée comme Grand Compte</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-[180px]">
