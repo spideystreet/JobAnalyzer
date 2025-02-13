@@ -178,14 +178,17 @@ async def transform_and_analyze():
                 # Récupération du HTML brut pour extraire le type d'entreprise
                 raw_html = await cache.get_raw_html(key)
                 company_type = None
+                company_name = None
                 if raw_html:
                     cleaner = HTMLCleaner()
-                    company_type = cleaner.extract_company_type(BeautifulSoup(raw_html, 'lxml'))
+                    company_type, company_name = cleaner.extract_company_info(BeautifulSoup(raw_html, 'lxml'))
                     if company_type:
                         airflow_logger.info(f"🏢 Type d'entreprise extrait : {company_type}")
+                    if company_name:
+                        airflow_logger.info(f"🏢 Nom d'entreprise extrait : {company_name}")
                 
-                # Analyse avec le type d'entreprise extrait
-                analysis = await analyzer.analyze(cleaned_html, key, company_type)
+                # Analyse avec les informations extraites
+                analysis = await analyzer.analyze(cleaned_html, key, company_type, company_name)
                 
                 if analysis:
                     await cache.store_analysis(key, analysis)

@@ -3,7 +3,7 @@ Module de nettoyage du HTML des offres d'emploi.
 """
 
 from bs4 import BeautifulSoup
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Tuple
 from loguru import logger
 
 from ..config.settings import ALLOWED_TAGS, RELEVANT_CLASSES
@@ -28,40 +28,52 @@ class HTMLCleaner:
             'cleaned_size': 0,
             'scripts_removed': 0,
             'styles_removed': 0,
-            'company_type': None
+            'company_type': None,
+            'company_name': None
         }
 
     @property
-    def stats(self) -> Dict[str, int]:
+    def stats(self) -> Dict[str, Any]:
         """Retourne les statistiques du dernier nettoyage."""
         return self._stats
 
-    def extract_company_type(self, soup: BeautifulSoup) -> Optional[str]:
+    def extract_company_info(self, soup: BeautifulSoup) -> Tuple[Optional[str], Optional[str]]:
         """
-        Extrait le type d'entreprise depuis le HTML brut.
-        Utilise les valeurs exactes de l'énumération CompanyType.
+        Extrait les informations de l'entreprise du HTML.
         """
         try:
-            # Cherche dans les tags avec la classe 'tag'
-            tags = soup.find_all(class_='tag')
+            # Recherche dans les div avec flex items-center
+            company_div = soup.find('div', class_='flex items-center')
+            if company_div:
+                # Extraction du type d'entreprise
+                company_type_span = company_div.find('span', class_='tag')
+                company_type = company_type_span.text.strip() if company_type_span else None
+                
+                # Extraction du nom de l'entreprise (en excluant Free-Work)
+                company_name = None
+                company_title = company_div.find('h1') or company_div.find('h2') or company_div.find('h3')
+                if company_title:
+                    name = company_title.text.strip()
+                    if name.lower() != 'free-work':
+                        company_name = name
+                
+                # Si pas trouvé, chercher dans les métadonnées
+                if not company_name:
+                    meta_company = soup.find('meta', property='og:site_name')
+                    if meta_company:
+                        name = meta_company['content'].strip()
+                        if name.lower() != 'free-work':
+                            company_name = name
+                
+                logger.debug(f"🏢 Informations entreprise extraites - Nom: {company_name}, Type: {company_type}")
+                return company_type, company_name
             
-            # Dictionnaire des valeurs de l'énumération
-            valid_types = {type.value: type.value for type in CompanyType}
-            
-            # Cherche une correspondance exacte
-            for tag in tags:
-                text = tag.get_text(strip=True)
-                if text in valid_types:
-                    logger.info(f"✅ Type d'entreprise trouvé dans le HTML : {text}")
-                    self._stats['company_type'] = text
-                    return text
-                    
-            logger.debug("ℹ️ Aucun type d'entreprise trouvé dans les tags")
-            return None
+            logger.warning("⚠️ Div entreprise non trouvé")
+            return None, None
             
         except Exception as e:
-            logger.error(f"❌ Erreur lors de l'extraction du type d'entreprise : {str(e)}")
-            return None
+            logger.error(f"❌ Erreur lors de l'extraction des informations de l'entreprise : {str(e)}")
+            return None, None
 
     def clean(self, html_content: str) -> str:
         """
@@ -79,8 +91,8 @@ class HTMLCleaner:
             if not soup:
                 return ''
                 
-            # 2. Extrait le type d'entreprise AVANT le nettoyage
-            self._stats['company_type'] = self.extract_company_type(soup)
+            # 2. Extrait les informations de l'entreprise AVANT le nettoyage
+            self.extract_company_info(soup)
             
             # 3. Crée une copie du soup pour le nettoyage
             soup_for_cleaning = BeautifulSoup(str(soup), 'lxml')

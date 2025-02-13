@@ -18,26 +18,26 @@ load_dotenv()
 
 # Configuration du scraping de liste
 SCRAPING_SOURCES = [
-     {
-         'name': 'free-work-fullstack',
-         'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=D%C3%A9veloppeur%C2%B7euse%20fullstack&freshness=less_than_24_hours",
-         'enabled': True,
-         'max_pages': 10,  # Limite à 10 pages pour les tests
-         'selectors': {
-             'job_link': 'a[href*="/job-mission/"]',
-             'next_button': 'button:-soup-contains("Suivant")'
-         }
-     },
-     {
-         'name': 'free-work-data-analyst',
-         'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=Data%20analyst&freshness=less_than_24_hours",
-         'enabled': True,
-         'max_pages': 10,  # Limite à 10 pages pour les tests
-         'selectors': {
-             'job_link': 'a[href*="/job-mission/"]',
-             'next_button': 'button:-soup-contains("Suivant")'
-         }
-     },
+    # {
+    #     'name': 'free-work-fullstack',
+    #     'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=D%C3%A9veloppeur%C2%B7euse%20fullstack&freshness=less_than_24_hours",
+    #     'enabled': True,
+    #     'max_pages': 10,  # Limite à 10 pages pour les tests
+    #     'selectors': {
+    #         'job_link': 'a[href*="/job-mission/"]',
+    #         'next_button': 'button:-soup-contains("Suivant")'
+    #     }
+    # },
+    # {
+    #     'name': 'free-work-data-analyst',
+    #     'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=Data%20analyst&freshness=less_than_24_hours",
+    #     'enabled': True,
+    #     'max_pages': 10,  # Limite à 10 pages pour les tests
+    #     'selectors': {
+    #         'job_link': 'a[href*="/job-mission/"]',
+    #         'next_button': 'button:-soup-contains("Suivant")'
+    #     }
+    # },
      {
          'name': 'free-work-data-engineer',
          'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=Data%20engineer&freshness=less_than_24_hours",
@@ -48,36 +48,36 @@ SCRAPING_SOURCES = [
              'next_button': 'button:-soup-contains("Suivant")'
          }
      },
-     {
-         'name': 'free-work-web',
-         'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=D%C3%A9veloppeur%C2%B7euse%20front-end%20%28JavaScript,%20Node,%20React,%20Angular,%20Vue...%29&freshness=less_than_24_hours",
-         'enabled': True,
-         'max_pages': 10,  # Limite à 10 pages pour les tests
-         'selectors': {
-             'job_link': 'a[href*="/job-mission/"]',
-             'next_button': 'button:-soup-contains("Suivant")'
-         }
-     },
-     {
-         'name': 'free-work-mobile',
-         'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=D%C3%A9veloppeur%C2%B7euse%20mobile%20iOS%20%28Swift,%20Objective-C...%29&freshness=less_than_24_hours",
-         'enabled': True,
-         'max_pages': 10,  # Limite à 10 pages pour les tests
-         'selectors': {
-             'job_link': 'a[href*="/job-mission/"]',
-             'next_button': 'button:-soup-contains("Suivant")'
-         }
-     },
-    {
-        'name': 'free-work-data-scientist',
-        'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=Data%20scientist&freshness=less_than_24_hours",
-        'enabled': True,
-        'max_pages': 10,  # Limite à 10 pages pour les tests
-        'selectors': {
-            'job_link': 'a[href*="/job-mission/"]',
-            'next_button': 'button:-soup-contains("Suivant")'
-        }
-     }
+     # {
+     #     'name': 'free-work-web',
+     #     'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=D%C3%A9veloppeur%C2%B7euse%20front-end%20%28JavaScript,%20Node,%20React,%20Angular,%20Vue...%29&freshness=less_than_24_hours",
+     #     'enabled': True,
+     #     'max_pages': 10,  # Limite à 10 pages pour les tests
+     #     'selectors': {
+     #         'job_link': 'a[href*="/job-mission/"]',
+     #         'next_button': 'button:-soup-contains("Suivant")'
+     #     }
+     # },
+     # {
+     #     'name': 'free-work-mobile',
+     #     'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=D%C3%A9veloppeur%C2%B7euse%20mobile%20iOS%20%28Swift,%20Objective-C...%29&freshness=less_than_24_hours",
+     #     'enabled': True,
+     #     'max_pages': 10,  # Limite à 10 pages pour les tests
+     #     'selectors': {
+     #         'job_link': 'a[href*="/job-mission/"]',
+     #         'next_button': 'button:-soup-contains("Suivant")'
+     #     }
+     # },
+     # {
+     #     'name': 'free-work-data-scientist',
+     #     'base_url': "https://www.free-work.com/fr/tech-it/jobs?query=Data%20scientist&freshness=less_than_24_hours",
+     #     'enabled': True,
+     #     'max_pages': 10,  # Limite à 10 pages pour les tests
+     #     'selectors': {
+     #         'job_link': 'a[href*="/job-mission/"]',
+     #         'next_button': 'button:-soup-contains("Suivant")'
+     #     }
+     # }
 ]
 
 REQUEST_DELAY = 2  # secondes entre chaque requête
@@ -154,96 +154,102 @@ Examples:
 - "Based in Nice" ➡ "Provence-Alpes-Côte d'Azur"
 """,
 
-    "TECHNOS": """EXTRACT UP TO 5 MAIN TECHNOLOGIES (explicitly mentioned)
+    "TECHNOS": """EXTRACT UP TO 5 MAIN TECHNOLOGIES
 Format: ["Tech1", "Tech2", "Tech3"]
+
 Rules:
 1. Only include technologies explicitly specified.
 2. Ignore generic tools (e.g., JIRA, Git, Agile, etc.).
 3. Select a maximum of 5 most important technologies.
-4. Always use the standardized names below:
+4. DO NOT INTERPRET OR MODIFY THE NAMES. Use these EXACT replacements:
 
-   CLOUD:
-     • AWS: AWS, Amazon Web Services
-     • GCP: GCP, Google Cloud
-     • Azure: Azure, Microsoft Azure
+   CLOUD (EXACT matches only):
+     • If you see "GCP" or "Google Cloud" or "Google Cloud Platform" ➡ write "GCP"
+     • If you see "AWS" or "Amazon Web Services" ➡ write "AWS"
+     • If you see "Azure" or "Microsoft Azure" ➡ write "Azure"
 
-   JAVASCRIPT:
-     • React: React, ReactJS, React.js
-     • Vue: Vue, VueJS, Vue.js
-     • Angular: Angular, AngularJS
-     • Node: Node, NodeJS, Node.js
-     • Next: Next, NextJS, Next.js
-     • Express: Express, ExpressJS
-     • NestJS: NestJS, Nest
+   JAVASCRIPT (EXACT matches only):
+     • If you see "React" or "ReactJS" or "React.js" ➡ write "React"
+     • If you see "Vue" or "VueJS" or "Vue.js" ➡ write "Vue"
+     • If you see "Angular" or "AngularJS" ➡ write "Angular"
+     • If you see "Node" or "NodeJS" or "Node.js" ➡ write "Node"
+     • If you see "Next" or "NextJS" or "Next.js" ➡ write "Next"
+     • If you see "Express" or "ExpressJS" ➡ write "Express"
+     • If you see "NestJS" or "Nest" ➡ write "NestJS"
 
-   DATABASES:
-     • PostgreSQL: PostgreSQL, Postgres
-     • MongoDB: MongoDB, Mongo
-     • Elasticsearch: Elasticsearch, ES
-     • MySQL: MySQL, MariaDB
+   DATABASES (EXACT matches only):
+     • If you see "PostgreSQL" or "Postgres" ➡ write "PostgreSQL"
+     • If you see "MongoDB" or "Mongo" ➡ write "MongoDB"
+     • If you see "Elasticsearch" or "ES" ➡ write "Elasticsearch"
+     • If you see "MySQL" or "MariaDB" ➡ write "MySQL"
 
-   DEVOPS:
-     • Kubernetes: Kubernetes, K8s
-     • Docker: Docker
-     • Jenkins: Jenkins
-     • Terraform: Terraform, TF
-     • Ansible: Ansible
+   DEVOPS (EXACT matches only):
+     • If you see "Kubernetes" or "K8s" ➡ write "Kubernetes"
+     • If you see "Docker" ➡ write "Docker"
+     • If you see "Jenkins" ➡ write "Jenkins"
+     • If you see "Terraform" or "TF" ➡ write "Terraform"
+     • If you see "Ansible" ➡ write "Ansible"
 
-   LANGUAGES:
-     • JavaScript: JavaScript, JS
-     • TypeScript: TypeScript, TS
-     • Python: Python
-     • Java: Java
-     • Go: Go, Golang
-     • PHP: PHP
-     • .NET: .NET, dotnet
-     • C#: C#, Csharp
-     • C++: C++, Cplusplus
+   LANGUAGES (EXACT matches only):
+     • If you see "JavaScript" or "JS" ➡ write "JavaScript"
+     • If you see "TypeScript" or "TS" ➡ write "TypeScript"
+     • If you see "Python" ➡ write "Python"
+     • If you see "Java" ➡ write "Java"
+     • If you see "Go" or "Golang" ➡ write "Go"
+     • If you see "PHP" ➡ write "PHP"
+     • If you see ".NET" or "dotnet" ➡ write ".NET"
+     • If you see "C#" or "Csharp" ➡ write "C#"
+     • If you see "C++" or "Cplusplus" ➡ write "C++"
 
-   FRAMEWORKS:
-     • Django: Django, DRF
-     • Flask: Flask
-     • FastAPI: FastAPI
-     • Laravel: Laravel
-     • Spring: Spring, Spring Boot
-     • Symfony: Symfony
+   FRAMEWORKS (EXACT matches only):
+     • If you see "Django" or "DRF" ➡ write "Django"
+     • If you see "Flask" ➡ write "Flask"
+     • If you see "FastAPI" ➡ write "FastAPI"
+     • If you see "Laravel" ➡ write "Laravel"
+     • If you see "Spring" or "Spring Boot" ➡ write "Spring"
+     • If you see "Symfony" ➡ write "Symfony"
 
-   DATA:
-     • TensorFlow: TensorFlow, TF
-     • PyTorch: PyTorch
-     • Pandas: Pandas
-     • Spark: Spark, PySpark
-     • Kafka: Kafka
-     • Airflow: Airflow
+   DATA (EXACT matches only):
+     • If you see "TensorFlow" or "TF" ➡ write "TensorFlow"
+     • If you see "PyTorch" ➡ write "PyTorch"
+     • If you see "Pandas" ➡ write "Pandas"
+     • If you see "Spark" or "PySpark" ➡ write "Spark"
+     • If you see "Kafka" ➡ write "Kafka"
+     • If you see "Airflow" ➡ write "Airflow"
 
+IMPORTANT: DO NOT INTERPRET OR MODIFY THE NAMES. Use EXACT matches only.
 Example:
 "Nous recherchons un développeur maîtrisant React.js, Node.js et MongoDB"
 ➡ ["React", "Node", "MongoDB"]
-If unsure, return [].
+
+If unsure or no exact match found, return [].
 """,
 
     "DURATION_DAYS": """EXTRACT THE DURATION IN DAYS
 Rules:
-1. Identify the full duration expression (number + unit, e.g., "12 months", "1 year", "3 weeks").
-2. Do not extract the number alone.
-3. Identify the unit (months, years, weeks).
-4. Convert using:
-   - 1 week = 7 days
-   - 1 month = 30 days
-   - 12 months = 365 days (special case)
-   - 1 year = 365 days
-   - 18 months = 540 days (special case)
-   - 24 months = 730 days (special case)
-5. Return only the integer part.
+1. First, find the complete duration expression (number + unit).
+2. Then, apply these EXACT conversions (do not calculate):
+   - "12 mois" = 365 days
+   - "24 mois" = 730 days
+   - "18 mois" = 540 days
+   - "1 an" = 365 days
+   - "2 ans" = 730 days
+   - For other months: multiply by 30 (e.g., "6 mois" = 180 days)
+   - For weeks: multiply by 7 (e.g., "3 semaines" = 21 days)
+
+IMPORTANT:
+- For "12 mois", always return 365, never return 12 or 360
+- For "24 mois", always return 730, never return 24 or 720
+- For "2 ans", always return 730, never return 2 or 720
 
 Examples:
-- "Mission of 12 months" ➡ 365
-- "Duration: 6 months" ➡ 180
-- "18 months mission" ➡ 540
-- "3 weeks" ➡ 21
-- "1 year" ➡ 365
-- "2 years" ➡ 730
-If the full expression is absent, return NULL.
+- "Mission de 12 mois" ➡ 365 (not 12, not 360)
+- "24 mois de mission" ➡ 730 (not 24, not 720)
+- "6 mois" ➡ 180
+- "3 semaines" ➡ 21
+- "2 ans" ➡ 730 (not 2, not 720)
+
+If no duration found or unsure, return NULL.
 """,
 
     "TJM_MIN": """EXTRACT THE MINIMUM DAILY RATE (TJM) IN EUROS

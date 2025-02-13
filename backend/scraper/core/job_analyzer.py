@@ -3,7 +3,7 @@ Module d'analyse des offres avec Mistral AI.
 """
 
 import json
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Tuple
 from loguru import logger
 from mistralai import Mistral
 from datetime import datetime
@@ -25,7 +25,7 @@ class JobAnalyzer:
         self.model = MISTRAL_MODEL
         self.timeout = HTTP_TIMEOUT
 
-    async def analyze(self, html_content: str, url: str = "", extracted_company_type: Optional[str] = None) -> Dict[str, Any]:
+    async def analyze(self, html_content: str, url: str = "", extracted_company_type: Optional[str] = None, extracted_company_name: Optional[str] = None) -> Dict[str, Any]:
         """
         Analyse une offre d'emploi avec Mistral AI.
         
@@ -33,6 +33,7 @@ class JobAnalyzer:
             html_content: Le contenu HTML nettoyé de l'offre
             url: L'URL de l'offre
             extracted_company_type: Le type d'entreprise extrait du HTML brut
+            extracted_company_name: Le nom de l'entreprise extrait du HTML brut
             
         Returns:
             Dict[str, Any]: Les informations extraites de l'offre avec les clés en majuscules
@@ -44,12 +45,14 @@ class JobAnalyzer:
                 logger.info(f"🌐 URL : {url}")
             if extracted_company_type:
                 logger.info(f"🏢 Type d'entreprise extrait : {extracted_company_type}")
+            if extracted_company_name:
+                logger.info(f"🏢 Nom d'entreprise extrait : {extracted_company_name}")
             
             logger.debug(f"📝 Longueur du contenu HTML à analyser : {len(html_content)} caractères")
             
             # Construction du prompt
             logger.info("1️⃣ Construction du prompt...")
-            prompt = self._construct_prompt(html_content, url, extracted_company_type)
+            prompt = self._construct_prompt(html_content, url, extracted_company_type, extracted_company_name)
             logger.debug(f"🔍 Prompt généré de {len(prompt)} caractères")
             
             # Appel à l'API
@@ -63,9 +66,14 @@ class JobAnalyzer:
                 logger.debug(f"Champs manquants : {[field for field in REQUIRED_FIELDS if field not in response]}")
                 return self._get_empty_response()
             
-            # On ajoute le type d'entreprise extrait à la réponse
+            # On préserve les valeurs extraites du HTML brut
             if extracted_company_type:
                 response['COMPANY_TYPE'] = extracted_company_type
+                logger.info(f"✅ Type d'entreprise préservé : {extracted_company_type}")
+            
+            if extracted_company_name:
+                response['COMPANY'] = extracted_company_name
+                logger.info(f"✅ Nom d'entreprise préservé : {extracted_company_name}")
             
             logger.info("✅ Réponse valide reçue de Mistral")
             
@@ -126,7 +134,7 @@ class JobAnalyzer:
             logger.exception("Détails de l'erreur :")
             return self._get_empty_response()
 
-    def _construct_prompt(self, html_content: str, url: str = "", extracted_company_type: Optional[str] = None) -> str:
+    def _construct_prompt(self, html_content: str, url: str = "", extracted_company_type: Optional[str] = None, extracted_company_name: Optional[str] = None) -> str:
         """Construit le prompt pour Mistral."""
         logger.debug("🔨 Construction du prompt")
         
@@ -144,6 +152,10 @@ class JobAnalyzer:
         # Ajout des métadonnées si présentes
         if extracted_company_type:
             metadata = {'company_type': extracted_company_type}
+            prompt_parts.append(f"Metadonnees extraites :\n{json.dumps(metadata, indent=2, ensure_ascii=False)}\n")
+        
+        if extracted_company_name:
+            metadata = {'company_name': extracted_company_name}
             prompt_parts.append(f"Metadonnees extraites :\n{json.dumps(metadata, indent=2, ensure_ascii=False)}\n")
         
         # Ajout du format attendu
