@@ -74,7 +74,7 @@ const LandingPage: React.FC = () => {
         </div>
 
         {/* Nouvelle Hero Section */}
-        <div className="relative z-30 flex-1 flex flex-col items-center justify-center max-w-7xl w-full mx-auto px-6 xl:px-0">
+        <div className="relative z-30 flex-1 flex flex-col items-center justify-start max-w-7xl w-full mx-auto px-6 xl:px-0 mt-[225px]">
           <div className="relative flex flex-col items-center border border-purple-500 w-full">
             <DotPattern width={5} height={5} className="fill-purple-500/50 md:fill-purple-500/70" />
 
