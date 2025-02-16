@@ -12,6 +12,8 @@ import {
   CardFooter,
 } from "@/components/ui/card"
 
+import { EmptyState } from "@/components/ui/empty-state"
+
 interface TechDistributionChartProps {
   data: Array<{
     TECHNOS: string[]
@@ -21,25 +23,14 @@ interface TechDistributionChartProps {
   }>
 }
 
-const EmptyChart = ({ message = "Aucune donnée disponible" }) => (
-  <Card className="bg-black/80 backdrop-blur-xl border-white/10">
-    <CardHeader>
-      <CardTitle className="text-white">Distribution des technologies</CardTitle>
-      <CardDescription className="text-white/60">
-        Répartition des technologies les plus demandées
-      </CardDescription>
-    </CardHeader>
-    <CardContent className="flex items-center justify-center min-h-[300px]">
-      <div className="text-white/60">
-        {message}
-      </div>
-    </CardContent>
-  </Card>
-)
-
 export default function TechDistributionChart({ data }: TechDistributionChartProps) {
   if (!Array.isArray(data) || data.length === 0) {
-    return <EmptyChart />
+    return (
+      <EmptyState 
+        title="Distribution des technologies"
+        description="Répartition des technologies les plus demandées"
+      />
+    )
   }
 
   try {
@@ -73,7 +64,13 @@ export default function TechDistributionChart({ data }: TechDistributionChartPro
       .slice(0, 10)
 
     if (chartData.length === 0) {
-      return <EmptyChart message="Aucune technologie trouvée dans les données" />
+      return (
+        <EmptyState 
+          title="Distribution des technologies"
+          description="Répartition des technologies les plus demandées"
+          message="Aucune technologie trouvée dans les données"
+        />
+      )
     }
 
     const topTech = chartData[0]?.name || "Aucune technologie"
@@ -146,6 +143,12 @@ export default function TechDistributionChart({ data }: TechDistributionChartPro
     )
   } catch (error) {
     console.error('Erreur dans TechDistributionChart:', error)
-    return <EmptyChart message="Erreur lors du traitement des données" />
+    return (
+      <EmptyState 
+        title="Distribution des technologies"
+        description="Répartition des technologies les plus demandées"
+        message="Erreur lors du traitement des données"
+      />
+    )
   }
 } 

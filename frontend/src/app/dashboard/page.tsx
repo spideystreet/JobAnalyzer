@@ -15,6 +15,7 @@ import { useStats } from '@/lib/hooks/useStats'
 import { Button } from '@/components/ui/button-aremettre'
 import { RefreshCw, FilterX, ArrowLeft } from 'lucide-react'
 import React from 'react'
+import { EmptyState } from '@/components/ui/empty-state'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -51,14 +52,6 @@ function LoadingSpinner() {
   return (
     <div className="flex items-center justify-center min-h-[300px]" role="status">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" aria-label="Chargement des données"></div>
-    </div>
-  )
-}
-
-function NoDataDisplay() {
-  return (
-    <div className="flex items-center justify-center min-h-[300px] text-gray-500 font-helvetica" role="status">
-      Aucune donnée disponible pour les filtres sélectionnés
     </div>
   )
 }
@@ -152,7 +145,10 @@ function DashboardContent() {
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : !data?.rawData?.length ? (
-                  <NoDataDisplay />
+                  <EmptyState 
+                    title="Distribution par région"
+                    description="Répartition des TJM par région"
+                  />
                 ) : (
                   <RegionTJMChart data={data.rawData} />
                 )}
@@ -162,7 +158,10 @@ function DashboardContent() {
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : !data?.rawData?.length ? (
-                  <NoDataDisplay />
+                  <EmptyState 
+                    title="Top des entreprises"
+                    description="Répartition par type d'entreprise"
+                  />
                 ) : (
                   <TopCompaniesChart data={stats.companyTypeStats} />
                 )}
@@ -173,7 +172,10 @@ function DashboardContent() {
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.rawData?.length ? (
-                <NoDataDisplay />
+                <EmptyState 
+                  title="Distribution par expérience"
+                  description="Répartition des offres par niveau d'expérience"
+                />
               ) : (
                 <ExperienceDistributionChart data={data.rawData} />
               )}
@@ -183,7 +185,10 @@ function DashboardContent() {
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.rawData?.length ? (
-                <NoDataDisplay />
+                <EmptyState 
+                  title="Distribution par domaine"
+                  description="Répartition des offres par domaine"
+                />
               ) : (
                 <DomainDistributionChart data={stats.domainStats} />
               )}
@@ -193,7 +198,10 @@ function DashboardContent() {
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.tjmData ? (
-                <NoDataDisplay />
+                <EmptyState 
+                  title="Technologies"
+                  description="Répartition des TJM par technologie"
+                />
               ) : (
                 <TechDistributionChart data={data.tjmData} />
               )}
@@ -203,7 +211,10 @@ function DashboardContent() {
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.rawData?.length ? (
-                <NoDataDisplay />
+                <EmptyState 
+                  title="Offres par jour"
+                  description="Répartition des offres par jour"
+                />
               ) : (
                 <OffersPerDayChart data={data.rawData} />
               )}
