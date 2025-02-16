@@ -112,7 +112,7 @@ const LandingPage: React.FC = () => {
       {/* Contenu principal avec flex pour espacer les éléments */}
       <div className="relative w-full h-full flex flex-col justify-between">
         {/* Header - Badge et Tooltip */}
-        <div className="pt-4 sm:pt-6 md:pt-8">
+        <div className="pt-14 sm:pt-16 md:pt-16">
           <div className="h-[40px] w-full flex items-center justify-center">
             <motion.div
               className="flex items-center justify-center"
