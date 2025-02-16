@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils"
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { LoaderCircle, ArrowRight } from "lucide-react"
+import { motion } from "framer-motion"
 
 // Lazy load seulement les composants lourds
 const Boxes = dynamic(() => import('@/components/ui/background-boxes').then(mod => {
@@ -94,27 +95,35 @@ const LandingPage: React.FC = () => {
   ), [handleSocialClick, socialUrls])
 
   return (
-    <div className="h-screen relative w-full overflow-hidden bg-black flex flex-col items-center">
-      {/* Masque radial pour l'effet de fondu */}
+    <div className="h-screen relative w-full overflow-hidden bg-black">
+      {/* Background boxes en arrière-plan absolu */}
+      <div className="absolute inset-0">
+        <Boxes />
+      </div>
+
+      {/* Masque radial */}
       <div className={cn(
-        "absolute inset-0 w-full h-full",
-        "bg-black z-20",
+        "absolute inset-0",
+        "bg-black",
         "[mask-image:radial-gradient(circle_at_center,transparent,white)]",
         "pointer-events-none"
       )} />
       
-      {/* Background boxes */}
-      <Boxes />
-
-      <div className="w-full h-full flex flex-col items-center pt-4 sm:pt-6 md:pt-8">
-        {/* Boutons de réseaux sociaux en haut */}
+      {/* Contenu principal */}
+      <div className="relative w-full h-full flex flex-col items-center pt-4 sm:pt-6 md:pt-8">
+        {/* Boutons sociaux */}
         {socialButtons}
 
-        {/* Hero Section avec ajustements responsifs */}
-        <div className="relative z-30 flex-1 flex flex-col items-center justify-center w-full mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative flex flex-col items-center w-full max-w-[95vw] sm:max-w-[90vw] xl:max-w-[80vw]">
-            {/* Badge et Tooltip juste au-dessus du texte violet */}
-            <div className="mb-4 sm:mb-6 w-full flex items-center justify-center z-50">
+        {/* Hero Section */}
+        <div className="flex-1 flex flex-col items-center justify-center w-full mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="w-full max-w-[95vw] sm:max-w-[90vw] xl:max-w-[80vw] flex flex-col items-center">
+            {/* Badge et Tooltip */}
+            <motion.div
+              className="mb-4 sm:mb-6 w-full flex items-center justify-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
               <div className="flex items-center justify-center w-auto">
                 <Badge 
                   variant="secondary" 
@@ -129,16 +138,24 @@ const LandingPage: React.FC = () => {
                   />
                 </div>
               </div>
+            </motion.div>
+            
+            <div className="h-[40px] flex items-center justify-center">
+              <p className="inline-flex px-4 py-1.5 rounded-full border border-purple-500/30 bg-black/50 backdrop-blur-sm
+                text-purple-400 mb-4 sm:mb-6 text-base sm:text-lg md:text-xl
+                font-helvetica tracking-wide"
+              >
+                Technos, Remote, Expertises et plus encore...
+              </p>
             </div>
 
-            <p className="inline-flex px-4 py-1.5 rounded-full border border-purple-500/30 bg-black/50 backdrop-blur-sm
-              text-purple-400 mb-4 sm:mb-6 text-base sm:text-lg md:text-xl
-              font-helvetica tracking-wide"
+            {/* Titre principal */}
+            <motion.div
+              className="space-y-2 sm:space-y-4 text-center w-full"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
             >
-              Technos, Remote, Expertises et plus encore...
-            </p>
-
-            <div className="flex flex-col gap-1 sm:gap-2 md:gap-4 text-center w-full">
               <h1 className="font-helvetica font-semibold text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl text-white tracking-tight leading-[1.1]">
                 "Toutes les tendances
               </h1>
@@ -148,24 +165,29 @@ const LandingPage: React.FC = () => {
               <h1 className="font-helvetica font-semibold text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl text-white tracking-tight leading-[1.1]">
                 dans l'IT..."
               </h1>
-            </div>
+            </motion.div>
 
-            {/* Bouton CTA avec espacement ajusté */}
-            <div className="mt-8 sm:mt-12 md:mt-16">
+            {/* Bouton */}
+            <motion.div className="mt-8 sm:mt-12 md:mt-16">
               <Button
                 onClick={handleDashboardClick}
                 disabled={isLoading}
                 data-loading={isLoading}
-                className="group relative w-20 h-20 bg-purple-500 hover:bg-purple-600 disabled:opacity-100 text-lg font-helvetica rounded-full p-0 flex items-center justify-center"
+                className="group relative w-16 h-16 sm:w-20 sm:h-20 bg-purple-500 hover:bg-purple-600 disabled:opacity-100 text-base sm:text-lg font-helvetica rounded-full p-0 flex items-center justify-center"
               >
                 <span className="group-data-[loading=true]:text-transparent">Go</span>
                 {isLoading && (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <LoaderCircle className="animate-spin" size={24} strokeWidth={2} aria-hidden="true" />
+                    <LoaderCircle 
+                      className="animate-spin" 
+                      size={20} 
+                      strokeWidth={2} 
+                      aria-hidden="true" 
+                    />
                   </div>
                 )}
               </Button>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
