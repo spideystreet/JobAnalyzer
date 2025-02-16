@@ -47,7 +47,7 @@ const teamMembers = [
     id: 1,
     name: "Hicham",
     designation: "Data Analyst BI",
-    image: "/images/spider.jpg"
+    image: "/images/spider.png"
   }
 ]
 
@@ -93,7 +93,10 @@ const LandingPage: React.FC = () => {
                   Fourni gentiment par l&apos;arraignée sympa des réseaux 👋
                 </Badge>
                 <div className="-ml-6">
-                  <AnimatedTooltip items={teamMembers} className="scale-90 [&_img]:border-0" />
+                  <AnimatedTooltip 
+                    items={teamMembers} 
+                    className="scale-90 [&_img]:border-[2px] [&_img]:border-white" 
+                  />
                 </div>
               </div>
             </motion.div>
