@@ -156,7 +156,7 @@ const LandingPage: React.FC = () => {
                 onClick={handleDashboardClick}
                 disabled={isLoading}
                 data-loading={isLoading}
-                className="group relative w-48 h-14 bg-purple-500 hover:bg-purple-600 disabled:opacity-100 text-lg font-helvetica rounded-full"
+                className="group relative w-20 h-20 bg-purple-500 hover:bg-purple-600 disabled:opacity-100 text-lg font-helvetica rounded-full p-0 flex items-center justify-center"
               >
                 <span className="group-data-[loading=true]:text-transparent">Go</span>
                 {isLoading && (
