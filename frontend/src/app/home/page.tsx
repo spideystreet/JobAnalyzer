@@ -63,8 +63,8 @@ const LandingPage: React.FC = () => {
       <Boxes />
 
       <div className="w-full h-full flex flex-col items-center pt-8 md:pt-12">
-        {/* Ajout des boutons de réseaux sociaux */}
-        <div className="flex flex-wrap gap-2 max-w-xs w-full mx-auto mb-4 z-50">
+        {/* Boutons de réseaux sociaux en haut */}
+        <div className="flex flex-wrap gap-2 max-w-xs w-full mx-auto z-50">
           <Button className="flex-1" variant="outline" aria-label="Login with Google" size="icon">
             <RiLinkedinFill className="text-[#DB4437] dark:text-primary" size={16} aria-hidden="true" />
           </Button>
@@ -76,20 +76,8 @@ const LandingPage: React.FC = () => {
           </Button>
         </div>
 
-        {/* Nuage d'icônes */}
-        <div className="w-[150px] sm:w-[200px] md:w-[300px] h-[50px] sm:h-[60px] md:h-[80px] z-20">
-          <motion.div
-            className="w-full h-full"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <IconCloud iconSlugs={iconSlugs} />
-          </motion.div>
-        </div>
-
-        {/* Hero Section - ajustement du positionnement vertical */}
-        <div className="relative z-30 flex-1 flex flex-col items-center justify-center max-w-7xl w-full mx-auto px-6 xl:px-0 mt-0">
+        {/* Hero Section remontée */}
+        <div className="relative z-30 flex-1 flex flex-col items-center justify-center max-w-7xl w-full mx-auto px-6 xl:px-0 -mt-20">
           <div className="relative flex flex-col items-center border border-purple-500 w-full">
             <DotPattern width={5} height={5} className="fill-purple-500/50 md:fill-purple-500/70" />
 
@@ -105,7 +93,7 @@ const LandingPage: React.FC = () => {
                   variant="secondary" 
                   className="bg-white text-black/80 hover:bg-white/90 font-helvetica font-normal pr-8 flex items-center"
                 >
-                  Fourni gentiment par l&apos;arraignée sympa des réseaux 👋
+                  Powered by Spidey 👋
                 </Badge>
                 <div className="-ml-6">
                   <AnimatedTooltip 
@@ -178,6 +166,18 @@ const LandingPage: React.FC = () => {
               </div>
             </motion.div>
           </div>
+        </div>
+
+        {/* Nuage d'icônes avec position ajustée */}
+        <div className="w-[150px] sm:w-[200px] md:w-[300px] h-[50px] sm:h-[60px] md:h-[80px] z-20 -mt-10 mb-20">
+          <motion.div
+            className="w-full h-full"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <IconCloud iconSlugs={iconSlugs} />
+          </motion.div>
         </div>
       </div>
     </div>
