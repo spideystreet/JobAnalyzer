@@ -1,7 +1,7 @@
 "use client"
 
 import dynamic from 'next/dynamic'
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button-loading"
 import { Badge } from "@/components/ui/badge"
 import { 
   RiTwitterXFill, 
@@ -145,16 +145,15 @@ const LandingPage: React.FC = () => {
         {/* Hero Section - Centrée verticalement */}
         <div className="flex-1 flex flex-col items-center justify-center w-full px-4 sm:px-6 lg:px-8">
           <div className="w-full max-w-[95vw] sm:max-w-[90vw] xl:max-w-[80vw] flex flex-col items-center space-y-8">
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              className="inline-flex px-4 py-1.5 rounded-full border border-purple-500/30 bg-black/50 backdrop-blur-sm
-                text-purple-400 text-base sm:text-lg md:text-xl
-                font-helvetica tracking-wide"
+            <Badge 
+              variant="secondary" 
+              className="bg-black text-purple-400 hover:bg-black/90 font-helvetica font-normal
+                flex items-center rounded-full 
+                border-2 border-white/20
+                px-4 py-1.5 text-base sm:text-lg tracking-wide"
             >
               Technos, Remote, Expertises et plus encore...
-            </motion.p>
+            </Badge>
 
             <motion.div
               className="text-center w-full space-y-2 sm:space-y-4"
@@ -177,21 +176,18 @@ const LandingPage: React.FC = () => {
             <motion.div>
               <Button
                 onClick={handleDashboardClick}
-                disabled={isLoading}
-                data-loading={isLoading}
-                className="group relative w-16 h-16 sm:w-20 sm:h-20 bg-purple-500 hover:bg-purple-600 disabled:opacity-100 text-base sm:text-lg font-helvetica rounded-full p-0 flex items-center justify-center"
+                loading={isLoading}
+                className="group relative w-16 h-16 sm:w-20 sm:h-20 
+                  bg-purple-500 hover:bg-purple-600 
+                  disabled:opacity-100 
+                  text-base sm:text-lg font-helvetica 
+                  rounded-full p-0 
+                  flex items-center justify-center
+                  text-white
+                  border-2 border-white/80
+                  transition-colors"
               >
-                <span className="group-data-[loading=true]:text-transparent">Go</span>
-                {isLoading && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <LoaderCircle 
-                      className="animate-spin" 
-                      size={20} 
-                      strokeWidth={2} 
-                      aria-hidden="true" 
-                    />
-                  </div>
-                )}
+                Go
               </Button>
             </motion.div>
           </div>
