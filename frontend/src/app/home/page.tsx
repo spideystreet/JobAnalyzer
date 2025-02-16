@@ -73,14 +73,14 @@ const LandingPage: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Nouvelle Hero Section */}
-        <div className="relative z-30 flex-1 flex flex-col items-center justify-start max-w-7xl w-full mx-auto px-6 xl:px-0 mt-[225px]">
+        {/* Hero Section - ajustement du positionnement vertical */}
+        <div className="relative z-30 flex-1 flex flex-col items-center justify-center max-w-7xl w-full mx-auto px-6 xl:px-0 mt-0">
           <div className="relative flex flex-col items-center border border-purple-500 w-full">
             <DotPattern width={5} height={5} className="fill-purple-500/50 md:fill-purple-500/70" />
 
-            {/* Badge et Tooltip en haut */}
+            {/* Badge et Tooltip en haut avec z-index plus élevé */}
             <motion.div
-              className="absolute -top-7 w-full flex items-center justify-center"
+              className="absolute -top-7 w-full flex items-center justify-center z-50"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
@@ -149,9 +149,9 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Bouton CTA en bas */}
+            {/* Bouton CTA en bas avec z-index plus élevé */}
             <motion.div
-              className="absolute -bottom-5"
+              className="absolute -bottom-5 z-50"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.8 }}
