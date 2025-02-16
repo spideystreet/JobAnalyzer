@@ -4,45 +4,11 @@ import { motion } from "framer-motion"
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip"
 import { Boxes } from "@/components/ui/background-boxes"
 import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button"
-import { IconCloud } from "@/components/ui/interactive-icon-cloud"
 import { Badge } from "@/components/ui/badge"
 import DotPattern from "@/components/ui/dot-pattern-1"
 import { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { RiFacebookFill, RiGithubFill, RiGoogleFill, RiTwitterXFill, RiLinkedinFill } from "@remixicon/react"
-
-const iconSlugs = [
-  "typescript",
-  "javascript",
-  "dart",
-  "java",
-  "react",
-  "flutter",
-  "android",
-  "html5",
-  "css3",
-  "nodedotjs",
-  "express",
-  "nextdotjs",
-  "prisma",
-  "amazonaws",
-  "postgresql",
-  "firebase",
-  "nginx",
-  "vercel",
-  "testinglibrary",
-  "jest",
-  "cypress",
-  "docker",
-  "git",
-  "jira",
-  "github",
-  "gitlab",
-  "visualstudiocode",
-  "androidstudio",
-  "sonarqube",
-  "figma",
-]
 
 const teamMembers = [
   {
@@ -64,16 +30,22 @@ const LandingPage: React.FC = () => {
 
       <div className="w-full h-full flex flex-col items-center pt-8 md:pt-12">
         {/* Boutons de réseaux sociaux en haut */}
-        <div className="flex flex-wrap gap-2 max-w-xs w-full mx-auto z-50">
-          <Button className="flex-1 bg-white hover:bg-white/90" variant="outline" aria-label="X" size="icon">
-            <RiTwitterXFill className="text-black" size={16} aria-hidden="true" />
-          </Button>
-          <Button className="flex-1 bg-white hover:bg-white/90" variant="outline" aria-label="LinkedIn" size="icon">
-            <RiLinkedinFill className="text-black" size={16} aria-hidden="true" />
-          </Button>
-          <Button className="flex-1 bg-white hover:bg-white/90" variant="outline" aria-label="GitHub" size="icon">
-            <RiGithubFill className="text-black" size={16} aria-hidden="true" />
-          </Button>
+        <div className="flex flex-wrap justify-center gap-2 max-w-xs w-full mx-auto z-50">
+          <a href="https://x.com/spideystreet" target="_blank" rel="noopener noreferrer">
+            <Button className="bg-white hover:bg-white/90" variant="outline" aria-label="X" size="icon">
+              <RiTwitterXFill className="text-black" size={16} aria-hidden="true" />
+            </Button>
+          </a>
+          <a href="https://www.linkedin.com/in/hicham-djebali-35bb271a2/" target="_blank" rel="noopener noreferrer">
+            <Button className="bg-white hover:bg-white/90" variant="outline" aria-label="LinkedIn" size="icon">
+              <RiLinkedinFill className="text-black" size={16} aria-hidden="true" />
+            </Button>
+          </a>
+          <a href="https://github.com/spideystreet" target="_blank" rel="noopener noreferrer">
+            <Button className="bg-white hover:bg-white/90" variant="outline" aria-label="GitHub" size="icon">
+              <RiGithubFill className="text-black" size={16} aria-hidden="true" />
+            </Button>
+          </a>
         </div>
 
         {/* Hero Section remontée */}
@@ -166,18 +138,6 @@ const LandingPage: React.FC = () => {
               </div>
             </motion.div>
           </div>
-        </div>
-
-        {/* Nuage d'icônes avec position ajustée */}
-        <div className="w-[150px] sm:w-[200px] md:w-[300px] h-[50px] sm:h-[60px] md:h-[80px] z-20 -mt-10 mb-20">
-          <motion.div
-            className="w-full h-full"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <IconCloud iconSlugs={iconSlugs} />
-          </motion.div>
         </div>
       </div>
     </div>
