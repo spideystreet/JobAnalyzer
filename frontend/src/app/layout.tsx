@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   creator: "Spidey",
   publisher: "Job Analyzer",
   robots: "index, follow",
+  metadataBase: new URL('https://votre-domaine.com'),
   
   // Open Graph / Facebook
   openGraph: {
@@ -73,6 +74,14 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest"
 }
 
+export function generateHeaders() {
+  return [
+    {
+      'Link': '</fonts/helvetica-neue.woff2>; rel=preload; as=font; type=font/woff2; crossorigin=anonymous'
+    }
+  ]
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -80,6 +89,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className="dark">
+      <head>
+        <link 
+          rel="preload" 
+          href="/fonts/helvetica-neue.woff2" 
+          as="font" 
+          type="font/woff2" 
+          crossOrigin="anonymous" 
+        />
+      </head>
       <body className={`${inter.className} bg-black`}>
         {children}
         <Analytics />
