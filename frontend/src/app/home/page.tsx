@@ -8,6 +8,8 @@ import { IconCloud } from "@/components/ui/interactive-icon-cloud"
 import { Badge } from "@/components/ui/badge"
 import DotPattern from "@/components/ui/dot-pattern-1"
 import { useEffect, useMemo, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { RiFacebookFill, RiGithubFill, RiGoogleFill, RiTwitterXFill } from "@remixicon/react"
 
 const iconSlugs = [
   "typescript",
@@ -61,6 +63,22 @@ const LandingPage: React.FC = () => {
       <Boxes />
 
       <div className="w-full h-full flex flex-col items-center pt-8 md:pt-12">
+        {/* Ajout des boutons de réseaux sociaux */}
+        <div className="flex flex-wrap gap-2 max-w-xs w-full mx-auto mb-4 z-50">
+          <Button className="flex-1" variant="outline" aria-label="Login with Google" size="icon">
+            <RiGoogleFill className="text-[#DB4437] dark:text-primary" size={16} aria-hidden="true" />
+          </Button>
+          <Button className="flex-1" variant="outline" aria-label="Login with Facebook" size="icon">
+            <RiFacebookFill className="text-[#1877f2] dark:text-primary" size={16} aria-hidden="true" />
+          </Button>
+          <Button className="flex-1" variant="outline" aria-label="Login with X" size="icon">
+            <RiTwitterXFill className="text-[#14171a] dark:text-primary" size={16} aria-hidden="true" />
+          </Button>
+          <Button className="flex-1" variant="outline" aria-label="Login with GitHub" size="icon">
+            <RiGithubFill className="text-black dark:text-primary" size={16} aria-hidden="true" />
+          </Button>
+        </div>
+
         {/* Nuage d'icônes */}
         <div className="w-[150px] sm:w-[200px] md:w-[300px] h-[50px] sm:h-[60px] md:h-[80px] z-20">
           <motion.div

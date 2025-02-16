@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { motion, useAnimation } from "framer-motion";
 import { Magnet } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button-aremettre";
 
 interface MagnetizeButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     particleCount?: number;
