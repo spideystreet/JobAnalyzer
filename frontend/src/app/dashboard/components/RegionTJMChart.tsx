@@ -64,7 +64,7 @@ export default function RegionTJMChart({ data }: RegionTJMChartProps) {
   return (
     <Card className="bg-black/80 backdrop-blur-xl border-white/10">
       <CardHeader className="pb-2">
-        <CardTitle className="text-white">Top 3 des régions</CardTitle>
+        <CardTitle className="text-white">Top 3 des régions attractives</CardTitle>
         <CardDescription className="text-white/60">
           Les régions avec le plus d&apos;offres
         </CardDescription>

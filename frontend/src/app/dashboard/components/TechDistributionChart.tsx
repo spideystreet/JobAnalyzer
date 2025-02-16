@@ -78,7 +78,7 @@ export default function TechDistributionChart({ data }: TechDistributionChartPro
     return (
       <Card className="bg-black/80 backdrop-blur-xl border-white/10">
         <CardHeader>
-          <CardTitle className="text-white">Distribution des Technologies</CardTitle>
+          <CardTitle className="text-white">Distribution des technologies</CardTitle>
           <CardDescription className="text-white/60">
             Top 10 des technologies les plus demandées
           </CardDescription>

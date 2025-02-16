@@ -116,7 +116,7 @@ const LandingPage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                TJM, Technos, Remote et plus encore...
+                Technos, Remote, Expertises et plus encore...
               </motion.p>
               <div className="text-2xl tracking-tighter text-white md:text-5xl lg:text-7xl xl:text-8xl">
                 <div className="flex gap-1 md:gap-2 lg:gap-3 xl:gap-4">
