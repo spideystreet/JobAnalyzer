@@ -1,7 +1,6 @@
 "use client"
 
 import dynamic from 'next/dynamic'
-import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { 
@@ -16,26 +15,9 @@ import { useEffect, useMemo, useState, useCallback } from "react"
 import { cn } from "@/lib/utils"
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { LoaderCircle, ArrowRight } from "lucide-react"
 
-// Simplifier les animations tout en gardant l'effet de slide
-const pageVariants = {
-  hidden: { opacity: 0 },
-  visible: { 
-    opacity: 1,
-    transition: { staggerChildren: 0.1 }
-  }
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.3 }
-  }
-}
-
-// Lazy load seulement les composants lourds avec priorité
+// Lazy load seulement les composants lourds
 const Boxes = dynamic(() => import('@/components/ui/background-boxes').then(mod => {
   const BoxesComponent = mod.Boxes
   return (props: any) => (
@@ -62,6 +44,7 @@ const DynamicDotPattern = dynamic(() => import('@/components/ui/dot-pattern-1'),
 })
 
 const LandingPage: React.FC = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const router = useRouter()
 
   // Déplacer teamMembers à l'intérieur du composant
@@ -81,8 +64,15 @@ const LandingPage: React.FC = () => {
     github: 'https://github.com/spideystreet'
   }), [])
 
-  const handleDashboardClick = useCallback(() => {
-    router.push('/dashboard')
+  const handleDashboardClick = useCallback(async () => {
+    setIsLoading(true)
+    // Ajouter un petit délai pour voir l'animation
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    try {
+      await router.push('/dashboard')
+    } finally {
+      setIsLoading(false)
+    }
   }, [router])
 
   const handleSocialClick = useCallback((url: string) => {
@@ -121,15 +111,10 @@ const LandingPage: React.FC = () => {
         {socialButtons}
 
         {/* Hero Section avec ajustements responsifs */}
-        <div className="relative z-30 flex-1 flex flex-col items-center justify-center w-full mx-auto px-4 sm:px-6 lg:px-8 -mt-12 sm:-mt-16 md:-mt-20">
+        <div className="relative z-30 flex-1 flex flex-col items-center justify-center w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative flex flex-col items-center w-full max-w-[95vw] sm:max-w-[90vw] xl:max-w-[80vw]">
             {/* Badge et Tooltip juste au-dessus du texte violet */}
-            <motion.div
-              className="mb-4 sm:mb-6 w-full flex items-center justify-center z-50"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            >
+            <div className="mb-4 sm:mb-6 w-full flex items-center justify-center z-50">
               <div className="flex items-center justify-center w-auto">
                 <Badge 
                   variant="secondary" 
@@ -138,62 +123,49 @@ const LandingPage: React.FC = () => {
                   Powered by Spidey 👋
                 </Badge>
                 <div className="-ml-4 sm:-ml-6">
-                  <DynamicAnimatedTooltip 
+                  <AnimatedTooltip 
                     items={teamMembers} 
                     className="scale-[0.6] sm:scale-75 [&_img]:border-[2px] [&_img]:border-white"
                   />
                 </div>
               </div>
-            </motion.div>
+            </div>
 
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              className="inline-flex px-4 py-1.5 rounded-full border border-purple-500/30 bg-black/50 backdrop-blur-sm
-                text-purple-400 mb-4 sm:mb-6 text-base sm:text-lg md:text-xl
-                font-helvetica tracking-wide"
+            <p className="inline-flex px-4 py-1.5 rounded-full border border-purple-500/30 bg-black/50 backdrop-blur-sm
+              text-purple-400 mb-4 sm:mb-6 text-base sm:text-lg md:text-xl
+              font-helvetica tracking-wide"
             >
               Technos, Remote, Expertises et plus encore...
-            </motion.p>
+            </p>
 
-            <motion.div
-              variants={pageVariants}
-              initial="hidden"
-              animate="visible"
-              className="flex flex-col gap-1 sm:gap-2 md:gap-4 text-center w-full"
-            >
-              <motion.h1 
-                variants={itemVariants}
-                className="font-helvetica font-semibold text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl text-white tracking-tight leading-[1.1]"
-              >
+            <div className="flex flex-col gap-1 sm:gap-2 md:gap-4 text-center w-full">
+              <h1 className="font-helvetica font-semibold text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl text-white tracking-tight leading-[1.1]">
                 "Toutes les tendances
-              </motion.h1>
-              <motion.p 
-                variants={itemVariants}
-                className="font-helvetica font-thin text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-white tracking-wide leading-[1.2]"
-              >
+              </h1>
+              <p className="font-helvetica font-thin text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-white tracking-wide leading-[1.2]">
                 du marché de l'emploi
-              </motion.p>
-              <motion.h1 
-                variants={itemVariants}
-                className="font-helvetica font-semibold text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl text-white tracking-tight leading-[1.1]"
-              >
+              </p>
+              <h1 className="font-helvetica font-semibold text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl text-white tracking-tight leading-[1.1]">
                 dans l'IT..."
-              </motion.h1>
-            </motion.div>
+              </h1>
+            </div>
 
             {/* Bouton CTA avec espacement ajusté */}
-            <motion.div
-              className="mt-8 sm:mt-12 md:mt-16"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <DynamicInteractiveHoverButton 
+            <div className="mt-8 sm:mt-12 md:mt-16">
+              <Button
                 onClick={handleDashboardClick}
-              />
-            </motion.div>
+                disabled={isLoading}
+                data-loading={isLoading}
+                className="group relative w-48 h-14 bg-purple-500 hover:bg-purple-600 disabled:opacity-100 text-lg font-helvetica rounded-full"
+              >
+                <span className="group-data-[loading=true]:text-transparent">Go</span>
+                {isLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <LoaderCircle className="animate-spin" size={24} strokeWidth={2} aria-hidden="true" />
+                  </div>
+                )}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
