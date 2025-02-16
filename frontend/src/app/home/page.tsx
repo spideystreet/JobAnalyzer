@@ -150,7 +150,9 @@ const LandingPage: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3 }}
-              className="text-purple-400 mb-4 sm:mb-6 text-base sm:text-lg md:text-xl"
+              className="inline-flex px-4 py-1.5 rounded-full border border-purple-500/30 bg-black/50 backdrop-blur-sm
+                text-purple-400 mb-4 sm:mb-6 text-base sm:text-lg md:text-xl
+                font-helvetica tracking-wide"
             >
               Technos, Remote, Expertises et plus encore...
             </motion.p>
