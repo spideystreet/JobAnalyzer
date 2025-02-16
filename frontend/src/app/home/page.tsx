@@ -120,32 +120,32 @@ const LandingPage: React.FC = () => {
         {/* Boutons de réseaux sociaux en haut */}
         {socialButtons}
 
-        {/* Badge et Tooltip avec moins d'espace */}
-        <motion.div
-          className="mt-1 sm:mt-2 w-full flex items-center justify-center z-50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
-        >
-          <div className="flex items-center justify-center w-auto">
-            <Badge 
-              variant="secondary" 
-              className="bg-white text-black/80 hover:bg-white/90 font-helvetica font-normal pr-6 sm:pr-8 flex items-center h-5 sm:h-6 text-xs sm:text-sm"
-            >
-              Powered by Spidey 👋
-            </Badge>
-            <div className="-ml-4 sm:-ml-6">
-              <DynamicAnimatedTooltip 
-                items={teamMembers} 
-                className="scale-[0.6] sm:scale-75 [&_img]:border-[2px] [&_img]:border-white"
-              />
-            </div>
-          </div>
-        </motion.div>
-
         {/* Hero Section avec ajustements responsifs */}
         <div className="relative z-30 flex-1 flex flex-col items-center justify-center w-full mx-auto px-4 sm:px-6 lg:px-8 -mt-12 sm:-mt-16 md:-mt-20">
           <div className="relative flex flex-col items-center w-full max-w-[95vw] sm:max-w-[90vw] xl:max-w-[80vw]">
+            {/* Badge et Tooltip juste au-dessus du texte violet */}
+            <motion.div
+              className="mb-4 sm:mb-6 w-full flex items-center justify-center z-50"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="flex items-center justify-center w-auto">
+                <Badge 
+                  variant="secondary" 
+                  className="bg-white text-black/80 hover:bg-white/90 font-helvetica font-normal pr-6 sm:pr-8 flex items-center h-5 sm:h-6 text-xs sm:text-sm"
+                >
+                  Powered by Spidey 👋
+                </Badge>
+                <div className="-ml-4 sm:-ml-6">
+                  <DynamicAnimatedTooltip 
+                    items={teamMembers} 
+                    className="scale-[0.6] sm:scale-75 [&_img]:border-[2px] [&_img]:border-white"
+                  />
+                </div>
+              </div>
+            </motion.div>
+
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
