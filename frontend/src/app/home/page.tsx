@@ -65,14 +65,14 @@ const LandingPage: React.FC = () => {
       <div className="w-full h-full flex flex-col items-center pt-8 md:pt-12">
         {/* Boutons de réseaux sociaux en haut */}
         <div className="flex flex-wrap gap-2 max-w-xs w-full mx-auto z-50">
-          <Button className="flex-1" variant="outline" aria-label="Login with Google" size="icon">
-            <RiLinkedinFill className="text-[#DB4437] dark:text-primary" size={16} aria-hidden="true" />
+          <Button className="flex-1 bg-white hover:bg-white/90" variant="outline" aria-label="X" size="icon">
+            <RiTwitterXFill className="text-black" size={16} aria-hidden="true" />
           </Button>
-          <Button className="flex-1" variant="outline" aria-label="Login with X" size="icon">
-            <RiTwitterXFill className="text-[#14171a] dark:text-primary" size={16} aria-hidden="true" />
+          <Button className="flex-1 bg-white hover:bg-white/90" variant="outline" aria-label="LinkedIn" size="icon">
+            <RiLinkedinFill className="text-black" size={16} aria-hidden="true" />
           </Button>
-          <Button className="flex-1" variant="outline" aria-label="Login with GitHub" size="icon">
-            <RiGithubFill className="text-black dark:text-primary" size={16} aria-hidden="true" />
+          <Button className="flex-1 bg-white hover:bg-white/90" variant="outline" aria-label="GitHub" size="icon">
+            <RiGithubFill className="text-black" size={16} aria-hidden="true" />
           </Button>
         </div>
 
