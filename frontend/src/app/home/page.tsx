@@ -113,7 +113,6 @@ const LandingPage: React.FC = () => {
       <div className="relative w-full h-full flex flex-col justify-between">
         {/* Header - Badge et Tooltip */}
         <div className="pt-4 sm:pt-6 md:pt-8">
-          {/* Container avec hauteur fixe pour éviter le CLS */}
           <div className="h-[40px] w-full flex items-center justify-center">
             <motion.div
               className="flex items-center justify-center"
@@ -124,15 +123,15 @@ const LandingPage: React.FC = () => {
                 ease: "easeOut"
               }}
             >
-              <div className="flex items-center justify-center">
+              <div className="flex items-center">
                 <Badge 
                   variant="secondary" 
-                  className="bg-white text-black/80 hover:bg-white/90 font-helvetica font-normal pr-6 sm:pr-8 
-                    flex items-center h-5 sm:h-6 text-xs sm:text-sm min-w-[140px]"
+                  className="bg-white text-black/80 hover:bg-white/90 font-helvetica font-normal pr-5 sm:pr-7
+                    flex items-center h-5 sm:h-6 text-xs sm:text-sm min-w-[140px] relative"
                 >
                   Powered by Spidey 👋
                 </Badge>
-                <div className="-ml-4 sm:-ml-6">
+                <div className="w-[40px] -ml-5 sm:-ml-7 relative z-20">
                   <DynamicAnimatedTooltip 
                     items={teamMembers} 
                     className="scale-[0.6] sm:scale-75 [&_img]:border-[2px] [&_img]:border-white"
