@@ -14,9 +14,11 @@ import { usePersistedFilters } from '@/lib/hooks/usePersistedFilters'
 import { useStats } from '@/lib/hooks/useStats'
 import { Button } from '@/components/ui/button-aremettre'
 import { RefreshCw, FilterX, ArrowLeft, Smartphone } from 'lucide-react'
+import { RiTwitterXFill, RiLinkedinFill, RiGithubFill } from "@remixicon/react"
 import React from 'react'
 import { EmptyState } from '@/components/ui/empty-state'
 import Image from 'next/image'
+import { motion } from 'framer-motion'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -58,47 +60,86 @@ function LoadingSpinner() {
 }
 
 function MobileMessage() {
+  const socialUrls = {
+    twitter: 'https://x.com/spideystreet',
+    linkedin: 'https://www.linkedin.com/in/hicham-djebali-35bb271a2/',
+    github: 'https://github.com/spideystreet'
+  }
+
+  const handleSocialClick = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
+
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6">
-      <BackgroundGradientAnimation
-        gradientBackgroundStart="rgb(108, 0, 162)"
-        gradientBackgroundEnd="rgb(0, 17, 82)"
-        firstColor="18, 113, 255"
-        secondColor="221, 74, 255"
-        thirdColor="100, 220, 255"
-        fourthColor="200, 50, 50"
-        fifthColor="180, 180, 50"
-        pointerColor="140, 100, 255"
-        size="100%"
-        blendingValue="hard-light"
-        containerClassName="fixed inset-0"
-        interactive={false}
-      />
-      <div className="relative z-10 text-center space-y-6 max-w-md mx-auto">
-        <div className="relative w-48 h-48 mx-auto mb-6">
+    <div className="min-h-screen bg-gradient-to-b from-black via-purple-900/20 to-black text-white flex flex-col items-center justify-center p-6">
+      <motion.div 
+        className="relative z-10 text-center space-y-6 max-w-md mx-auto"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.div 
+          className="relative w-48 h-48 mx-auto mb-6"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           <Image
-            src="/images/spider3.jpg"
+            src="/images/SpideyCuisto.png"
             alt="Mobile version coming soon"
             fill
             className="object-contain"
             priority
           />
-        </div>
-        <Smartphone className="w-16 h-16 mx-auto text-purple-400" />
-        <h1 className="text-3xl font-bold font-helvetica">Version Mobile</h1>
-        <p className="text-lg text-white/80">
-          La version mobile de JobAnalyzer est en cours de développement. 
-          Pour une meilleure expérience, veuillez utiliser un ordinateur de bureau.
-        </p>
-        <Button
-          onClick={() => window.location.href = '/'}
-          variant="outline"
-          className="mt-6 bg-purple-500 hover:bg-purple-600 text-white border-none"
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.4 }}
         >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Retour à l'accueil
-        </Button>
-      </div>
+          <Smartphone className="w-16 h-16 mx-auto text-purple-400" />
+          <h1 className="text-3xl font-bold font-helvetica mt-4">Version Mobile</h1>
+          <p className="text-lg text-white/80 mt-2">
+            Oops ! Pas encore disponible sur mobile.
+            Mais ton fidèle Spidey est en train de préparer ça pour toi !
+          </p>
+        </motion.div>
+        <motion.div 
+          className="pt-4"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.6 }}
+        >
+          <p className="text-sm text-white/60 mb-3">
+            Suivez l'avancement sur mes réseaux
+          </p>
+          <div className="flex justify-center gap-2">
+            <Button onClick={() => handleSocialClick(socialUrls.twitter)} className="bg-white hover:bg-white/90 hover:scale-105 transition-transform" variant="outline" aria-label="X" size="icon">
+              <RiTwitterXFill className="text-black" size={16} aria-hidden="true" />
+            </Button>
+            <Button onClick={() => handleSocialClick(socialUrls.linkedin)} className="bg-white hover:bg-white/90 hover:scale-105 transition-transform" variant="outline" aria-label="LinkedIn" size="icon">
+              <RiLinkedinFill className="text-black" size={16} aria-hidden="true" />
+            </Button>
+            <Button onClick={() => handleSocialClick(socialUrls.github)} className="bg-white hover:bg-white/90 hover:scale-105 transition-transform" variant="outline" aria-label="GitHub" size="icon">
+              <RiGithubFill className="text-black" size={16} aria-hidden="true" />
+            </Button>
+          </div>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.8 }}
+        >
+          <Button
+            onClick={() => window.location.href = '/'}
+            variant="outline"
+            className="mt-6 bg-purple-500 hover:bg-purple-600 text-white border-none hover:scale-105 transition-transform"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour à l'accueil
+          </Button>
+        </motion.div>
+      </motion.div>
     </div>
   )
 }

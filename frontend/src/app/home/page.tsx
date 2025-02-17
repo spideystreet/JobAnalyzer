@@ -46,13 +46,30 @@ const DynamicDotPattern = dynamic(() => import('@/components/ui/dot-pattern-1'),
 
 // Ajouter le composant MobileMessage
 function MobileMessage() {
+  const socialUrls = {
+    twitter: 'https://x.com/spideystreet',
+    linkedin: 'https://www.linkedin.com/in/hicham-djebali-35bb271a2/',
+    github: 'https://github.com/spideystreet'
+  }
+
+  const handleSocialClick = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
+
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6">
-      <div className="absolute inset-0">
-        <Boxes />
-      </div>
-      <div className="relative z-10 text-center space-y-6 max-w-md mx-auto">
-        <div className="relative w-48 h-48 mx-auto mb-6">
+    <div className="min-h-screen bg-gradient-to-b from-black via-purple-900/20 to-black text-white flex flex-col items-center justify-center p-6">
+      <motion.div 
+        className="relative z-10 text-center space-y-6 max-w-md mx-auto"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.div 
+          className="relative w-48 h-48 mx-auto mb-6"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           <Image
             src="/images/SpideyCuisto.png"
             alt="Mobile version coming soon"
@@ -60,14 +77,38 @@ function MobileMessage() {
             className="object-contain"
             priority
           />
-        </div>
-        <Smartphone className="w-16 h-16 mx-auto text-purple-400" />
-        <h1 className="text-3xl font-bold font-helvetica">Version Mobile</h1>
-        <p className="text-lg text-white/80">
-          Oops ! Pas encore disponible sur mobile.
-          Mais ton fidèle Spidey est en train de préparer ça pour toi !
-        </p>
-      </div>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.4 }}
+        >
+          <Smartphone className="w-16 h-16 mx-auto text-purple-400" />
+          <h1 className="text-3xl font-bold font-helvetica mt-4">Version Mobile</h1>
+          <p className="text-lg text-white/80 mt-2">
+            But where is Spidey ?
+            Il prépare la version mobile pour toi ! En attendant, tu peux utiliser la version desktop sur ton ordi.
+          </p>
+        </motion.div>
+        <motion.div 
+          className="pt-4"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.6 }}
+        >
+          <p className="text-sm text-white/60 mb-3">
+            Suivez les avancées sur mes réseaux
+          </p>
+          <div className="flex justify-center gap-2">
+            <Button onClick={() => handleSocialClick(socialUrls.twitter)} className="bg-white hover:bg-white/90 hover:scale-105 transition-transform" variant="outline" aria-label="X" size="icon">
+              <RiTwitterXFill className="text-black" size={16} aria-hidden="true" />
+            </Button>
+            <Button onClick={() => handleSocialClick(socialUrls.linkedin)} className="bg-white hover:bg-white/90 hover:scale-105 transition-transform" variant="outline" aria-label="LinkedIn" size="icon">
+              <RiLinkedinFill className="text-black" size={16} aria-hidden="true" />
+            </Button>
+          </div>
+        </motion.div>
+      </motion.div>
     </div>
   )
 }
