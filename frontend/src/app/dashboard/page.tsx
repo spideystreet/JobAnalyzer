@@ -13,9 +13,10 @@ import { BackgroundGradientAnimation } from '@/components/ui/background-gradient
 import { usePersistedFilters } from '@/lib/hooks/usePersistedFilters'
 import { useStats } from '@/lib/hooks/useStats'
 import { Button } from '@/components/ui/button-aremettre'
-import { RefreshCw, FilterX, ArrowLeft } from 'lucide-react'
+import { RefreshCw, FilterX, ArrowLeft, Smartphone } from 'lucide-react'
 import React from 'react'
 import { EmptyState } from '@/components/ui/empty-state'
+import Image from 'next/image'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -56,10 +57,73 @@ function LoadingSpinner() {
   )
 }
 
+function MobileMessage() {
+  return (
+    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6">
+      <BackgroundGradientAnimation
+        gradientBackgroundStart="rgb(108, 0, 162)"
+        gradientBackgroundEnd="rgb(0, 17, 82)"
+        firstColor="18, 113, 255"
+        secondColor="221, 74, 255"
+        thirdColor="100, 220, 255"
+        fourthColor="200, 50, 50"
+        fifthColor="180, 180, 50"
+        pointerColor="140, 100, 255"
+        size="100%"
+        blendingValue="hard-light"
+        containerClassName="fixed inset-0"
+        interactive={false}
+      />
+      <div className="relative z-10 text-center space-y-6 max-w-md mx-auto">
+        <div className="relative w-48 h-48 mx-auto mb-6">
+          <Image
+            src="/images/spider3.jpg"
+            alt="Mobile version coming soon"
+            fill
+            className="object-contain"
+            priority
+          />
+        </div>
+        <Smartphone className="w-16 h-16 mx-auto text-purple-400" />
+        <h1 className="text-3xl font-bold font-helvetica">Version Mobile</h1>
+        <p className="text-lg text-white/80">
+          La version mobile de JobAnalyzer est en cours de développement. 
+          Pour une meilleure expérience, veuillez utiliser un ordinateur de bureau.
+        </p>
+        <Button
+          onClick={() => window.location.href = '/'}
+          variant="outline"
+          className="mt-6 bg-purple-500 hover:bg-purple-600 text-white border-none"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Retour à l'accueil
+        </Button>
+      </div>
+    </div>
+  )
+}
+
 function DashboardContent() {
   const { filters, updateFilters, resetFilters } = usePersistedFilters()
   const { data, isLoading, error, refetch } = useJobData(filters)
   const stats = useStats(data?.rawData)
+
+  const [isMobile, setIsMobile] = React.useState(false)
+
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  if (isMobile) {
+    return <MobileMessage />
+  }
 
   // Calculer les dates min et max à partir des données
   const { minDate, maxDate } = React.useMemo(() => {

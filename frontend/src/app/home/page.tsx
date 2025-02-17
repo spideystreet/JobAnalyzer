@@ -15,7 +15,7 @@ import { useEffect, useMemo, useState, useCallback } from "react"
 import { cn } from "@/lib/utils"
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { LoaderCircle, ArrowRight } from "lucide-react"
+import { LoaderCircle, ArrowRight, Smartphone } from "lucide-react"
 import { motion } from "framer-motion"
 
 // Lazy load seulement les composants lourds
@@ -44,9 +44,49 @@ const DynamicDotPattern = dynamic(() => import('@/components/ui/dot-pattern-1'),
   loading: () => <div className="w-full h-full" />
 })
 
+// Ajouter le composant MobileMessage
+function MobileMessage() {
+  return (
+    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6">
+      <div className="absolute inset-0">
+        <Boxes />
+      </div>
+      <div className="relative z-10 text-center space-y-6 max-w-md mx-auto">
+        <div className="relative w-48 h-48 mx-auto mb-6">
+          <Image
+            src="/images/SpideyCuisto.png"
+            alt="Mobile version coming soon"
+            fill
+            className="object-contain"
+            priority
+          />
+        </div>
+        <Smartphone className="w-16 h-16 mx-auto text-purple-400" />
+        <h1 className="text-3xl font-bold font-helvetica">Version Mobile</h1>
+        <p className="text-lg text-white/80">
+          Oops ! Pas encore disponible sur mobile.
+          Mais ton fidèle Spidey est en train de préparer ça pour toi !
+        </p>
+      </div>
+    </div>
+  )
+}
+
 const LandingPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const router = useRouter()
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Déplacer teamMembers à l'intérieur du composant
   const teamMembers = useMemo(() => [
@@ -96,108 +136,114 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="h-screen relative w-full overflow-hidden bg-black">
-      {/* Background boxes en arrière-plan absolu */}
-      <div className="absolute inset-0">
-        <Boxes />
-      </div>
+      {isMobile ? (
+        <MobileMessage />
+      ) : (
+        <>
+          {/* Background boxes en arrière-plan absolu */}
+          <div className="absolute inset-0">
+            <Boxes />
+          </div>
 
-      {/* Masque radial */}
-      <div className={cn(
-        "absolute inset-0",
-        "bg-black",
-        "[mask-image:radial-gradient(circle_at_center,transparent,white)]",
-        "pointer-events-none"
-      )} />
-      
-      {/* Contenu principal avec flex pour espacer les éléments */}
-      <div className="relative w-full h-full flex flex-col justify-between">
-        {/* Header - Badge et Tooltip */}
-        <div className="pt-14 sm:pt-16 md:pt-16">
-          <div className="h-[40px] w-full flex items-center justify-center">
-            <motion.div
-              className="flex items-center justify-center"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ 
-                duration: 0.4,
-                ease: "easeOut"
-              }}
-            >
-              <div className="flex items-center">
+          {/* Masque radial */}
+          <div className={cn(
+            "absolute inset-0",
+            "bg-black",
+            "[mask-image:radial-gradient(circle_at_center,transparent,white)]",
+            "pointer-events-none"
+          )} />
+          
+          {/* Contenu principal avec flex pour espacer les éléments */}
+          <div className="relative w-full h-full flex flex-col justify-between">
+            {/* Header - Badge et Tooltip */}
+            <div className="pt-14 sm:pt-16 md:pt-16">
+              <div className="h-[40px] w-full flex items-center justify-center">
+                <motion.div
+                  className="flex items-center justify-center"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ 
+                    duration: 0.4,
+                    ease: "easeOut"
+                  }}
+                >
+                  <div className="flex items-center">
+                    <Badge 
+                      variant="secondary" 
+                      className="bg-white text-black/80 hover:bg-white/90 font-helvetica font-normal pr-5 sm:pr-7
+                        flex items-center h-5 sm:h-6 text-xs sm:text-sm min-w-[140px] relative"
+                    >
+                      Powered by Spidey 👋
+                    </Badge>
+                    <div className="w-[40px] -ml-5 sm:-ml-7 relative z-20">
+                      <DynamicAnimatedTooltip 
+                        items={teamMembers} 
+                        className="scale-[0.6] sm:scale-75 [&_img]:border-[2px] [&_img]:border-white"
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+
+            {/* Hero Section - Centrée verticalement */}
+            <div className="flex-1 flex flex-col items-center justify-center w-full px-4 sm:px-6 lg:px-8">
+              <div className="w-full max-w-[95vw] sm:max-w-[90vw] xl:max-w-[80vw] flex flex-col items-center space-y-8">
                 <Badge 
                   variant="secondary" 
-                  className="bg-white text-black/80 hover:bg-white/90 font-helvetica font-normal pr-5 sm:pr-7
-                    flex items-center h-5 sm:h-6 text-xs sm:text-sm min-w-[140px] relative"
+                  className="bg-black text-purple-400 hover:bg-black/90 font-helvetica font-normal
+                    flex items-center rounded-full 
+                    border-2 border-white/20
+                    px-4 py-1.5 text-base sm:text-lg tracking-wide"
                 >
-                  Powered by Spidey 👋
+                  Technos, Remote, Expertises et plus encore...
                 </Badge>
-                <div className="w-[40px] -ml-5 sm:-ml-7 relative z-20">
-                  <DynamicAnimatedTooltip 
-                    items={teamMembers} 
-                    className="scale-[0.6] sm:scale-75 [&_img]:border-[2px] [&_img]:border-white"
-                  />
-                </div>
+
+                <motion.div
+                  className="text-center w-full space-y-2 sm:space-y-4"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {/* Titre principal */}
+                  <h1 className="font-helvetica font-semibold text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl text-white tracking-tight leading-[1.1]">
+                    "Toutes les tendances
+                  </h1>
+                  <p className="font-helvetica font-thin text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-white tracking-wide leading-[1.2]">
+                    du marché de l'emploi
+                  </p>
+                  <h1 className="font-helvetica font-semibold text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl text-white tracking-tight leading-[1.1]">
+                    dans l'IT..."
+                  </h1>
+                </motion.div>
+
+                <motion.div>
+                  <Button
+                    onClick={handleDashboardClick}
+                    loading={isLoading}
+                    className="group relative w-16 h-16 sm:w-20 sm:h-20 
+                      bg-purple-500 hover:bg-purple-600 
+                      disabled:opacity-100 
+                      text-base sm:text-lg font-helvetica 
+                      rounded-full p-0 
+                      flex items-center justify-center
+                      text-white
+                      border-2 border-white/80
+                      transition-colors"
+                  >
+                    Go
+                  </Button>
+                </motion.div>
               </div>
-            </motion.div>
+            </div>
+
+            {/* Footer - Boutons sociaux */}
+            <div className="pb-4 sm:pb-6 md:pb-8">
+              {socialButtons}
+            </div>
           </div>
-        </div>
-
-        {/* Hero Section - Centrée verticalement */}
-        <div className="flex-1 flex flex-col items-center justify-center w-full px-4 sm:px-6 lg:px-8">
-          <div className="w-full max-w-[95vw] sm:max-w-[90vw] xl:max-w-[80vw] flex flex-col items-center space-y-8">
-            <Badge 
-              variant="secondary" 
-              className="bg-black text-purple-400 hover:bg-black/90 font-helvetica font-normal
-                flex items-center rounded-full 
-                border-2 border-white/20
-                px-4 py-1.5 text-base sm:text-lg tracking-wide"
-            >
-              Technos, Remote, Expertises et plus encore...
-            </Badge>
-
-            <motion.div
-              className="text-center w-full space-y-2 sm:space-y-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              {/* Titre principal */}
-              <h1 className="font-helvetica font-semibold text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl text-white tracking-tight leading-[1.1]">
-                "Toutes les tendances
-              </h1>
-              <p className="font-helvetica font-thin text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-white tracking-wide leading-[1.2]">
-                du marché de l'emploi
-              </p>
-              <h1 className="font-helvetica font-semibold text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl text-white tracking-tight leading-[1.1]">
-                dans l'IT..."
-              </h1>
-            </motion.div>
-
-            <motion.div>
-              <Button
-                onClick={handleDashboardClick}
-                loading={isLoading}
-                className="group relative w-16 h-16 sm:w-20 sm:h-20 
-                  bg-purple-500 hover:bg-purple-600 
-                  disabled:opacity-100 
-                  text-base sm:text-lg font-helvetica 
-                  rounded-full p-0 
-                  flex items-center justify-center
-                  text-white
-                  border-2 border-white/80
-                  transition-colors"
-              >
-                Go
-              </Button>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Footer - Boutons sociaux */}
-        <div className="pb-4 sm:pb-6 md:pb-8">
-          {socialButtons}
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }
