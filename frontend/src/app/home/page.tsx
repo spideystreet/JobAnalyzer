@@ -195,10 +195,10 @@ const LandingPage: React.FC = () => {
           )} />
           
           {/* Contenu principal avec flex pour espacer les éléments */}
-          <div className="relative w-full h-full flex flex-col justify-between">
+          <div className="relative w-full h-full flex flex-col">
             {/* Header - Badge et Tooltip */}
-            <div className="pt-14 sm:pt-16 md:pt-16">
-              <div className="h-[40px] w-full flex items-center justify-center">
+            <div className="flex-none pt-6 sm:pt-8 lg:pt-10">
+              <div className="w-full flex items-center justify-center">
                 <motion.div
                   className="flex items-center justify-center"
                   initial={{ opacity: 0, y: -10 }}
@@ -227,42 +227,44 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Hero Section - Centrée verticalement */}
-            <div className="flex-1 flex flex-col items-center justify-center w-full px-4 sm:px-6 lg:px-8">
-              <div className="w-full max-w-[95vw] sm:max-w-[90vw] xl:max-w-[80vw] flex flex-col items-center space-y-8">
+            {/* Hero Section - Centrée verticalement avec flex-auto */}
+            <div className="flex-auto flex items-center justify-center min-h-0">
+              <div className="w-full max-w-[95vw] sm:max-w-[90vw] xl:max-w-[80vw] flex flex-col items-center space-y-6 sm:space-y-8">
                 <Badge 
                   variant="secondary" 
                   className="bg-black text-purple-400 hover:bg-black/90 font-helvetica font-normal
                     flex items-center rounded-full 
                     border-2 border-white/20
-                    px-4 py-1.5 text-base sm:text-lg tracking-wide"
+                    px-4 py-1.5 text-sm sm:text-base lg:text-lg tracking-wide"
                 >
                   Technos, Remote, Expertises et plus encore...
                 </Badge>
 
                 <motion.div
-                  className="text-center w-full space-y-2 sm:space-y-4"
+                  className="text-center w-full"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.3 }}
                 >
-                  {/* Titre principal */}
-                  <h1 className="font-helvetica font-semibold text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl text-white tracking-tight leading-[1.1]">
-                    "Toutes les tendances
-                  </h1>
-                  <p className="font-helvetica font-thin text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-white tracking-wide leading-[1.2]">
-                    du marché de l'emploi
-                  </p>
-                  <h1 className="font-helvetica font-semibold text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl text-white tracking-tight leading-[1.1]">
-                    dans l'IT..."
-                  </h1>
+                  {/* Titre principal avec tailles adaptatives */}
+                  <div className="space-y-1 sm:space-y-2">
+                    <h1 className="font-helvetica font-semibold text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-white tracking-tight leading-[1.1]">
+                      "Toutes les tendances
+                    </h1>
+                    <p className="font-helvetica font-thin text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white tracking-wide leading-[1.2]">
+                      du marché de l'emploi
+                    </p>
+                    <h1 className="font-helvetica font-semibold text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-white tracking-tight leading-[1.1]">
+                      dans l'IT..."
+                    </h1>
+                  </div>
                 </motion.div>
 
                 <motion.div>
                   <Button
                     onClick={handleDashboardClick}
                     loading={isLoading}
-                    className="group relative w-16 h-16 sm:w-20 sm:h-20 
+                    className="group relative w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 
                       bg-purple-500 hover:bg-purple-600 
                       disabled:opacity-100 
                       text-base sm:text-lg font-helvetica 
@@ -279,7 +281,7 @@ const LandingPage: React.FC = () => {
             </div>
 
             {/* Footer - Boutons sociaux */}
-            <div className="pb-4 sm:pb-6 md:pb-8">
+            <div className="flex-none pb-4 sm:pb-6 lg:pb-8">
               {socialButtons}
             </div>
           </div>
