@@ -20,6 +20,14 @@ import { EmptyState } from '@/components/ui/empty-state'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -246,40 +254,54 @@ function DashboardContent() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
             <div className="flex flex-col gap-4">
-              <div className="bg-black/80 backdrop-blur-xl rounded-lg border border-white/10 p-4">
-                <h2 className="text-2xl font-helvetica mb-2 text-white">Distribution des régions</h2>
-                <p className="text-sm text-white/60 mb-4">Top 3 des régions les plus attractives</p>
-                {isLoading ? (
-                  <LoadingSpinner />
-                ) : !data?.rawData?.length ? (
-                  <EmptyState 
-                    title="Régions"
-                    description="Aucune donnée disponible"
-                  />
-                ) : (
-                  <div className="grid grid-cols-3 gap-2">
-                    {[0, 1, 2].map((index) => (
-                      <div key={index} className="flex flex-col items-center bg-white/5 rounded-lg p-2">
-                        <div className="flex items-center gap-1 mb-1">
-                          <span className={cn(
-                            "text-black text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center",
-                            index === 0 ? "bg-yellow-500" : index === 1 ? "bg-gray-300" : "bg-amber-600"
-                          )}>
-                            #{index + 1}
+              <Card className="bg-black/80 backdrop-blur-xl border-white/10">
+                <CardHeader>
+                  <CardTitle className="text-white">Distribution des régions</CardTitle>
+                  <CardDescription className="text-white/60">
+                    Top 3 des régions les plus attractives
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {isLoading ? (
+                    <LoadingSpinner />
+                  ) : !data?.rawData?.length ? (
+                    <EmptyState 
+                      title="Régions"
+                      description="Aucune donnée disponible"
+                    />
+                  ) : (
+                    <div className="grid grid-cols-3 gap-2">
+                      {[0, 1, 2].map((index) => (
+                        <div key={index} className="flex flex-col items-center bg-white/5 rounded-lg p-2">
+                          <div className="flex items-center gap-1 mb-1">
+                            <span className={cn(
+                              "text-black text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center",
+                              index === 0 ? "bg-yellow-500" : index === 1 ? "bg-gray-300" : "bg-amber-600"
+                            )}>
+                              #{index + 1}
+                            </span>
+                            <span className="text-white text-sm truncate">
+                              {stats?.regionStats?.[index]?.region || 'N/A'}
+                            </span>
+                          </div>
+                          <span className="text-white/80 font-bold">
+                            {stats?.regionStats?.[index]?.count || 0}
                           </span>
-                          <span className="text-white text-sm truncate">
-                            {stats?.regionStats?.[index]?.region || 'N/A'}
-                          </span>
+                          <span className="text-xs text-white/60">offres</span>
                         </div>
-                        <span className="text-white/80 font-bold">
-                          {stats?.regionStats?.[index]?.count || 0}
-                        </span>
-                        <span className="text-xs text-white/60">offres</span>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+                <CardFooter className="flex-col items-start gap-2 text-sm">
+                  <div className="flex gap-2 font-medium leading-none text-white">
+                    {stats?.regionStats?.[0]?.region || 'N/A'} est la région la plus attractive
                   </div>
-                )}
-              </div>
+                  <div className="leading-none text-white/60">
+                    Basé sur {data?.rawData?.length || 0} offres analysées
+                  </div>
+                </CardFooter>
+              </Card>
 
               {isLoading ? (
                 <LoadingSpinner />
