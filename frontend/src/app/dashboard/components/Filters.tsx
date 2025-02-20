@@ -188,7 +188,12 @@ export default function Filters({ onFilterChange, initialFilters, minDate, maxDa
             <PopoverTrigger asChild>
               <Button 
                 variant="outline" 
-                className="w-full justify-start bg-black/20 backdrop-blur-xl border-white/10"
+                className="w-full justify-start bg-black/20 backdrop-blur-xl border-white/10
+                  active:bg-black/30
+                  transition-all duration-200
+                  hover:scale-[1.02] active:scale-[0.98]
+                  touch-manipulation select-none
+                  -webkit-tap-highlight-color-transparent"
               >
                 <span className="text-white/50">
                   {filters.technologies.length === 0 
@@ -214,7 +219,10 @@ export default function Filters({ onFilterChange, initialFilters, minDate, maxDa
                       onClick={() => toggleFilter('technologies', tech)}
                       className={cn(
                         "w-full text-left px-2 py-1.5 text-sm rounded-md mb-1 flex items-center",
-                        "text-white hover:bg-white/10",
+                        "text-white hover:bg-white/10 active:bg-white/20",
+                        "transition-all duration-200",
+                        "touch-manipulation select-none",
+                        "-webkit-tap-highlight-color-transparent",
                         filters.technologies.includes(tech) ? "bg-white/10" : ""
                       )}
                     >

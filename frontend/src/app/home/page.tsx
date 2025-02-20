@@ -8,23 +8,25 @@ import {
   RiLinkedinFill, 
   RiGithubFill 
 } from "@remixicon/react"
-import { AnimatedTooltip } from "@/components/ui/animated-tooltip"
-import { InteractiveHoverButton } from "@/components/ui/interactive-hover-button"
-import { DotPattern } from '@/components/ui/dot-pattern-1'
 import { useEffect, useMemo, useState, useCallback } from "react"
 import { cn } from "@/lib/utils"
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { LoaderCircle, ArrowRight } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { motion } from "framer-motion"
 
-// Lazy load seulement les composants lourds
-const Boxes = dynamic(() => import('@/components/ui/background-boxes').then(mod => {
-  const BoxesComponent = mod.Boxes
-  return (props: any) => (
-    <BoxesComponent {...props} rows={20} cols={15} />
-  )
-}), {
+// Lazy load avec condition pour mobile
+const Boxes = dynamic(() => {
+  if (typeof window !== 'undefined' && window.innerWidth < 768) {
+    return Promise.resolve(() => null)
+  }
+  return import('@/components/ui/background-boxes').then(mod => {
+    const BoxesComponent = mod.Boxes
+    return (props: any) => (
+      <BoxesComponent {...props} rows={20} cols={15} />
+    )
+  })
+}, {
   ssr: false,
   loading: () => (
     <div className="w-full h-full bg-gradient-to-b from-black to-purple-900/20" />
@@ -35,20 +37,10 @@ const DynamicAnimatedTooltip = dynamic(() => import('@/components/ui/animated-to
   ssr: false
 })
 
-const DynamicInteractiveHoverButton = dynamic(() => import('@/components/ui/interactive-hover-button').then(mod => mod.InteractiveHoverButton), {
-  ssr: false
-})
-
-const DynamicDotPattern = dynamic(() => import('@/components/ui/dot-pattern-1'), {
-  ssr: false,
-  loading: () => <div className="w-full h-full" />
-})
-
 const LandingPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const router = useRouter()
 
-  // Déplacer teamMembers à l'intérieur du composant
   const teamMembers = useMemo(() => [
     {
       id: 1,
@@ -58,7 +50,6 @@ const LandingPage: React.FC = () => {
     }
   ], [])
 
-  // Mémoriser les URLs
   const socialUrls = useMemo(() => ({
     twitter: 'https://x.com/spideystreet',
     linkedin: 'https://www.linkedin.com/in/hicham-djebali-35bb271a2/',
@@ -66,8 +57,10 @@ const LandingPage: React.FC = () => {
   }), [])
 
   const handleDashboardClick = useCallback(async () => {
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      navigator.vibrate(50)
+    }
     setIsLoading(true)
-    await new Promise(resolve => setTimeout(resolve, 1000))
     try {
       await router.push('/dashboard')
     } finally {
@@ -76,18 +69,51 @@ const LandingPage: React.FC = () => {
   }, [router])
 
   const handleSocialClick = useCallback((url: string) => {
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      navigator.vibrate(50)
+    }
     window.open(url, '_blank', 'noopener,noreferrer')
   }, [])
 
   const socialButtons = useMemo(() => (
     <div className="flex flex-wrap justify-center gap-2 max-w-xs w-full mx-auto z-50">
-      <Button onClick={() => handleSocialClick(socialUrls.twitter)} className="bg-white hover:bg-white/90 hover:scale-105 transition-transform" variant="outline" aria-label="X" size="icon">
+      <Button 
+        onClick={() => handleSocialClick(socialUrls.twitter)} 
+        className="bg-white hover:bg-white/90 active:bg-white/70
+          transition-all duration-200
+          hover:scale-105 active:scale-95
+          touch-manipulation select-none
+          -webkit-tap-highlight-color-transparent" 
+        variant="outline" 
+        aria-label="X" 
+        size="icon"
+      >
         <RiTwitterXFill className="text-black" size={16} aria-hidden="true" />
       </Button>
-      <Button onClick={() => handleSocialClick(socialUrls.linkedin)} className="bg-white hover:bg-white/90 hover:scale-105 transition-transform" variant="outline" aria-label="LinkedIn" size="icon">
+      <Button 
+        onClick={() => handleSocialClick(socialUrls.linkedin)} 
+        className="bg-white hover:bg-white/90 active:bg-white/70
+          transition-all duration-200
+          hover:scale-105 active:scale-95
+          touch-manipulation select-none
+          -webkit-tap-highlight-color-transparent" 
+        variant="outline" 
+        aria-label="LinkedIn" 
+        size="icon"
+      >
         <RiLinkedinFill className="text-black" size={16} aria-hidden="true" />
       </Button>
-      <Button onClick={() => handleSocialClick(socialUrls.github)} className="bg-white hover:bg-white/90 hover:scale-105 transition-transform" variant="outline" aria-label="GitHub" size="icon">
+      <Button 
+        onClick={() => handleSocialClick(socialUrls.github)} 
+        className="bg-white hover:bg-white/90 active:bg-white/70
+          transition-all duration-200
+          hover:scale-105 active:scale-95
+          touch-manipulation select-none
+          -webkit-tap-highlight-color-transparent" 
+        variant="outline" 
+        aria-label="GitHub" 
+        size="icon"
+      >
         <RiGithubFill className="text-black" size={16} aria-hidden="true" />
       </Button>
     </div>
@@ -95,12 +121,10 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen relative w-full overflow-hidden bg-black">
-      {/* Background boxes en arrière-plan absolu */}
       <div className="absolute inset-0">
         <Boxes />
       </div>
 
-      {/* Masque radial */}
       <div className={cn(
         "absolute inset-0",
         "bg-black",
@@ -108,10 +132,8 @@ const LandingPage: React.FC = () => {
         "pointer-events-none"
       )} />
       
-      {/* Contenu principal avec flex pour espacer les éléments */}
       <div className="relative w-full min-h-screen flex flex-col px-4 sm:px-6">
-        {/* Header - Badge et Tooltip */}
-        <div className="flex-none pt-6 sm:pt-8 lg:pt-10">
+        <div className="flex-none pt-4 sm:pt-6 lg:pt-8">
           <div className="w-full flex items-center justify-center">
             <motion.div
               className="flex items-center justify-center"
@@ -138,9 +160,8 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Hero Section - Centrée verticalement avec flex-auto */}
-        <div className="flex-auto flex items-center justify-center py-8 sm:py-12">
-          <div className="w-full max-w-[95vw] sm:max-w-[90vw] xl:max-w-[80vw] flex flex-col items-center space-y-6 sm:space-y-8">
+        <div className="flex-auto flex items-center justify-center py-4 sm:py-8">
+          <div className="w-full max-w-[95vw] sm:max-w-[90vw] xl:max-w-[80vw] flex flex-col items-center space-y-4 sm:space-y-6">
             <Badge 
               variant="secondary" 
               className="bg-black text-purple-400 hover:bg-black/90 font-helvetica font-normal
@@ -159,22 +180,21 @@ const LandingPage: React.FC = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3 }}
             >
-              {/* Titre principal avec tailles adaptatives */}
-              <div className="space-y-1 sm:space-y-2">
+              <div className="space-y-1">
                 <h1 className="font-helvetica font-semibold 
-                  text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 
+                  text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl
                   text-white tracking-tight leading-[1.1]"
                 >
                   "Toutes les tendances
                 </h1>
                 <p className="font-helvetica font-thin 
-                  text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 
+                  text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl
                   text-white tracking-wide leading-[1.2]"
                 >
                   du marché de l'emploi
                 </p>
                 <h1 className="font-helvetica font-semibold 
-                  text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 
+                  text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl
                   text-white tracking-tight leading-[1.1]"
                 >
                   dans l'IT..."
@@ -183,34 +203,40 @@ const LandingPage: React.FC = () => {
             </motion.div>
 
             <motion.div>
-              <Button
+              <button
                 onClick={handleDashboardClick}
-                loading={isLoading}
+                disabled={isLoading}
                 className="group relative 
-                  w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 
-                  bg-purple-500 hover:bg-purple-600 
+                  w-16 h-16 xs:w-20 xs:h-20 sm:w-24 sm:h-24
+                  bg-purple-500 hover:bg-purple-600 active:bg-purple-700
                   disabled:opacity-100 
-                  text-sm xs:text-base sm:text-lg font-helvetica 
-                  rounded-full p-0 
+                  text-lg xs:text-xl sm:text-2xl font-helvetica 
+                  rounded-full
                   flex items-center justify-center
                   text-white
                   border-2 border-white/80
-                  transition-all
-                  hover:scale-105"
+                  transition-all duration-200
+                  hover:scale-105 active:scale-95
+                  touch-manipulation select-none
+                  -webkit-tap-highlight-color-transparent
+                  shadow-lg"
               >
-                Go
-              </Button>
+                {isLoading ? (
+                  <div className="w-6 h-6 border-2 border-white rounded-full animate-spin border-t-transparent" />
+                ) : (
+                  "Go"
+                )}
+              </button>
             </motion.div>
           </div>
         </div>
 
-        {/* Footer - Boutons sociaux */}
-        <div className="flex-none pb-4 sm:pb-6 lg:pb-8">
+        <div className="flex-none pb-4 sm:pb-6">
           {socialButtons}
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default LandingPage;
+export default LandingPage

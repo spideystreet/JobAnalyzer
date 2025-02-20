@@ -196,7 +196,12 @@ function DashboardContent() {
               <Button
                 onClick={() => window.location.href = '/'}
                 variant="ghost"
-                className="text-white hover:text-white/80"
+                className="text-white hover:text-white/80 
+                  active:text-white/60
+                  transition-all duration-200
+                  hover:scale-105 active:scale-95
+                  touch-manipulation select-none
+                  -webkit-tap-highlight-color-transparent"
                 aria-label="Retour à l'accueil"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
@@ -209,7 +214,12 @@ function DashboardContent() {
             <Button
               onClick={resetFilters}
               variant="ghost" 
-              className="text-white hover:text-white/80"
+              className="text-white hover:text-white/80
+                active:text-white/60
+                transition-all duration-200
+                hover:scale-105 active:scale-95
+                touch-manipulation select-none
+                -webkit-tap-highlight-color-transparent"
               aria-label="Réinitialiser tous les filtres"
             >
               <FilterX className="w-4 h-4 mr-2" />
