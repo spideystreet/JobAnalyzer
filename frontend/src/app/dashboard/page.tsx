@@ -19,6 +19,7 @@ import React from 'react'
 import { EmptyState } from '@/components/ui/empty-state'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { cn } from '@/lib/utils'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -149,6 +150,12 @@ function DashboardContent() {
   const { data, isLoading, error, refetch } = useJobData(filters)
   const stats = useStats(data?.rawData)
 
+  React.useEffect(() => {
+    console.log('Stats dans le composant:', stats)
+    console.log('RegionStats dans le composant:', stats?.regionStats)
+    console.log('Données brutes:', data?.rawData)
+  }, [stats, data])
+
   // Calculer les dates min et max à partir des données
   const { minDate, maxDate } = React.useMemo(() => {
     if (!data?.rawData?.length) return { minDate: undefined, maxDate: undefined }
@@ -239,73 +246,87 @@ function DashboardContent() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
             <div className="flex flex-col gap-4">
-              <div className="flex flex-col">
+              <div className="bg-black/80 backdrop-blur-xl rounded-lg border border-white/10 p-4">
+                <h2 className="text-2xl font-helvetica mb-2 text-white">Distribution des régions</h2>
+                <p className="text-sm text-white/60 mb-4">Top 3 des régions les plus attractives</p>
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : !data?.rawData?.length ? (
                   <EmptyState 
-                    title="Distribution par région"
-                    description="Répartition des TJM par région"
+                    title="Régions"
+                    description="Aucune donnée disponible"
                   />
                 ) : (
-                  <RegionTJMChart data={data.rawData} />
+                  <div className="grid grid-cols-3 gap-2">
+                    {[0, 1, 2].map((index) => (
+                      <div key={index} className="flex flex-col items-center bg-white/5 rounded-lg p-2">
+                        <div className="flex items-center gap-1 mb-1">
+                          <span className={cn(
+                            "text-black text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center",
+                            index === 0 ? "bg-yellow-500" : index === 1 ? "bg-gray-300" : "bg-amber-600"
+                          )}>
+                            #{index + 1}
+                          </span>
+                          <span className="text-white text-sm truncate">
+                            {stats?.regionStats?.[index]?.region || 'N/A'}
+                          </span>
+                        </div>
+                        <span className="text-white/80 font-bold">
+                          {stats?.regionStats?.[index]?.count || 0}
+                        </span>
+                        <span className="text-xs text-white/60">offres</span>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
 
-              <div className="flex flex-col">
-                {isLoading ? (
-                  <LoadingSpinner />
-                ) : !data?.rawData?.length ? (
-                  <EmptyState 
-                    title="Top des entreprises"
-                    description="Répartition par type d'entreprise"
-                  />
-                ) : (
-                  <TopCompaniesChart data={stats.companyTypeStats} />
-                )}
-              </div>
-            </div>
-
-            <div className="h-full">
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.rawData?.length ? (
                 <EmptyState 
-                  title="Distribution par expérience"
-                  description="Répartition des offres par niveau d'expérience"
+                  title="Top des entreprises"
+                  description="Répartition par type d'entreprise"
                 />
               ) : (
-                <ExperienceDistributionChart data={data.rawData} />
+                <TopCompaniesChart data={stats.companyTypeStats} />
               )}
             </div>
 
-            <div className="h-full">
-              {isLoading ? (
-                <LoadingSpinner />
-              ) : !data?.rawData?.length ? (
-                <EmptyState 
-                  title="Distribution par domaine"
-                  description="Répartition des offres par domaine"
-                />
-              ) : (
-                <DomainDistributionChart data={stats.domainStats} />
-              )}
-            </div>
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : !data?.rawData?.length ? (
+              <EmptyState 
+                title="Distribution par expérience"
+                description="Répartition des offres par niveau d'expérience"
+              />
+            ) : (
+              <ExperienceDistributionChart data={data.rawData} />
+            )}
 
-            <div className="h-full">
-              {isLoading ? (
-                <LoadingSpinner />
-              ) : !data?.tjmData ? (
-                <EmptyState 
-                  title="Technologies"
-                  description="Répartition des TJM par technologie"
-                />
-              ) : (
-                <TechDistributionChart data={data.tjmData} />
-              )}
-            </div>
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : !data?.rawData?.length ? (
+              <EmptyState 
+                title="Distribution par domaine"
+                description="Répartition des offres par domaine"
+              />
+            ) : (
+              <DomainDistributionChart data={stats.domainStats} />
+            )}
+
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : !data?.tjmData ? (
+              <EmptyState 
+                title="Technologies"
+                description="Top 10 des technologies les plus demandées"
+              />
+            ) : (
+              <TechDistributionChart data={data.tjmData} />
+            )}
             
-            <div className="lg:col-span-2 h-full">
+            <div className="lg:col-span-2">
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.rawData?.length ? (

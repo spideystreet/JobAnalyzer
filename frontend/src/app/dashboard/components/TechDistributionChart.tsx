@@ -2,6 +2,7 @@
 
 import { TrendingUp } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts"
+import { useMemo } from 'react'
 
 import {
   Card,
@@ -24,6 +25,23 @@ interface TechDistributionChartProps {
 }
 
 export default function TechDistributionChart({ data }: TechDistributionChartProps) {
+  const processedData = useMemo(() => {
+    // Compter les occurrences de chaque technologie
+    const techCount = data.reduce((acc, curr) => {
+      const techs = curr.TECHNOS || []
+      techs.forEach((tech: string) => {
+        acc[tech] = (acc[tech] || 0) + 1
+      })
+      return acc
+    }, {} as Record<string, number>)
+
+    // Convertir en tableau et trier par nombre d'occurrences
+    return Object.entries(techCount)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10) // Prendre les 10 premiers
+  }, [data])
+
   if (!Array.isArray(data) || data.length === 0) {
     return (
       <EmptyState 
@@ -87,43 +105,37 @@ export default function TechDistributionChart({ data }: TechDistributionChartPro
           <div className="h-[400px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart 
-                data={chartData} 
-                margin={{ top: 20, right: 32, bottom: 20, left: 150 }}
+                data={processedData} 
+                margin={{ top: 5, right: 30, left: 80, bottom: 5 }}
                 layout="vertical"
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                 <XAxis 
                   type="number" 
-                  stroke="rgba(255,255,255,0.5)"
+                  domain={[0, 'dataMax']}
                   tickFormatter={(value) => `${value}`}
+                  tick={{ fill: 'rgba(255, 255, 255, 0.6)' }}
                 />
                 <YAxis 
                   type="category" 
                   dataKey="name" 
-                  stroke="rgba(255,255,255,0.5)"
-                  width={140}
-                  tick={{ 
-                    fill: 'rgba(255,255,255,0.8)',
-                    fontSize: 12
-                  }}
+                  tick={{ fill: 'rgba(255, 255, 255, 0.8)' }}
+                  width={80}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "rgba(0,0,0,0.8)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    borderRadius: "6px",
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '8px',
+                    backdropFilter: 'blur(10px)',
                   }}
-                  labelStyle={{ color: "white" }}
-                  itemStyle={{ color: "white" }}
-                  formatter={(value: number, name: string) => {
-                    if (name === "count") return [`${value} offres`, "Nombre d'offres"]
-                    if (name === "avgTJM") return [`${value}€`, "TJM moyen"]
-                    return [value, name]
-                  }}
+                  itemStyle={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                  labelStyle={{ color: 'rgba(255, 255, 255, 0.6)' }}
+                  formatter={(value: number) => [`${value} offres`, 'Nombre d\'offres']}
                 />
                 <Bar 
                   dataKey="count" 
-                  fill="hsl(var(--chart-1))" 
+                  fill="rgba(147, 51, 234, 0.8)" 
                   radius={[0, 4, 4, 0]}
                 />
               </BarChart>

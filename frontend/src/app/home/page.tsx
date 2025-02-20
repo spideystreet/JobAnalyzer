@@ -132,8 +132,8 @@ const LandingPage: React.FC = () => {
         "pointer-events-none"
       )} />
       
-      <div className="relative w-full min-h-screen flex flex-col px-4 sm:px-6">
-        <div className="flex-none pt-4 sm:pt-6 lg:pt-8">
+      <div className="relative w-full min-h-screen flex flex-col justify-between px-4 sm:px-6">
+        <div className="flex-none pt-2 xs:pt-4 sm:pt-6 lg:pt-8">
           <div className="w-full flex items-center justify-center">
             <motion.div
               className="flex items-center justify-center"
@@ -160,14 +160,14 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex-auto flex items-center justify-center py-4 sm:py-8">
-          <div className="w-full max-w-[95vw] sm:max-w-[90vw] xl:max-w-[80vw] flex flex-col items-center space-y-4 sm:space-y-6">
+        <div className="flex-auto flex items-center justify-center">
+          <div className="w-full max-w-[95vw] sm:max-w-[90vw] xl:max-w-[80vw] flex flex-col items-center space-y-2 xs:space-y-3 sm:space-y-6">
             <Badge 
               variant="secondary" 
               className="bg-black text-purple-400 hover:bg-black/90 font-helvetica font-normal
                 flex items-center rounded-full 
                 border-2 border-white/20
-                px-3 sm:px-4 py-1 sm:py-1.5 
+                px-2 sm:px-4 py-0.5 sm:py-1.5 
                 text-xs sm:text-sm lg:text-base 
                 tracking-wide"
             >
@@ -180,21 +180,21 @@ const LandingPage: React.FC = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="space-y-1">
+              <div className="space-y-0">
                 <h1 className="font-helvetica font-semibold 
-                  text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl
+                  text-xl xs:text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl
                   text-white tracking-tight leading-[1.1]"
                 >
                   "Toutes les tendances
                 </h1>
                 <p className="font-helvetica font-thin 
-                  text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl
-                  text-white tracking-wide leading-[1.2]"
+                  text-base xs:text-lg sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl
+                  text-white tracking-wide leading-[1.1]"
                 >
                   du marché de l'emploi
                 </p>
                 <h1 className="font-helvetica font-semibold 
-                  text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl
+                  text-xl xs:text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl
                   text-white tracking-tight leading-[1.1]"
                 >
                   dans l'IT..."
@@ -207,10 +207,10 @@ const LandingPage: React.FC = () => {
                 onClick={handleDashboardClick}
                 disabled={isLoading}
                 className="group relative 
-                  w-16 h-16 xs:w-20 xs:h-20 sm:w-24 sm:h-24
+                  w-12 h-12 xs:w-14 xs:h-14 sm:w-20 sm:h-20
                   bg-purple-500 hover:bg-purple-600 active:bg-purple-700
                   disabled:opacity-100 
-                  text-lg xs:text-xl sm:text-2xl font-helvetica 
+                  text-base xs:text-lg sm:text-xl font-helvetica 
                   rounded-full
                   flex items-center justify-center
                   text-white
@@ -222,7 +222,7 @@ const LandingPage: React.FC = () => {
                   shadow-lg"
               >
                 {isLoading ? (
-                  <div className="w-6 h-6 border-2 border-white rounded-full animate-spin border-t-transparent" />
+                  <div className="w-4 h-4 xs:w-5 xs:h-5 border-2 border-white rounded-full animate-spin border-t-transparent" />
                 ) : (
                   "Go"
                 )}
@@ -231,7 +231,7 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex-none pb-4 sm:pb-6">
+        <div className="flex-none pb-2 xs:pb-4 sm:pb-6">
           {socialButtons}
         </div>
       </div>
