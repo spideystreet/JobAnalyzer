@@ -134,13 +134,57 @@ const LandingPage: React.FC = () => {
       
       <div className="relative w-full min-h-screen flex flex-col justify-between px-4 sm:px-6">
         <div className="flex-none pt-2 xs:pt-4 sm:pt-6 lg:pt-8">
-          <div className="w-full flex items-center justify-center">
+        </div>
+
+        <div className="flex-auto flex items-center justify-center">
+          <div className="w-full max-w-[95vw] sm:max-w-[90vw] xl:max-w-[80vw] flex flex-col items-center space-y-2 xs:space-y-3 sm:space-y-6">
             <motion.div
-              className="flex items-center justify-center"
+              className="flex flex-col items-center gap-4"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
             >
+              <div className="flex gap-2">
+                <Button 
+                  onClick={() => handleSocialClick(socialUrls.twitter)} 
+                  className="bg-white hover:bg-white/90 active:bg-white/70
+                    transition-all duration-200
+                    hover:scale-105 active:scale-95
+                    touch-manipulation select-none
+                    -webkit-tap-highlight-color-transparent" 
+                  variant="outline" 
+                  aria-label="X" 
+                  size="icon"
+                >
+                  <RiTwitterXFill className="text-black" size={16} aria-hidden="true" />
+                </Button>
+                <Button 
+                  onClick={() => handleSocialClick(socialUrls.linkedin)} 
+                  className="bg-white hover:bg-white/90 active:bg-white/70
+                    transition-all duration-200
+                    hover:scale-105 active:scale-95
+                    touch-manipulation select-none
+                    -webkit-tap-highlight-color-transparent" 
+                  variant="outline" 
+                  aria-label="LinkedIn" 
+                  size="icon"
+                >
+                  <RiLinkedinFill className="text-black" size={16} aria-hidden="true" />
+                </Button>
+                <Button 
+                  onClick={() => handleSocialClick(socialUrls.github)} 
+                  className="bg-white hover:bg-white/90 active:bg-white/70
+                    transition-all duration-200
+                    hover:scale-105 active:scale-95
+                    touch-manipulation select-none
+                    -webkit-tap-highlight-color-transparent" 
+                  variant="outline" 
+                  aria-label="GitHub" 
+                  size="icon"
+                >
+                  <RiGithubFill className="text-black" size={16} aria-hidden="true" />
+                </Button>
+              </div>
               <div className="flex items-center">
                 <Badge 
                   variant="secondary" 
@@ -157,11 +201,7 @@ const LandingPage: React.FC = () => {
                 </div>
               </div>
             </motion.div>
-          </div>
-        </div>
 
-        <div className="flex-auto flex items-center justify-center">
-          <div className="w-full max-w-[95vw] sm:max-w-[90vw] xl:max-w-[80vw] flex flex-col items-center space-y-2 xs:space-y-3 sm:space-y-6">
             <Badge 
               variant="secondary" 
               className="bg-black text-purple-400 hover:bg-black/90 font-helvetica font-normal
@@ -232,7 +272,6 @@ const LandingPage: React.FC = () => {
         </div>
 
         <div className="flex-none pb-2 xs:pb-4 sm:pb-6">
-          {socialButtons}
         </div>
       </div>
     </div>
