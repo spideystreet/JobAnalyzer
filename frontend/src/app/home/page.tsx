@@ -137,7 +137,7 @@ const LandingPage: React.FC = () => {
         </div>
 
         <div className="flex-auto flex items-center justify-center">
-          <div className="w-full max-w-[95vw] sm:max-w-[90vw] xl:max-w-[80vw] flex flex-col items-center space-y-2 xs:space-y-3 sm:space-y-6">
+          <div className="w-full max-w-[95vw] sm:max-w-[90vw] xl:max-w-[80vw] flex flex-col items-center space-y-4 xs:space-y-6 sm:space-y-8">
             <motion.div
               className="flex flex-col items-center gap-4"
               initial={{ opacity: 0, y: -10 }}
