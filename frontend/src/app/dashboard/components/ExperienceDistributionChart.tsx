@@ -39,15 +39,15 @@ export default function ExperienceDistributionChart({ data }: ExperienceDistribu
         <CardDescription className="text-white/60">Répartition des offres par niveau d&apos;expérience requis</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[392px]">
+        <div className="h-[450px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}
               margin={{
-                top: 20,
+                top: 15,
                 right: 30,
                 left: 20,
-                bottom: 5,
+                bottom: 0,
               }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
