@@ -149,23 +149,6 @@ function DashboardContent() {
   const { data, isLoading, error, refetch } = useJobData(filters)
   const stats = useStats(data?.rawData)
 
-  const [isMobile, setIsMobile] = React.useState(false)
-
-  React.useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-    
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
-
-  if (isMobile) {
-    return <MobileMessage />
-  }
-
   // Calculer les dates min et max à partir des données
   const { minDate, maxDate } = React.useMemo(() => {
     if (!data?.rawData?.length) return { minDate: undefined, maxDate: undefined }

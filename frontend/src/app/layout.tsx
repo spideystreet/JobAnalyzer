@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
+import { Providers } from './providers'
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Job Analyzer",
-  description: "Analysez le marché de l'emploi tech. Découvrez les tendances des TJM, technologies, et domaines d'expertise recherchés.",
+  title: "JobAnalyzer",
+  description: "Analyse du marché de l'emploi IT",
   keywords: ["freelance", "tech", "emploi", "TJM", "France", "développeur", "data", "analyse"],
   authors: [{ name: "Spidey" }],
   creator: "Spidey",
@@ -88,7 +89,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="fr" className="dark">
+    <html lang="fr" suppressHydrationWarning>
       <head>
         <link 
           rel="preload" 
@@ -99,7 +100,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.className} bg-black`}>
-        {children}
+        <Providers>
+          {children}
+        </Providers>
         <Analytics />
       </body>
     </html>
