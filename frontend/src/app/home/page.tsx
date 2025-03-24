@@ -4,7 +4,6 @@ import dynamic from 'next/dynamic'
 import { Button } from "@/components/ui/button-loading"
 import { Badge } from "@/components/ui/badge"
 import { 
-  RiTwitterXFill, 
   RiLinkedinFill, 
   RiGithubFill 
 } from "@remixicon/react"
@@ -51,7 +50,6 @@ const LandingPage: React.FC = () => {
   ], [])
 
   const socialUrls = useMemo(() => ({
-    twitter: 'https://x.com/spideystreet',
     linkedin: 'https://www.linkedin.com/in/hicham-djebali-35bb271a2/',
     github: 'https://github.com/spideystreet'
   }), [])
@@ -77,19 +75,6 @@ const LandingPage: React.FC = () => {
 
   const socialButtons = useMemo(() => (
     <div className="flex flex-wrap justify-center gap-2 max-w-xs w-full mx-auto z-50">
-      <Button 
-        onClick={() => handleSocialClick(socialUrls.twitter)} 
-        className="bg-white hover:bg-white/90 active:bg-white/70
-          transition-all duration-200
-          hover:scale-105 active:scale-95
-          touch-manipulation select-none
-          -webkit-tap-highlight-color-transparent" 
-        variant="outline" 
-        aria-label="X" 
-        size="icon"
-      >
-        <RiTwitterXFill className="text-black" size={16} aria-hidden="true" />
-      </Button>
       <Button 
         onClick={() => handleSocialClick(socialUrls.linkedin)} 
         className="bg-white hover:bg-white/90 active:bg-white/70
@@ -145,19 +130,6 @@ const LandingPage: React.FC = () => {
               transition={{ duration: 0.4, ease: "easeOut" }}
             >
               <div className="flex gap-2">
-                <Button 
-                  onClick={() => handleSocialClick(socialUrls.twitter)} 
-                  className="bg-white hover:bg-white/90 active:bg-white/70
-                    transition-all duration-200
-                    hover:scale-105 active:scale-95
-                    touch-manipulation select-none
-                    -webkit-tap-highlight-color-transparent" 
-                  variant="outline" 
-                  aria-label="X" 
-                  size="icon"
-                >
-                  <RiTwitterXFill className="text-black" size={16} aria-hidden="true" />
-                </Button>
                 <Button 
                   onClick={() => handleSocialClick(socialUrls.linkedin)} 
                   className="bg-white hover:bg-white/90 active:bg-white/70
