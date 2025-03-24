@@ -16,9 +16,9 @@ interface RegionTJMChartProps {
 }
 
 export default function RegionTJMChart({ data }: RegionTJMChartProps) {
-  // Calculer les TJM moyens par région
+  // Calculer les stats par région
   const regionStats = data.reduce((acc, job) => {
-    if (!job.REGION || !job.TJM_MIN || !job.TJM_MAX) return acc
+    if (!job.REGION) return acc
     
     if (!acc[job.REGION]) {
       acc[job.REGION] = {
@@ -29,36 +29,32 @@ export default function RegionTJMChart({ data }: RegionTJMChartProps) {
     }
     
     acc[job.REGION].count += 1
-    acc[job.REGION].totalTJMMin += job.TJM_MIN
-    acc[job.REGION].totalTJMMax += job.TJM_MAX
+    // On garde ces calculs au cas où, mais on ne les utilisera plus
+    if (job.TJM_MIN) acc[job.REGION].totalTJMMin += job.TJM_MIN
+    if (job.TJM_MAX) acc[job.REGION].totalTJMMax += job.TJM_MAX
     
     return acc
   }, {} as Record<string, { count: number; totalTJMMin: number; totalTJMMax: number }>)
 
-  // Convertir en format pour l'affichage et trier par TJM moyen
+  // Convertir en format pour l'affichage et trier par nombre d'offres
   const chartData = Object.entries(regionStats)
     .map(([region, stats]) => ({
       region,
-      tjmMoyen: Math.round((stats.totalTJMMin + stats.totalTJMMax) / (2 * stats.count)),
-      tjmMin: Math.round(stats.totalTJMMin / stats.count),
-      tjmMax: Math.round(stats.totalTJMMax / stats.count),
       count: stats.count
     }))
-    .filter(item => item.count >= 15) // Filtrer les régions avec moins de 15 offres
-    .sort((a, b) => b.tjmMoyen - a.tjmMoyen)
+    .sort((a, b) => b.count - a.count) // Tri par nombre d'offres décroissant
     .slice(0, 3)
 
-  // Si aucune région ne correspond aux critères
   if (chartData.length === 0) {
     return (
       <Card className="bg-black/80 backdrop-blur-xl border-white/10 h-full">
         <CardHeader className="p-3 pb-0">
-          <CardTitle className="text-white text-base">Top 3 Régions par TJM</CardTitle>
-          <CardDescription className="text-white/60 text-xs">Les régions les plus attractives, avec plus de 15 offres</CardDescription>
+          <CardTitle className="text-white text-base">Top 3 des régions</CardTitle>
+          <CardDescription className="text-white/60 text-xs">Les régions les plus actives</CardDescription>
         </CardHeader>
         <CardContent className="p-3 flex items-center justify-center">
           <div className="text-white/60 text-sm">
-            Aucune région avec plus de 15 offres
+            Aucune région trouvée
           </div>
         </CardContent>
       </Card>
@@ -68,9 +64,9 @@ export default function RegionTJMChart({ data }: RegionTJMChartProps) {
   return (
     <Card className="bg-black/80 backdrop-blur-xl border-white/10">
       <CardHeader className="pb-2">
-        <CardTitle className="text-white">Top 3 Régions par TJM</CardTitle>
+        <CardTitle className="text-white">Top 3 des régions attractives</CardTitle>
         <CardDescription className="text-white/60">
-          Les régions les plus attractives
+          Les régions avec le plus d&apos;offres
         </CardDescription>
       </CardHeader>
       <CardContent className="pb-4">
@@ -93,8 +89,8 @@ export default function RegionTJMChart({ data }: RegionTJMChartProps) {
                   {region.region}
                 </span>
               </div>
-              <div className="text-white font-bold">{region.tjmMoyen}€</div>
-              <div className="text-white/60 text-xs">{region.count} offres</div>
+              <div className="text-white font-bold">{region.count}</div>
+              <div className="text-white/60 text-xs">offres</div>
             </div>
           ))}
         </div>

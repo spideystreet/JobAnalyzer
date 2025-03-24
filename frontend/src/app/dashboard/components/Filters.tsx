@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Calendar } from '@/components/ui/calendar'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button-aremettre'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { CalendarIcon, Check } from 'lucide-react'
@@ -88,20 +88,61 @@ export default function Filters({ onFilterChange, initialFilters, minDate, maxDa
   }
 
   const [filters, setFilters] = useState<FilterState>(() => {
-    // S'assurer que toutes les propriétés sont initialisées
     return {
       ...defaultFilters,
       ...(initialFilters || {}),
-      // S'assurer que les tableaux ne sont jamais undefined
       technologies: initialFilters?.technologies || [],
       experienceLevel: initialFilters?.experienceLevel || [],
       location: initialFilters?.location || [],
       country: initialFilters?.country || [],
       domain: initialFilters?.domain || [],
       workMode: initialFilters?.workMode || [],
-      // S'assurer que dateRange est toujours un tuple valide
       dateRange: initialFilters?.dateRange || [null, null]
     }
+  })
+
+  // États de recherche pour chaque filtre
+  const [techSearch, setTechSearch] = useState('')
+  const [xpSearch, setXpSearch] = useState('')
+  const [locationSearch, setLocationSearch] = useState('')
+  const [countrySearch, setCountrySearch] = useState('')
+  const [domainSearch, setDomainSearch] = useState('')
+  const [workModeSearch, setWorkModeSearch] = useState('')
+
+  // Filtrer les suggestions en fonction de la recherche
+  const filteredTechSuggestions = TECH_SUGGESTIONS.filter(tech =>
+    tech.toLowerCase().includes(techSearch.toLowerCase())
+  )
+
+  const filteredXpSuggestions = XP_SUGGESTIONS.filter(xp =>
+    xp.toLowerCase().includes(xpSearch.toLowerCase())
+  )
+
+  const filteredLocationSuggestions = LOCATION_SUGGESTIONS.filter(location =>
+    location.toLowerCase().includes(locationSearch.toLowerCase())
+  )
+
+  const filteredCountrySuggestions = COUNTRY_SUGGESTIONS.filter(country =>
+    country.toLowerCase().includes(countrySearch.toLowerCase())
+  )
+
+  const filteredDomainSuggestions = DOMAIN_SUGGESTIONS.filter(domain =>
+    domain.toLowerCase().includes(domainSearch.toLowerCase())
+  )
+
+  // Ajouter un helper pour convertir le mode de travail
+  const getWorkModeLabel = (mode: string) => {
+    switch (mode) {
+      case "Oui": return "Full Remote"
+      case "Non": return "Présentiel"
+      default: return "Hybride"
+    }
+  }
+
+  // Modifier la logique de filtrage pour le mode de travail
+  const filteredWorkModeSuggestions = WORK_MODE_OPTIONS.filter(mode => {
+    const label = getWorkModeLabel(mode)
+    return label.toLowerCase().includes(workModeSearch.toLowerCase())
   })
 
   useEffect(() => {
@@ -147,7 +188,12 @@ export default function Filters({ onFilterChange, initialFilters, minDate, maxDa
             <PopoverTrigger asChild>
               <Button 
                 variant="outline" 
-                className="w-full justify-start bg-black/20 backdrop-blur-xl border-white/10"
+                className="w-full justify-start bg-black/20 backdrop-blur-xl border-white/10
+                  active:bg-black/30
+                  transition-all duration-200
+                  hover:scale-[1.02] active:scale-[0.98]
+                  touch-manipulation select-none
+                  -webkit-tap-highlight-color-transparent"
               >
                 <span className="text-white/50">
                   {filters.technologies.length === 0 
@@ -162,16 +208,21 @@ export default function Filters({ onFilterChange, initialFilters, minDate, maxDa
                 <input
                   type="text"
                   placeholder="Rechercher..."
+                  value={techSearch}
+                  onChange={(e) => setTechSearch(e.target.value)}
                   className="w-full p-2 mb-2 bg-transparent border border-white/10 rounded-md text-white text-sm focus:outline-none focus:ring-2 focus:ring-white/20"
                 />
                 <div className="max-h-[200px] overflow-auto">
-                  {TECH_SUGGESTIONS.map((tech) => (
+                  {filteredTechSuggestions.map((tech) => (
                     <button
                       key={tech}
                       onClick={() => toggleFilter('technologies', tech)}
                       className={cn(
                         "w-full text-left px-2 py-1.5 text-sm rounded-md mb-1 flex items-center",
-                        "text-white hover:bg-white/10",
+                        "text-white hover:bg-white/10 active:bg-white/20",
+                        "transition-all duration-200",
+                        "touch-manipulation select-none",
+                        "-webkit-tap-highlight-color-transparent",
                         filters.technologies.includes(tech) ? "bg-white/10" : ""
                       )}
                     >
@@ -206,8 +257,15 @@ export default function Filters({ onFilterChange, initialFilters, minDate, maxDa
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0 bg-black/80 backdrop-blur-xl border-white/10" align="start">
               <div className="p-2">
+                <input
+                  type="text"
+                  placeholder="Rechercher..."
+                  value={xpSearch}
+                  onChange={(e) => setXpSearch(e.target.value)}
+                  className="w-full p-2 mb-2 bg-transparent border border-white/10 rounded-md text-white text-sm focus:outline-none focus:ring-2 focus:ring-white/20"
+                />
                 <div className="max-h-[200px] overflow-auto">
-                  {XP_SUGGESTIONS.map((xp) => (
+                  {filteredXpSuggestions.map((xp) => (
                     <button
                       key={xp}
                       onClick={() => toggleFilter('experienceLevel', xp)}
@@ -251,10 +309,12 @@ export default function Filters({ onFilterChange, initialFilters, minDate, maxDa
                 <input
                   type="text"
                   placeholder="Rechercher..."
+                  value={locationSearch}
+                  onChange={(e) => setLocationSearch(e.target.value)}
                   className="w-full p-2 mb-2 bg-transparent border border-white/10 rounded-md text-white text-sm focus:outline-none focus:ring-2 focus:ring-white/20"
                 />
                 <div className="max-h-[200px] overflow-auto">
-                  {LOCATION_SUGGESTIONS.map((location) => (
+                  {filteredLocationSuggestions.map((location) => (
                     <button
                       key={location}
                       onClick={() => toggleFilter('location', location)}
@@ -295,8 +355,15 @@ export default function Filters({ onFilterChange, initialFilters, minDate, maxDa
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0 bg-black/80 backdrop-blur-xl border-white/10" align="start">
               <div className="p-2">
+                <input
+                  type="text"
+                  placeholder="Rechercher..."
+                  value={countrySearch}
+                  onChange={(e) => setCountrySearch(e.target.value)}
+                  className="w-full p-2 mb-2 bg-transparent border border-white/10 rounded-md text-white text-sm focus:outline-none focus:ring-2 focus:ring-white/20"
+                />
                 <div className="max-h-[200px] overflow-auto">
-                  {COUNTRY_SUGGESTIONS.map((country) => (
+                  {filteredCountrySuggestions.map((country) => (
                     <button
                       key={country}
                       onClick={() => toggleFilter('country', country)}
@@ -337,8 +404,15 @@ export default function Filters({ onFilterChange, initialFilters, minDate, maxDa
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0 bg-black/80 backdrop-blur-xl border-white/10" align="start">
               <div className="p-2">
+                <input
+                  type="text"
+                  placeholder="Rechercher..."
+                  value={domainSearch}
+                  onChange={(e) => setDomainSearch(e.target.value)}
+                  className="w-full p-2 mb-2 bg-transparent border border-white/10 rounded-md text-white text-sm focus:outline-none focus:ring-2 focus:ring-white/20"
+                />
                 <div className="max-h-[200px] overflow-auto">
-                  {DOMAIN_SUGGESTIONS.map((domain) => (
+                  {filteredDomainSuggestions.map((domain) => (
                     <button
                       key={domain}
                       onClick={() => toggleFilter('domain', domain)}
@@ -379,8 +453,15 @@ export default function Filters({ onFilterChange, initialFilters, minDate, maxDa
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0 bg-black/80 backdrop-blur-xl border-white/10" align="start">
               <div className="p-2">
+                <input
+                  type="text"
+                  placeholder="Rechercher..."
+                  value={workModeSearch}
+                  onChange={(e) => setWorkModeSearch(e.target.value)}
+                  className="w-full p-2 mb-2 bg-transparent border border-white/10 rounded-md text-white text-sm focus:outline-none focus:ring-2 focus:ring-white/20"
+                />
                 <div className="max-h-[200px] overflow-auto">
-                  {WORK_MODE_OPTIONS.map((mode) => (
+                  {filteredWorkModeSuggestions.map((mode) => (
                     <button
                       key={mode}
                       onClick={() => toggleFilter('workMode', mode)}
@@ -396,9 +477,7 @@ export default function Filters({ onFilterChange, initialFilters, minDate, maxDa
                           filters.workMode.includes(mode) ? "opacity-100" : "opacity-0"
                         )}
                       />
-                      {mode === "Oui" ? "Full Remote" :
-                       mode === "Non" ? "Présentiel" :
-                       "Hybride"}
+                      {getWorkModeLabel(mode)}
                     </button>
                   ))}
                 </div>

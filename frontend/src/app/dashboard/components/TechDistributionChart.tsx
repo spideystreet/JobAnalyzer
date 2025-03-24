@@ -2,6 +2,7 @@
 
 import { TrendingUp } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts"
+import { useMemo } from 'react'
 
 import {
   Card,
@@ -12,6 +13,8 @@ import {
   CardFooter,
 } from "@/components/ui/card"
 
+import { EmptyState } from "@/components/ui/empty-state"
+
 interface TechDistributionChartProps {
   data: Array<{
     TECHNOS: string[]
@@ -21,25 +24,31 @@ interface TechDistributionChartProps {
   }>
 }
 
-const EmptyChart = ({ message = "Aucune donnée disponible" }) => (
-  <Card className="bg-black/80 backdrop-blur-xl border-white/10">
-    <CardHeader>
-      <CardTitle className="text-white">Distribution des technologies</CardTitle>
-      <CardDescription className="text-white/60">
-        Répartition des technologies les plus demandées
-      </CardDescription>
-    </CardHeader>
-    <CardContent className="flex items-center justify-center min-h-[300px]">
-      <div className="text-white/60">
-        {message}
-      </div>
-    </CardContent>
-  </Card>
-)
-
 export default function TechDistributionChart({ data }: TechDistributionChartProps) {
+  const processedData = useMemo(() => {
+    // Compter les occurrences de chaque technologie
+    const techCount = data.reduce((acc, curr) => {
+      const techs = curr.TECHNOS || []
+      techs.forEach((tech: string) => {
+        acc[tech] = (acc[tech] || 0) + 1
+      })
+      return acc
+    }, {} as Record<string, number>)
+
+    // Convertir en tableau et trier par nombre d'occurrences
+    return Object.entries(techCount)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10) // Prendre les 10 premiers
+  }, [data])
+
   if (!Array.isArray(data) || data.length === 0) {
-    return <EmptyChart />
+    return (
+      <EmptyState 
+        title="Distribution des technologies"
+        description="Répartition des technologies les plus demandées"
+      />
+    )
   }
 
   try {
@@ -73,7 +82,13 @@ export default function TechDistributionChart({ data }: TechDistributionChartPro
       .slice(0, 10)
 
     if (chartData.length === 0) {
-      return <EmptyChart message="Aucune technologie trouvée dans les données" />
+      return (
+        <EmptyState 
+          title="Distribution des technologies"
+          description="Répartition des technologies les plus demandées"
+          message="Aucune technologie trouvée dans les données"
+        />
+      )
     }
 
     const topTech = chartData[0]?.name || "Aucune technologie"
@@ -81,7 +96,7 @@ export default function TechDistributionChart({ data }: TechDistributionChartPro
     return (
       <Card className="bg-black/80 backdrop-blur-xl border-white/10">
         <CardHeader>
-          <CardTitle className="text-white">Distribution des Technologies</CardTitle>
+          <CardTitle className="text-white">Distribution des technologies</CardTitle>
           <CardDescription className="text-white/60">
             Top 10 des technologies les plus demandées
           </CardDescription>
@@ -90,43 +105,37 @@ export default function TechDistributionChart({ data }: TechDistributionChartPro
           <div className="h-[400px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart 
-                data={chartData} 
-                margin={{ top: 20, right: 32, bottom: 20, left: 150 }}
+                data={processedData} 
+                margin={{ top: 5, right: 30, left: 80, bottom: 5 }}
                 layout="vertical"
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                 <XAxis 
                   type="number" 
-                  stroke="rgba(255,255,255,0.5)"
+                  domain={[0, 'dataMax']}
                   tickFormatter={(value) => `${value}`}
+                  tick={{ fill: 'rgba(255, 255, 255, 0.6)' }}
                 />
                 <YAxis 
                   type="category" 
                   dataKey="name" 
-                  stroke="rgba(255,255,255,0.5)"
-                  width={140}
-                  tick={{ 
-                    fill: 'rgba(255,255,255,0.8)',
-                    fontSize: 12
-                  }}
+                  tick={{ fill: 'rgba(255, 255, 255, 0.8)' }}
+                  width={80}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "rgba(0,0,0,0.8)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    borderRadius: "6px",
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '8px',
+                    backdropFilter: 'blur(10px)',
                   }}
-                  labelStyle={{ color: "white" }}
-                  itemStyle={{ color: "white" }}
-                  formatter={(value: number, name: string) => {
-                    if (name === "count") return [`${value} offres`, "Nombre d'offres"]
-                    if (name === "avgTJM") return [`${value}€`, "TJM moyen"]
-                    return [value, name]
-                  }}
+                  itemStyle={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                  labelStyle={{ color: 'rgba(255, 255, 255, 0.6)' }}
+                  formatter={(value: number) => [`${value} offres`, 'Nombre d\'offres']}
                 />
                 <Bar 
                   dataKey="count" 
-                  fill="hsl(var(--chart-1))" 
+                  fill="rgba(147, 51, 234, 0.8)" 
                   radius={[0, 4, 4, 0]}
                 />
               </BarChart>
@@ -146,6 +155,12 @@ export default function TechDistributionChart({ data }: TechDistributionChartPro
     )
   } catch (error) {
     console.error('Erreur dans TechDistributionChart:', error)
-    return <EmptyChart message="Erreur lors du traitement des données" />
+    return (
+      <EmptyState 
+        title="Distribution des technologies"
+        description="Répartition des technologies les plus demandées"
+        message="Erreur lors du traitement des données"
+      />
+    )
   }
 } 

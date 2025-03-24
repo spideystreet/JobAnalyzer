@@ -12,9 +12,22 @@ import RegionTJMChart from "./components/RegionTJMChart"
 import { BackgroundGradientAnimation } from '@/components/ui/background-gradient-animation'
 import { usePersistedFilters } from '@/lib/hooks/usePersistedFilters'
 import { useStats } from '@/lib/hooks/useStats'
-import { Button } from '@/components/ui/button'
-import { RefreshCw, FilterX, ArrowLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button-aremettre'
+import { RefreshCw, FilterX, ArrowLeft, Smartphone } from 'lucide-react'
+import { RiTwitterXFill, RiLinkedinFill, RiGithubFill } from "@remixicon/react"
 import React from 'react'
+import { EmptyState } from '@/components/ui/empty-state'
+import Image from 'next/image'
+import { motion } from 'framer-motion'
+import { cn } from '@/lib/utils'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -55,10 +68,87 @@ function LoadingSpinner() {
   )
 }
 
-function NoDataDisplay() {
+function MobileMessage() {
+  const socialUrls = {
+    twitter: 'https://x.com/spideystreet',
+    linkedin: 'https://www.linkedin.com/in/hicham-djebali-35bb271a2/',
+    github: 'https://github.com/spideystreet'
+  }
+
+  const handleSocialClick = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
+
   return (
-    <div className="flex items-center justify-center min-h-[300px] text-gray-500 font-helvetica" role="status">
-      Aucune donnée disponible pour les filtres sélectionnés
+    <div className="min-h-screen bg-gradient-to-b from-black via-purple-900/20 to-black text-white flex flex-col items-center justify-center p-6">
+      <motion.div 
+        className="relative z-10 text-center space-y-6 max-w-md mx-auto"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.div 
+          className="relative w-48 h-48 mx-auto mb-6"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <Image
+            src="/images/SpideyCuisto.png"
+            alt="Mobile version coming soon"
+            fill
+            className="object-contain"
+            priority
+          />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.4 }}
+        >
+          <Smartphone className="w-16 h-16 mx-auto text-purple-400" />
+          <h1 className="text-3xl font-bold font-helvetica mt-4">Version Mobile</h1>
+          <p className="text-lg text-white/80 mt-2">
+            Oops ! Pas encore disponible sur mobile.
+            Mais ton fidèle Spidey est en train de préparer ça pour toi !
+          </p>
+        </motion.div>
+        <motion.div 
+          className="pt-4"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.6 }}
+        >
+          <p className="text-sm text-white/60 mb-3">
+            Suivez l'avancement sur mes réseaux
+          </p>
+          <div className="flex justify-center gap-2">
+            <Button onClick={() => handleSocialClick(socialUrls.twitter)} className="bg-white hover:bg-white/90 hover:scale-105 transition-transform" variant="outline" aria-label="X" size="icon">
+              <RiTwitterXFill className="text-black" size={16} aria-hidden="true" />
+            </Button>
+            <Button onClick={() => handleSocialClick(socialUrls.linkedin)} className="bg-white hover:bg-white/90 hover:scale-105 transition-transform" variant="outline" aria-label="LinkedIn" size="icon">
+              <RiLinkedinFill className="text-black" size={16} aria-hidden="true" />
+            </Button>
+            <Button onClick={() => handleSocialClick(socialUrls.github)} className="bg-white hover:bg-white/90 hover:scale-105 transition-transform" variant="outline" aria-label="GitHub" size="icon">
+              <RiGithubFill className="text-black" size={16} aria-hidden="true" />
+            </Button>
+          </div>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.8 }}
+        >
+          <Button
+            onClick={() => window.location.href = '/'}
+            variant="outline"
+            className="mt-6 bg-purple-500 hover:bg-purple-600 text-white border-none hover:scale-105 transition-transform"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour à l'accueil
+          </Button>
+        </motion.div>
+      </motion.div>
     </div>
   )
 }
@@ -67,6 +157,12 @@ function DashboardContent() {
   const { filters, updateFilters, resetFilters } = usePersistedFilters()
   const { data, isLoading, error, refetch } = useJobData(filters)
   const stats = useStats(data?.rawData)
+
+  React.useEffect(() => {
+    console.log('Stats dans le composant:', stats)
+    console.log('RegionStats dans le composant:', stats?.regionStats)
+    console.log('Données brutes:', data?.rawData)
+  }, [stats, data])
 
   // Calculer les dates min et max à partir des données
   const { minDate, maxDate } = React.useMemo(() => {
@@ -115,7 +211,12 @@ function DashboardContent() {
               <Button
                 onClick={() => window.location.href = '/'}
                 variant="ghost"
-                className="text-white hover:text-white/80"
+                className="text-white hover:text-white/80 
+                  active:text-white/60
+                  transition-all duration-200
+                  hover:scale-105 active:scale-95
+                  touch-manipulation select-none
+                  -webkit-tap-highlight-color-transparent"
                 aria-label="Retour à l'accueil"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
@@ -128,7 +229,12 @@ function DashboardContent() {
             <Button
               onClick={resetFilters}
               variant="ghost" 
-              className="text-white hover:text-white/80"
+              className="text-white hover:text-white/80
+                active:text-white/60
+                transition-all duration-200
+                hover:scale-105 active:scale-95
+                touch-manipulation select-none
+                -webkit-tap-highlight-color-transparent"
               aria-label="Réinitialiser tous les filtres"
             >
               <FilterX className="w-4 h-4 mr-2" />
@@ -148,62 +254,108 @@ function DashboardContent() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
             <div className="flex flex-col gap-4">
-              <div className="flex flex-col">
-                {isLoading ? (
-                  <LoadingSpinner />
-                ) : !data?.rawData?.length ? (
-                  <NoDataDisplay />
-                ) : (
-                  <RegionTJMChart data={data.rawData} />
-                )}
-              </div>
+              <Card className="bg-black/80 backdrop-blur-xl border-white/10">
+                <CardHeader>
+                  <CardTitle className="text-white">Distribution des régions</CardTitle>
+                  <CardDescription className="text-white/60">
+                    Top 3 des régions les plus attractives
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {isLoading ? (
+                    <LoadingSpinner />
+                  ) : !data?.rawData?.length ? (
+                    <EmptyState 
+                      title="Régions"
+                      description="Aucune donnée disponible"
+                    />
+                  ) : (
+                    <div className="grid grid-cols-3 gap-2">
+                      {[0, 1, 2].map((index) => (
+                        <div key={index} className="flex flex-col items-center bg-white/5 rounded-lg p-2">
+                          <div className="flex items-center gap-1 mb-1">
+                            <span className={cn(
+                              "text-black text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center",
+                              index === 0 ? "bg-yellow-500" : index === 1 ? "bg-gray-300" : "bg-amber-600"
+                            )}>
+                              #{index + 1}
+                            </span>
+                            <span className="text-white text-sm truncate">
+                              {stats?.regionStats?.[index]?.region || 'N/A'}
+                            </span>
+                          </div>
+                          <span className="text-white/80 font-bold">
+                            {stats?.regionStats?.[index]?.count || 0}
+                          </span>
+                          <span className="text-xs text-white/60">offres</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+                <CardFooter className="flex-col items-start gap-2 text-sm">
+                  <div className="flex gap-2 font-medium leading-none text-white">
+                    {stats?.regionStats?.[0]?.region || 'N/A'} est la région la plus attractive
+                  </div>
+                  <div className="leading-none text-white/60">
+                    Basé sur {data?.rawData?.length || 0} offres analysées
+                  </div>
+                </CardFooter>
+              </Card>
 
-              <div className="flex flex-col">
-                {isLoading ? (
-                  <LoadingSpinner />
-                ) : !data?.rawData?.length ? (
-                  <NoDataDisplay />
-                ) : (
-                  <TopCompaniesChart data={stats.companyTypeStats} />
-                )}
-              </div>
-            </div>
-
-            <div className="h-full">
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.rawData?.length ? (
-                <NoDataDisplay />
+                <EmptyState 
+                  title="Top des entreprises"
+                  description="Répartition par type d'entreprise"
+                />
               ) : (
-                <ExperienceDistributionChart data={data.rawData} />
+                <TopCompaniesChart data={stats.companyTypeStats} />
               )}
             </div>
 
-            <div className="h-full">
-              {isLoading ? (
-                <LoadingSpinner />
-              ) : !data?.rawData?.length ? (
-                <NoDataDisplay />
-              ) : (
-                <DomainDistributionChart data={stats.domainStats} />
-              )}
-            </div>
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : !data?.rawData?.length ? (
+              <EmptyState 
+                title="Distribution par expérience"
+                description="Répartition des offres par niveau d'expérience"
+              />
+            ) : (
+              <ExperienceDistributionChart data={data.rawData} />
+            )}
 
-            <div className="h-full">
-              {isLoading ? (
-                <LoadingSpinner />
-              ) : !data?.tjmData ? (
-                <NoDataDisplay />
-              ) : (
-                <TechDistributionChart data={data.tjmData} />
-              )}
-            </div>
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : !data?.rawData?.length ? (
+              <EmptyState 
+                title="Distribution par domaine"
+                description="Répartition des offres par domaine"
+              />
+            ) : (
+              <DomainDistributionChart data={stats.domainStats} />
+            )}
+
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : !data?.tjmData ? (
+              <EmptyState 
+                title="Technologies"
+                description="Top 10 des technologies les plus demandées"
+              />
+            ) : (
+              <TechDistributionChart data={data.tjmData} />
+            )}
             
-            <div className="lg:col-span-2 h-full">
+            <div className="lg:col-span-2">
               {isLoading ? (
                 <LoadingSpinner />
               ) : !data?.rawData?.length ? (
-                <NoDataDisplay />
+                <EmptyState 
+                  title="Offres par jour"
+                  description="Répartition des offres par jour"
+                />
               ) : (
                 <OffersPerDayChart data={data.rawData} />
               )}

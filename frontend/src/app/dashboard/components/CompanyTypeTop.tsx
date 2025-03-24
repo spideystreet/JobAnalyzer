@@ -18,7 +18,7 @@ export function CompanyTypeTop({ data }: CompanyTypeTopProps) {
         blur="medium"
       />
       <div className="relative w-full h-full rounded-lg bg-black/90 p-6">
-        <CardTitle className="text-white">Top 3 Types d&apos;Entreprises</CardTitle>
+        <CardTitle className="text-white">Top 3 des types d&apos;Entreprises</CardTitle>
         <div className="space-y-4">
           {data.slice(0, 3).map((item, index) => (
             <div 

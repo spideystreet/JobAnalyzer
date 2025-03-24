@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button-aremettre";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
